@@ -25,18 +25,18 @@ export default function Form() {
   const handleChange = (e: { target: { name: any; value: any; }; }) => {
     const { name, value } = e.target;
   
-    // Verifica se o campo é a lista de nomes
+    
     if (name === 'nameList') {
-      // Separa o conteúdo da textarea em um array usando quebras de linha
+      
       const nameListArray = value.split('\n');
   
-      // Atualiza o estado 'form' com o novo array
+      
       setForm({
         ...form,
         [name]: nameListArray,
       });
     } else {
-      // Se for outro campo, atualiza normalmente
+     
       setForm({
         ...form,
         [name]: value,
@@ -127,8 +127,11 @@ export default function Form() {
         </button>
       </form>
       </div>
-      <UsersNotFoundList errorNameList={resultados.invalidos} />
+      
       <UsersNotFoundList NameList={resultados.nomes} />
+      <UsersNotFoundList errorNameList={resultados.invalidos} />
+
+      
     </div>
   );
 }

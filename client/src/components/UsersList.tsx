@@ -1,7 +1,7 @@
 import React from 'react';
 
 const UsersList = ({ NameList }) => {
-  if (NameList.length === 0) {
+  if ( NameList == null ) {
     return null; // Se não há usuários não encontrados, não renderiza nada
   }
 

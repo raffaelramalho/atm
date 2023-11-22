@@ -52,20 +52,21 @@ app.post("/processar-dados", async (req, res) => {
   console.log('/processar-dados acessada');
 
   try {
+    console.log(req.body)
     const userNameList = req.body.nameList;
     const Turn = req.body.newTurn;
-
+   
     if (!userNameList || userNameList.length === 0) {
       return res.status(400).send('A lista de nomes não pode estar vazia.');
     }
 
     const { userIdList, validUsers, errorNameList } = await getAllUsers(dbconnection, userNameList);
 
-    console.log(userIdList);
-    console.log(errorNameList);
-    console.log(validUsers);
+    updateUsers(dbconnection, userIdList, Turn);
 
+    console.log(errorNameList)
     res.send({ nomes: validUsers, id: userIdList, invalidos: errorNameList });
+    
   } catch (error) {
     console.error('Erro durante as consultas assíncronas:', error);
     res.status(500).send('Erro no servidor');
@@ -74,7 +75,7 @@ app.post("/processar-dados", async (req, res) => {
 
 async function getAllUsers(dbconnection, userNameList) {
   const userIdList = [];
-  const errorNameList = [];
+  let errorNameList = [];
   const validUsers = [];
 
   for (let nome of userNameList) {
@@ -94,9 +95,20 @@ async function getAllUsers(dbconnection, userNameList) {
       throw error; 
     }
   }
-
+  
   return { userIdList, validUsers, errorNameList };
 }
+
+async function updateUsers(dbconnection, userIdList,Turn){
+  
+    const turnId = await dbconnection.execute(`SELECT id from scheduls WHERE NAME='${Turn}' AND id is NOT NULL LIMIT 1`);
+    
+    for (user of userIdList) {
+        const query = await dbconnection.execute(`update useraccessrules set idAccessRule = ${turnId[0][0].id} where idUser = ${user}`);
+
+    }
+}
+
 
 
 

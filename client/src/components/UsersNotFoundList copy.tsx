@@ -1,7 +1,7 @@
 import React from 'react';
 
 const UsersNotFoundList = ({ errorNameList }) => {
-  if (errorNameList.length === 0) {
+  if (errorNameList == null) {
     return null; // Se não há usuários não encontrados, não renderiza nada
   }
 

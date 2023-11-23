@@ -1,9 +1,12 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, {  useState, useEffect } from 'react';
 
 import '../index.css'
-import LogArea from '../components/UsersList';
+
 import UsersNotFoundList from '../components/UsersList';
+import UsersList from '../components/UsersList';
+
 export default function Form() {
+  
   const [turnos, setTurnos] = React.useState([]);
    
   React.useEffect(() => {
@@ -44,12 +47,6 @@ export default function Form() {
     }
   };
 
-  const handleKeyDown = (e: { key: string; preventDefault: () => void; }) => {
-    if (e.key === 'Enter') {
-      e.preventDefault(); // Evita a quebra de linha automática
-    }
-  };
-
   const handleSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault(); 
   };
@@ -58,10 +55,10 @@ export default function Form() {
     setLoading(true);
 
     var nameListString = form.nameList.toString();
-    console.log(nameListString)
     
-    var nameListArray = nameListString.split(',').map((name) => name.trim());
-    console.log(nameListArray)
+    
+    const nameListArray = [...new Set(nameListString.split(',').map((name) => name.trim()))];
+    
     try {
       var response = await fetch('http://localhost:3307/processar-dados', {
         method: 'POST',
@@ -92,7 +89,7 @@ export default function Form() {
   return (
     <div className='grid-helper'>
       <div>
-      <h3 className=''>Alterador de Turnos em Massa</h3>
+      <h3 className=''>Nomes:</h3>
       <form className='custom-form' onClick={handleSubmit}>
         <label className=''>
           
@@ -104,7 +101,7 @@ export default function Form() {
             placeholder='Lista de Nomes'
             className='custom-textarea'
             
-            disabled={false} // Certifique-se de que está configurado como false
+            disabled={false} 
             readOnly={false}
           />
         </label>
@@ -127,11 +124,8 @@ export default function Form() {
         </button>
       </form>
       </div>
-      
-      <UsersNotFoundList NameList={resultados.nomes} />
-      <UsersNotFoundList errorNameList={resultados.invalidos} />
-
-      
+      <UsersList NameList={resultados.nomes} ListName='Usuários Alterados' />
+      <UsersNotFoundList NameList={resultados.invalidos} ListName='Usuários não encontrados' />
     </div>
   );
 }

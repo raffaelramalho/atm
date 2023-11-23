@@ -1,5 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
+
+:root{
+  --white: rgba(255, 255, 255, 0.164);
+}
 *{
   margin: 0;
   padding: 0;
@@ -7,6 +11,7 @@
   font-family: "Poppins", sans-serif;
   scroll-behavior: smooth;
   color-scheme: dark;
+  
 }
 .custom-form{
   display: flex;
@@ -15,11 +20,12 @@
 }
 
 body{
-  padding: 0;
-  display: flex;
+  
+  margin: auto;
   height: 90vh;
   justify-content: center;
   width: 100vw;
+  overflow-x: hidden;
 
 }
 
@@ -30,11 +36,11 @@ body{
 
 .custom-textarea{
   border-radius: 5px;
-  width: 100%;
+  width: 500px;
   padding: 10px 20px;
   background-color: black;
   color: white;
-  height: 100%;
+  height: 500px;
 }
 
 .custom-btn{
@@ -55,10 +61,135 @@ body{
   border: none;
   border-radius: 8px;
   margin: 5% 0px;
+  border: rgba(255, 255, 255, 0.178) 1px solid;
 }
 
 
 .grid-helper{
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
+}
+
+.name-list{
+  list-style: none;
+  overflow-y: scroll;
+  
+}
+
+.name-list-spam{
+  color: rgb(60, 149, 228);
+  font-weight: bold;
+}
+
+.custom-navbar{
+  background-color:rgb(196, 21, 21) ;
+  display: flex;
+  padding: 0px 25px;
+  margin-bottom: 20px;
+  height: 3.5rem;
+  align-items: center;
+  box-shadow: 1;
+  box-shadow: -1px 61px 120px -12px rgba(189, 189, 189, 0.75);
+-webkit-box-shadow: -1px 61px 120px -12px rgba(0,0,0,0.75);
+-moz-box-shadow: -1px 61px 120px -12px rgba(0,0,0,0.75);
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+  
+}
+
+.login-form {
+  width: 400px;
+  height: 40%;
+  padding: 20px;
+  border: 1px solid var(--white);
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #020202;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin: 5% 0%;
+  border: 1px solid var(--white);
+  border-radius: 4px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 5%;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+@media screen and (max-width: 768px) {
+  .custom-form {
+    height: auto;
+  }
+
+  .custom-textarea {
+    height: auto;
+    width: 100%;
+  }
+
+  .custom-container,
+  .name-list {
+    height: auto;
+  }
+  .grid-helper{
+    display: flex;
+    flex-direction: column;
+    padding: 5%;
+  }
+  
+}
+.custom-log{
+  margin-bottom: 5%;
+}
+.custom-form-img{
+  height: auto;
+  width: auto;
+  margin-left: 15%;
+
+}
+
+.warning-text{
+  text-align: center;
+  margin-top: 2%;
+  
+}
+
+.title-form{
+  
+}
+
+
+.hero-error{
+  font-size: 70px;
+  text-align: center;
+  margin: auto;
+}
+
+.hero-helper{
+  text-align: center;
+  
 }

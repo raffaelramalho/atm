@@ -1,4 +1,5 @@
 import React, {  useState, useEffect } from 'react';
+import { FaFileDownload } from "react-icons/fa";
 
 import '../index.css'
 
@@ -8,7 +9,7 @@ import UsersList from '../components/UsersList';
 export default function Form() {
   
   const [turnos, setTurnos] = React.useState([]);
-   
+  const [informations, setInformations] =  React.useState([])
   React.useEffect(() => {
     fetch("http://localhost:3307/getTurnos")
       .then((res) => res.json())
@@ -46,11 +47,26 @@ export default function Form() {
       });
     }
   };
+  const exportarParaTXT = async() => {
+    const infoNome =  informations;
+    console.log("lista de nomes "+infoNome)
+    const texto = infoNome.join('\n');
+    console.log(texto)
+    const blob = new Blob([texto], { type: 'text/plain;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'nomes.txt';
+    link.click();
+  };
+
+
+
 
   const handleSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault(); 
   };
   const [loading, setLoading] = useState(false);
+  const [able, setable] = useState(true);
   const handleUpdateTurnos = async (e: { preventDefault: () => void; } | undefined) => {
     setLoading(true);
 
@@ -76,6 +92,8 @@ export default function Form() {
         const data = await response.json();
         console.log('Resposta do backend:', data);
         setResultados(data);
+        setable(false)
+        setInformations(data.invalidos)
     } else {
         throw new Error(`Erro na requisição: ${response.statusText}`);
     }
@@ -121,6 +139,12 @@ export default function Form() {
           onClick={handleUpdateTurnos}
         >
           {loading ? "Atualizando..." : "Atualizar Turnos"}
+        </button>
+        <button onClick={exportarParaTXT}
+          disabled={able}
+          className={able ? `disable-button` : ``}
+        >
+          Baixar Nomes não encontrados <FaFileDownload className="custom-icon" />
         </button>
       </form>
       </div>

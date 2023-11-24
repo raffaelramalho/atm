@@ -68,6 +68,7 @@ body{
 .grid-helper{
   display: flex;
   justify-content: space-evenly;
+  
 }
 
 .name-list{
@@ -191,5 +192,16 @@ button:hover {
 
 .hero-helper{
   text-align: center;
-  
+  margin-top: 10%;
+}
+
+.disable-button{
+  background-color: gray;
+}.disable-button:hover{
+  background-color: gray;
+  cursor: progress;
+}
+
+.custom-icon{
+  margin: auto;
 }

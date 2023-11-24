@@ -1,6 +1,5 @@
 import Form from "./pages/Form";
 import { Provider } from 'react-redux';
-
 import Login from "./pages/Login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Error from "./pages/Error";

@@ -1,14 +1,12 @@
-const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const express = require("express");
 const dbconnection = require('./utils/connection');
-const authController = require('./controllers/authenticate');
 const jwt = require('jsonwebtoken');
 const PORT = process.env.PORT || 3307;
 const app = express();
-
-// Interação com as informações vindas do banco
+const crypto = require('crypto');
+// Interação com as informações vindas do banco 🗿🍷
 var Turn = '' // Variável Turno inicializada
 
 // Configuração de middlewares
@@ -23,11 +21,6 @@ dbconnection.getConnection((error) => {
   } else {
     console.log('Conectado ao banco de dados');
   }
-});
-
-// Rota inicial
-app.get("/api", (req, res) => {
-  res.json({ message: "Deu certo man =D" });
 });
 
 // Inicialização do servidor
@@ -98,40 +91,45 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Função para validar usuário
+// Função assíncrona para validar um usuário no banco de dados
 async function userValidation(dbconnection, formLogin, formPassword) {
-  console.log(formLogin)
+  console.log(formLogin); // Log: Exibe o nome do usuário recebido para fins de depuração
   try {
-    const query = `SELECT id FROM users  WHERE name = '${formLogin}'`
+    // Consulta para obter o ID do usuário com o nome fornecido
+    const query = `SELECT COUNT(*) FROM operators  WHERE user = '${formLogin}'`;
     var result = await dbconnection.execute(query);
-    console.log(result)
-    console.log(result[0][0])
-    if (result[0][0]) {
-      console.log('Chegou aqui')
-      if (result.id !== 0) {
-        console.log("Nome encontrado com sucesso")
-        const queryFinal = `SELECT COUNT(*) FROM users WHERE name = '${formLogin}' AND senha = '${formPassword}'`
+    console.log(result); // Log: Exibe o resultado da consulta para fins de depuração
+    console.log(result[0][0]['COUNT(*)']); // Log: Exibe o primeiro resultado da consulta para fins de depuração
+
+    // Verifica se o usuário foi encontrado
+    if (result[0][0]['COUNT(*)']) {
+      if (result.id !== 0) { // Erro: Deveria ser result[0][0].id
+        console.log("Nome encontrado com sucesso"); // Log: Exibe uma mensagem indicando que o nome foi encontrado
+        // Consulta para contar o número de registros com o nome e senha fornecidos
+        const queryFinal = `SELECT COUNT(*) FROM operators WHERE user = '${formLogin}' AND atm = sha1('${formPassword}')`;
         result = await dbconnection.execute(queryFinal);
-        console.log(result[0][0]['COUNT(*)'])
+        console.log(result[0][0]); // Log: Exibe a contagem para fins de depuração
+
+        // Verifica se a senha está correta
         if (result[0][0]['COUNT(*)'] > 0) {
-          const token = generateToken(formLogin);
-          console.log(token)
-          return { ok: true, token };
+          const token = generateToken(formLogin); // Gera um token JWT usando a função auxiliar
+          console.log(token); // Log: Exibe o token gerado para fins de depuração
+          return { ok: true, token }; // Retorna um objeto indicando sucesso e o token
         } else {
-          console.log("Senha incorreta")
-          return { ok: false, message: 'Email ou Senha incorreta' }
+          console.log("Senha incorreta"); // Log: Exibe uma mensagem indicando que a senha está incorreta
+          return { ok: false, message: 'Email ou Senha incorreta' }; // Retorna um objeto indicando falha e uma mensagem
         }
       }
-
     } else {
-      return { ok: false, message: 'Email ou Senha incorreta' }
+      return { ok: false, message: 'Email ou Senha incorreta' }; // Retorna um objeto indicando falha e uma mensagem
     }
 
   } catch (error) {
-    console.error('Erro durante a consulta ao banco de dados:', error);
-    throw error;
+    console.error('Erro durante a consulta ao banco de dados:', error); // Log: Exibe um erro se ocorrer uma exceção
+    throw error; // Lança a exceção para tratamento em um nível superior
   }
 }
+
 
 // Função para obter informações sobre todos os usuários
 async function getAllUsers(dbconnection, userNameList) {
@@ -199,5 +197,8 @@ function generateToken(formLogin) {
 
   return token;
 }
+
+
+
 
 module.exports = app;

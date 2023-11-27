@@ -12,31 +12,34 @@ const Login = () => {
     setLoading(true);
 
     console.log(`Usuário: ${username}, Senha: ${password}`);
-    
     try {
-     console.log('Enviado requisição ')
-      var response =  await fetch('http://localhost:3307/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          formLogin: username,
-          formPassword: password,
-        }),
+      console.log('Enviado requisição ')
         
-      });
+       var response =  await fetch('http://localhost:3307/login/', {
+         method: 'POST',
+         headers: {
+           'Content-Type': 'application/json',
+         },
+         body: JSON.stringify({
+           formLogin: username,
+           formPassword: password,
+           
+         }),
+         
+       });
+ 
+       const data = await response.json();
+       console.log(data)
 
-      const data = await response.json();
+    if (data.token.ok) {
 
-      if (data.ok) {
-        navigate(`/form?session=${data.token}`)
-        console.log(response)
+        navigate(`/form?session=${data.token.token}`,{state: { userId: username}})
         setWarningText(false)
     } else {
             throw new Error(`Erro na requisição: ${data.statusText}`);
     }
-    } catch (error) {
+    }
+     catch (error) {
       setWarningText(true)
     } finally {
       setLoading(false);

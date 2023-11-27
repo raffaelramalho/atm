@@ -47,15 +47,27 @@ export default function Form() {
       });
     }
   };
+
   const exportarParaTXT = async() => {
     const infoNome =  informations;
     console.log("lista de nomes "+infoNome)
+  
+    // Adiciona "Nomes não encontrados" no início da lista
+    infoNome.unshift("Nomes não encontrados:");
+  
     const texto = infoNome.join('\n');
     console.log(texto)
     const blob = new Blob([texto], { type: 'text/plain;charset=utf-8' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'nomes.txt';
+  
+    // Obtém a data e hora atual
+    const agora = new Date();
+    const horario = agora.toISOString().replace(/:/g, '-');
+  
+    // Adiciona o horário ao nome do arquivo
+    link.download = `Log-${horario}.txt`;
+  
     link.click();
   };
 
@@ -106,6 +118,7 @@ export default function Form() {
   };
   return (
     <div className='grid-helper'>
+      
       <div>
       <h3 className=''>Nomes:</h3>
       <form className='custom-form' onClick={handleSubmit}>
@@ -150,6 +163,7 @@ export default function Form() {
       </div>
       <UsersList NameList={resultados.nomes} ListName='Usuários Alterados' />
       <UsersNotFoundList NameList={resultados.invalidos} ListName='Usuários não encontrados' />
+      
     </div>
   );
 }

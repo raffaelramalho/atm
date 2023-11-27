@@ -5,7 +5,8 @@ const dbconnection = require('./utils/connection');
 const jwt = require('jsonwebtoken');
 const PORT = process.env.PORT || 3307;
 const app = express();
-const crypto = require('crypto');
+
+
 // Interação com as informações vindas do banco 🗿🍷
 var Turn = '' // Variável Turno inicializada
 
@@ -72,6 +73,7 @@ app.post("/processar-dados", async (req, res) => {
 // Rota de login
 app.post('/login', async (req, res) => {
   console.log('/login acessada')
+  
   try {
     const formLogin = req.body.formLogin;
     const formPassword = req.body.formPassword;
@@ -83,7 +85,7 @@ app.post('/login', async (req, res) => {
 
     // Validação do usuário
     const session = await userValidation(dbconnection, formLogin, formPassword);
-    res.send(session);
+    res.send({token: session});
 
   } catch (error) {
     console.error('Erro durante a autenticação', error);
@@ -96,17 +98,16 @@ async function userValidation(dbconnection, formLogin, formPassword) {
   console.log(formLogin); // Log: Exibe o nome do usuário recebido para fins de depuração
   try {
     // Consulta para obter o ID do usuário com o nome fornecido
-    const query = `SELECT COUNT(*) FROM operators  WHERE user = '${formLogin}'`;
+    const query = `SELECT localId FROM atm  WHERE localId = '${formLogin}'`;
     var result = await dbconnection.execute(query);
-    console.log(result); // Log: Exibe o resultado da consulta para fins de depuração
-    console.log(result[0][0]['COUNT(*)']); // Log: Exibe o primeiro resultado da consulta para fins de depuração
 
-    // Verifica se o usuário foi encontrado
-    if (result[0][0]['COUNT(*)']) {
-      if (result.id !== 0) { // Erro: Deveria ser result[0][0].id
+    console.log(result[0][0]['localId']); // Log: Exibe o primeiro resultado da consulta para fins de depuração
+    
+       // Verifica se o usuário foi encontrado
+    if (result[0][0]['localId'] != 0 && result[0][0]['localId'] != "" ) { 
         console.log("Nome encontrado com sucesso"); // Log: Exibe uma mensagem indicando que o nome foi encontrado
         // Consulta para contar o número de registros com o nome e senha fornecidos
-        const queryFinal = `SELECT COUNT(*) FROM operators WHERE user = '${formLogin}' AND atm = sha1('${formPassword}')`;
+        const queryFinal = `SELECT COUNT(*) FROM atm WHERE localId = '${formLogin}' AND password = '${formPassword}'`;
         result = await dbconnection.execute(queryFinal);
         console.log(result[0][0]); // Log: Exibe a contagem para fins de depuração
 
@@ -117,13 +118,12 @@ async function userValidation(dbconnection, formLogin, formPassword) {
           return { ok: true, token }; // Retorna um objeto indicando sucesso e o token
         } else {
           console.log("Senha incorreta"); // Log: Exibe uma mensagem indicando que a senha está incorreta
-          return { ok: false, message: 'Email ou Senha incorreta' }; // Retorna um objeto indicando falha e uma mensagem
+          return { ok: false, message: 'Usuario ou Senha incorreta' }; // Retorna um objeto indicando falha e uma mensagem
         }
-      }
     } else {
-      return { ok: false, message: 'Email ou Senha incorreta' }; // Retorna um objeto indicando falha e uma mensagem
+      return { ok: false, message: 'Usuario ou Senha incorreta' }; // Retorna um objeto indicando falha e uma mensagem
     }
-
+    
   } catch (error) {
     console.error('Erro durante a consulta ao banco de dados:', error); // Log: Exibe um erro se ocorrer uma exceção
     throw error; // Lança a exceção para tratamento em um nível superior

@@ -22,15 +22,15 @@
 body{
   
   margin: auto;
-  height: 90vh;
+  height: 90%;
   justify-content: center;
   width: 100vw;
   overflow-x: hidden;
-
+  overflow-y: hidden;
 }
 
 .custom-container{
-  height: 90vh;
+  height: 90dvh;
   width: 100%;
 }
 
@@ -88,6 +88,7 @@ body{
   padding: 0px 25px;
   margin-bottom: 20px;
   height: 3.5rem;
+  justify-content: space-between;
   align-items: center;
   box-shadow: 1;
   box-shadow: -1px 61px 120px -12px rgba(189, 189, 189, 0.75);
@@ -204,4 +205,31 @@ button:hover {
 
 .custom-icon{
   margin: auto;
+}
+
+.user-identification{
+  
+}
+
+.menu-button{
+  width: 5%;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5%;
+  font-size: 1rem;
+  background-color: rgb(163, 19, 19);
+  text-decoration: none;
+  color: white;
+} .menu-button:hover{
+  background-color: rgb(216, 37, 37);
+
+}
+
+.menu-icon{
+  width: 100%;
+  min-width: 200px;
+  height: 50%;
 }

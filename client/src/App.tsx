@@ -4,7 +4,7 @@ import Login from "./pages/Login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Error from "./pages/Error";
 import Navbar from "./components/Navbar";
-
+import Home from "./pages/Home"
 
 
 function App({}) {
@@ -13,6 +13,8 @@ function App({}) {
     <BrowserRouter>
     <Navbar/>
       <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="home" element={<Home />} />
           <Route path="login" element={<Login />} />
           <Route path="form" element={<Form />} />
           <Route path="*" element={<Error />} />

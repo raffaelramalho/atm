@@ -180,7 +180,11 @@ async function updateUsers(dbconnection, userIdList, Turn) {
       console.log(turnId)
       for (const user of userIdList) {
         const queryResult = await dbconnection.execute(
-          `update usergroups  set idGroup = ${turnId} where idUser = ${user};`
+          `UPDATE usergroups 
+          SET idGroup = ${turnId} 
+          WHERE idUser = ${user} AND idGroup IN (
+              SELECT id FROM groups WHERE idUser = ${user}
+          );`
         );
           console.log(`update usergroups  set idGroup = ${turnId} where idUser = ${user};`);
         if (queryResult && queryResult[0] && queryResult[0].affectedRows == 0) {

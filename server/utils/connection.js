@@ -15,8 +15,8 @@ const connection = mysql.createPool({
     host: "localhost",
     user: "root",
     password: "1234",
-    database: "acesso",
-    port: "3306"
+    database: "acessos",
+    port: "3305"
 
   });
 

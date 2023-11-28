@@ -1,5 +1,5 @@
 import  { useState } from 'react';
-import {  useNavigate } from 'react-router-dom';
+import {  Link, useNavigate } from 'react-router-dom';
 import '../index.css'; 
 
 const Login = () => {
@@ -15,7 +15,7 @@ const Login = () => {
     try {
       console.log('Enviado requisição ')
         
-       var response =  await fetch('http://localhost:3307/login/', {
+       var response =  await fetch('http://10.0.1.204:3307/login/', {
          method: 'POST',
          headers: {
            'Content-Type': 'application/json',
@@ -32,8 +32,8 @@ const Login = () => {
        console.log(data)
 
     if (data.token.ok) {
-
-        navigate(`/form?session=${data.token.token}`,{state: { userId: username}})
+        const token = data.token.token
+        navigate(`/form?token=${data.token.token}`,{state: { userId: username}})
         setWarningText(false)
     } else {
             throw new Error(`Erro na requisição: ${data.statusText}`);
@@ -70,9 +70,10 @@ const Login = () => {
         <button type="button" onClick={handleLogin}>
           {loading ?  " carregando" : "Login"}
         </button>
-        <p className='warning-text'>{warningText ? "Usuário ou senha incorretos" : ""}</p>
+        <Link to={'/EsqueciSenha'} className='password-link'>Esqueci minha senha</Link>
+        
       </form>
-      
+      <p className='warning-text'>{warningText ? "Usuário ou senha incorretos" : ""}</p>
     </div>
   );
 };

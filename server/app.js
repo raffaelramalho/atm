@@ -11,9 +11,12 @@ const app = express();
 var Turn = '' // Variável Turno inicializada
 
 // Configuração de middlewares
-app.use(cors()); // Permite solicitações de outros domínios
 app.use(bodyParser.json()); // Para interpretar corpos de requisição em JSON
 app.use(bodyParser.urlencoded({ extended: true })); // Para interpretar dados de formulário
+app.use(cors());
+
+// Middleware para lidar com solicitações de preflight
+app.options('*', cors());
 
 // Conexão com o banco de dados
 dbconnection.getConnection((error) => {
@@ -25,16 +28,15 @@ dbconnection.getConnection((error) => {
 });
 
 // Inicialização do servidor
-app.listen(PORT, () => {
+app.listen(PORT,'10.0.1.204', () => {
   console.log(`Servidor ${PORT}`);
 });
 
 // Rota para obter turnos
 app.get("/getTurnos", async (req, res) => {
-  console.log("/getTurnos acessada");
 
   try {
-    const [results] = await dbconnection.execute('SELECT name FROM scheduls');
+    const [results] = await dbconnection.execute('SELECT name FROM groups where idType = 1 and id <1035');
     const turnos = results.map((result) => result.name);
     return res.json(turnos);
   } catch (error) {
@@ -45,7 +47,6 @@ app.get("/getTurnos", async (req, res) => {
 
 // Rota para processar dados
 app.post("/processar-dados", async (req, res) => {
-  console.log('/processar-dados acessada');
 
   try {
     console.log(req.body);
@@ -72,7 +73,6 @@ app.post("/processar-dados", async (req, res) => {
 
 // Rota de login
 app.post('/login', async (req, res) => {
-  console.log('/login acessada')
   
   try {
     const formLogin = req.body.formLogin;
@@ -98,16 +98,16 @@ async function userValidation(dbconnection, formLogin, formPassword) {
   console.log(formLogin); // Log: Exibe o nome do usuário recebido para fins de depuração
   try {
     // Consulta para obter o ID do usuário com o nome fornecido
-    const query = `SELECT localId FROM atm  WHERE localId = '${formLogin}'`;
+    const query = `SELECT delpUser FROM atm  WHERE delpUser = '${formLogin}'`;
     var result = await dbconnection.execute(query);
 
-    console.log(result[0][0]['localId']); // Log: Exibe o primeiro resultado da consulta para fins de depuração
+    console.log(result[0][0]['delpUser']); // Log: Exibe o primeiro resultado da consulta para fins de depuração
     
        // Verifica se o usuário foi encontrado
-    if (result[0][0]['localId'] != 0 && result[0][0]['localId'] != "" ) { 
+    if (result[0][0]['delpUser'] != 0 && result[0][0]['delpUser'] != "" ) { 
         console.log("Nome encontrado com sucesso"); // Log: Exibe uma mensagem indicando que o nome foi encontrado
         // Consulta para contar o número de registros com o nome e senha fornecidos
-        const queryFinal = `SELECT COUNT(*) FROM atm WHERE localId = '${formLogin}' AND password = '${formPassword}'`;
+        const queryFinal = `SELECT COUNT(*) FROM atm WHERE delpUser = '${formLogin}' AND password = '${formPassword}'`;
         result = await dbconnection.execute(queryFinal);
         console.log(result[0][0]); // Log: Exibe a contagem para fins de depuração
 
@@ -136,9 +136,9 @@ async function getAllUsers(dbconnection, userNameList) {
   const userIdList = [];
   let errorNameList = [];
   const validUsers = [];
-
+  const pastTurn = []
   for (let nome of userNameList) {
-    const query = `SELECT id FROM Users WHERE name = ?`;
+    const query = `SELECT id FROM Users WHERE name = ? and deleted = 0`;
 
     try {
       const [results] = await dbconnection.execute(query, [nome]);
@@ -156,7 +156,15 @@ async function getAllUsers(dbconnection, userNameList) {
       throw error;
     }
   }
-
+  //Pega os turnos
+  console.log('Buscando...')
+  console.log('Valor de validUser '+validUsers.length)
+  for (id of userIdList){
+    console.log('Buscando')
+    const queryResult = await dbconnection.execute(`SELECT idGroup FROM usergroups WHERE idGroup NOT IN ( SELECT id FROM groups WHERE idType <> 1 ) and idUser = ${id};`);
+    pastTurn.push([0][0]['idGroup'])
+    
+  }
   return { userIdList, validUsers, errorNameList };
 }
 
@@ -164,18 +172,18 @@ async function getAllUsers(dbconnection, userNameList) {
 async function updateUsers(dbconnection, userIdList, Turn) {
   try {
     const turnIdResult = await dbconnection.execute(
-      `SELECT id from scheduls WHERE NAME='${Turn}' AND id is NOT NULL LIMIT 1`
+      `SELECT id from groups WHERE NAME='${Turn}'`
     );
 
     if (turnIdResult && turnIdResult[0] && turnIdResult[0][0]) {
       const turnId = turnIdResult[0][0].id;
-
+      console.log(turnId)
       for (const user of userIdList) {
         const queryResult = await dbconnection.execute(
-          `UPDATE useraccessrules SET idAccessRule = ${turnId} WHERE idUser = ${user}`
+          `update usergroups  set idGroup = ${turnId} where idUser = ${user};`
         );
-
-        if (queryResult && queryResult[0] && queryResult[0].affectedRows !== 1) {
+          console.log(`update usergroups  set idGroup = ${turnId} where idUser = ${user};`);
+        if (queryResult && queryResult[0] && queryResult[0].affectedRows == 0) {
           console.error(`Failed to update useraccessrules for user ${user}`);
         }
       }

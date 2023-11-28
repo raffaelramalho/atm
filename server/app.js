@@ -179,17 +179,13 @@ async function updateUsers(dbconnection, userIdList, Turn) {
       const turnId = turnIdResult[0][0].id;
       console.log(turnId)
       for (const user of userIdList) {
-        const queryResult = await dbconnection.execute(
-          `UPDATE usergroups 
-          SET idGroup = ${turnId} 
-          WHERE idUser = ${user} AND idGroup IN (
-              SELECT id FROM groups WHERE idUser = ${user}
-          );`
-        );
-          console.log(`update usergroups  set idGroup = ${turnId} where idUser = ${user};`);
-        if (queryResult && queryResult[0] && queryResult[0].affectedRows == 0) {
-          console.error(`Failed to update useraccessrules for user ${user}`);
-        }
+        const verification = await dbconnection.execute(` select * from usergroups u inner join groups g on u.idGroup=g.id where g.idType=1 and idUser=${user};`)
+        if ( isNaN(verification[0][0].id){
+          const insertTurn = await dbconnection.execute(` insert into usergroups(idUser, idGroup, isVisitor) values (${user},${turnId},0)`)
+        } else {
+          const queryResult = await dbconnection.execute(
+          `update u set idGroup=${turnId} from usergroups u inner join groups g on u.idGroup=g.id where g.idType=1 and idUser=${user}`);
+        } 
       }
     } else {
       console.error(`Turn not found or has no valid id for name: ${Turn}`);

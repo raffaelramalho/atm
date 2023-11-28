@@ -28,7 +28,7 @@ dbconnection.getConnection((error) => {
 });
 
 // Inicialização do servidor
-app.listen(PORT,'10.0.1.204', () => {
+app.listen(PORT,'192.168.15.87', () => {
   console.log(`Servidor ${PORT}`);
 });
 
@@ -179,16 +179,18 @@ async function updateUsers(dbconnection, userIdList, Turn) {
       const turnId = turnIdResult[0][0].id;
       console.log(turnId)
       for (const user of userIdList) {
+        console.log(`Verificando usuário`)
         const verification = await dbconnection.execute(` select * from usergroups u inner join groups g on u.idGroup=g.id where g.idType=1 and idUser=${user};`)
-        if ( isNaN(verification[0][0].id){
+        if ( isNaN(verification[0][0].id)){
+          console.log(`Verificando usuário ${verification[0][0].id}`)
+          console.log(`Usuário sem Id Grupo`)       
           const insertTurn = await dbconnection.execute(` insert into usergroups(idUser, idGroup, isVisitor) values (${user},${turnId},0)`)
         } else {
+          console.log(`Usuário com Id Grupo`)   
           const queryResult = await dbconnection.execute(
-          `update u set idGroup=${turnId} from usergroups u inner join groups g on u.idGroup=g.id where g.idType=1 and idUser=${user}`);
+          `UPDATE  usergroups u INNER JOIN groups g ON u.idGroup = g.id SET idGroup = ${turnId} WHERE g.idType = 1 AND idUser = ${user};`);
         } 
       }
-    } else {
-      console.error(`Turn not found or has no valid id for name: ${Turn}`);
     }
   } catch (error) {
     console.error('Error during updateUsers:', error);

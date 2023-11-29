@@ -15,7 +15,7 @@ const Login = () => {
     try {
       console.log('Enviado requisição ')
         
-       var response =  await fetch('http://192.168.15.87:3307/login/', {
+       var response =  await fetch('http://10.0.1.204:3307/login/', {
          method: 'POST',
          headers: {
            'Content-Type': 'application/json',

@@ -28,7 +28,7 @@ dbconnection.getConnection((error) => {
 });
 
 // Inicialização do servidor
-app.listen(PORT,'192.168.15.87', () => {
+app.listen(PORT,'10.0.1.204', () => {
   console.log(`Servidor ${PORT}`);
 });
 
@@ -181,8 +181,9 @@ async function updateUsers(dbconnection, userIdList, Turn) {
       for (const user of userIdList) {
         console.log(`Verificando usuário`)
         const verification = await dbconnection.execute(` select * from usergroups u inner join groups g on u.idGroup=g.id where g.idType=1 and idUser=${user};`)
-        if ( isNaN(verification[0][0].id)){
-          console.log(`Verificando usuário ${verification[0][0].id}`)
+        console.log(verification[0].length == 0);
+        if ( verification[0].length == 0){
+          console.log(`Verificando usuário ${verification[0][0]}`)
           console.log(`Usuário sem Id Grupo`)       
           const insertTurn = await dbconnection.execute(` insert into usergroups(idUser, idGroup, isVisitor) values (${user},${turnId},0)`)
         } else {

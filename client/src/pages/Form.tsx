@@ -24,7 +24,7 @@ export default function Form() {
 
   // Função para buscar turnos
   useEffect(() => {
-    fetch("http://192.168.15.87:3307/getTurnos/")
+    fetch("http://10.0.1.204:3307/getTurnos/")
       .then((res) => res.json())
       .then((turnos) => setTurnos(turnos));
   }, []);
@@ -86,7 +86,7 @@ const handleSubmit = (e) => {
     if(form.nameList.length > 0){
       const nameListArray = [...new Set(form.nameList.toString().split(',').map((name) => name.trim()))]; 
       try {
-        const response = await fetch('http://192.168.15.87:3307/processar-dados', {
+        const response = await fetch('http://10.0.1.204:3307/processar-dados', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ nameList: nameListArray, newTurn: form.newTurn }),
@@ -167,7 +167,7 @@ useEffect(() => {
       )}
       {loading ? (
         <div className='loader'>
-          <p>Carregando...</p>
+          <img src="../public/Spinner.svg" alt="" />
         </div>
       ) : (
         <div>

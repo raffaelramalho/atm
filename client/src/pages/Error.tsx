@@ -6,7 +6,7 @@ export default function Error() {
         <div className='hero-helper'>
         <h1 className='hero-error'>ERRO 404</h1>
         <p>Não encontramos essa página essa página D:</p>
-        <img src="../ghost.gif" alt="runner" />
+        <img src="../ghost.gif" alt="runner" className='ghost-gif' />
         </div>
     </div>
   )

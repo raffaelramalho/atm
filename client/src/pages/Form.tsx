@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { FaFileDownload } from "react-icons/fa";
+import { FaFileDownload,FaQuestion  } from "react-icons/fa";
 import '../index.css'
 import UsersList from '../components/UsersList';
+import Modal from '../components/Modal';
 
 export default function Form() {
   // Definindo o estado inicial
@@ -14,7 +15,16 @@ export default function Form() {
   const [able, setable] = useState(true);
   const [aviso, setAviso] = useState(false)
 
+  //Modal
+  const [show, setShow] = useState(false);
 
+  const toggleModal = () => {
+    setShow(!show);
+  };
+
+  const closeModal = () => {
+    setShow(false);
+  };
   // Função para obter o token da URL
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -116,7 +126,7 @@ const handleSubmit = (e) => {
 
 useEffect(() => {
   // Define um tempo de espera de 10 segundos
-  const timer = setTimeout(() => setDelay(10000), 0);
+  const timer = setTimeout(() => setDelay(200000), 0);
   return () => clearTimeout(timer); // Limpa o timer quando o componente é desmontado
 }, []);
 
@@ -129,8 +139,9 @@ useEffect(() => {
   return (
     <div className='grid-helper'>
       {token1 ? (
-        <div>
+        <div className='form-body'>
           <h3 className=''>Nomes:</h3>
+          <h5 className='form-warning'>Utilize apenas as teclas (Shift + Enter) para separar os nomes nas linhas, não é necessário "," nem "." ao final de cada nome.</h5>
           <form className='custom-form' onClick={handleSubmit}>
             <label className=''>
               <textarea
@@ -154,7 +165,7 @@ useEffect(() => {
             <button type='submit' className='custom-btn' onClick={handleUpdateTurnos}>
               {loading ? "Atualizando..." : "Atualizar Turnos"}
             </button>
-            <button onClick={exportarParaTXT} disabled={able} className={able ? `disable-button` : ``}>
+            <button onClick={exportarParaTXT} disabled={able} className={able ? `disable-button` : `able-button`}>
               Baixar Nomes não encontrados <FaFileDownload className="custom-icon" />
             </button>
           </form>

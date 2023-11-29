@@ -36,7 +36,7 @@ app.listen(PORT,'10.0.1.204', () => {
 app.get("/getTurnos", async (req, res) => {
 
   try {
-    const [results] = await dbconnection.execute('SELECT name FROM groups where idType = 1 and id <1035');
+    const [results] = await dbconnection.execute(`SELECT * FROM groups WHERE idType < 2 AND NOT name LIKE 'Exceção%' and id < 1030  and id > 1`);
     const turnos = results.map((result) => result.name);
     return res.json(turnos);
   } catch (error) {

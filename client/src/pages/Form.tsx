@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaFileDownload } from "react-icons/fa";
-
 import '../index.css'
-import UsersNotFoundList from '../components/UsersList';
 import UsersList from '../components/UsersList';
 
 export default function Form() {
@@ -15,6 +13,8 @@ export default function Form() {
   const [loading, setLoading] = useState(false);
   const [able, setable] = useState(true);
   const [aviso, setAviso] = useState(false)
+
+
   // Função para obter o token da URL
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -112,7 +112,19 @@ const handleSubmit = (e) => {
     
     }
   };
+  const [delay, setDelay] = useState(0);
 
+useEffect(() => {
+  // Define um tempo de espera de 10 segundos
+  const timer = setTimeout(() => setDelay(10000), 0);
+  return () => clearTimeout(timer); // Limpa o timer quando o componente é desmontado
+}, []);
+
+useEffect(() => {
+  // Define um tempo mínimo de loading
+  const timer = setTimeout(() => setLoading(false), delay);
+  return () => clearTimeout(timer); // Limpa o timer quando o componente é desmontado
+}, [delay]); // Adiciona delay como uma dependência
   // Renderização do componente
   return (
     <div className='grid-helper'>
@@ -153,8 +165,16 @@ const handleSubmit = (e) => {
           <p>Você não tem permissão para acessar isso D:</p>
         </div>
       )}
-      <UsersList NameList={resultados.nomes} ListName='Usuários Alterados' />
-      <UsersNotFoundList NameList={resultados.invalidos} ListName='Usuários não encontrados' />
+      {loading ? (
+        <div className='loader'>
+          <p>Carregando...</p>
+        </div>
+      ) : (
+        <div>
+          <UsersList NameList={resultados.nomes} ListName='Usuários Alterados' />
+          <UsersList NameList={resultados.invalidos} ListName='Usuários não encontrados' />
+        </div>
+      )}
     </div>
   );
 }

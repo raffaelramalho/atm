@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FaFileDownload,FaQuestion  } from "react-icons/fa";
 import '../index.css'
 import UsersList from '../components/UsersList';
-import Modal from '../components/Modal';
+import { useDropzone } from 'react-dropzone';
+import * as XLSX from "xlsx";
 
 export default function Form() {
   // Definindo o estado inicial
@@ -14,17 +15,6 @@ export default function Form() {
   const [loading, setLoading] = useState(false);
   const [able, setable] = useState(true);
   const [aviso, setAviso] = useState(false)
-
-  //Modal
-  const [show, setShow] = useState(false);
-
-  const toggleModal = () => {
-    setShow(!show);
-  };
-
-  const closeModal = () => {
-    setShow(false);
-  };
   // Função para obter o token da URL
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -135,13 +125,22 @@ useEffect(() => {
   const timer = setTimeout(() => setLoading(false), delay);
   return () => clearTimeout(timer); // Limpa o timer quando o componente é desmontado
 }, [delay]); // Adiciona delay como uma dependência
-  // Renderização do componente
+ 
+
+const onDrop = useCallback((acceptedFiles: any[]) => {
+ console.log(acceptedFiles)
+}, []);
+
+const {getRootProps, getInputProps} = useDropzone({onDrop});
+
+
+// Renderização do componente
   return (
     <div className='grid-helper'>
       {token1 ? (
         <div className='form-body'>
           <h3 className=''>Nomes:</h3>
-          <h5 className='form-warning'>Utilize apenas as teclas (Shift + Enter) para separar os nomes nas linhas, não é necessário "," nem "." ao final de cada nome.</h5>
+          <h5 className='form-warning'>Utilize apenas as teclas (Shift + Enter) para separar os nomes nas linhas, não é necessário "," nem "." ao final de cada nome. <a href="https://absorbing-quartz-1d9.notion.site/Documenta-o-ATM-bc267ad520654c6db8337bb28164e8b8" className='form-ajuda' target="_blank" rel="noopener noreferrer">Ajuda</a></h5>
           <form className='custom-form' onClick={handleSubmit}>
             <label className=''>
               <textarea
@@ -161,13 +160,21 @@ useEffect(() => {
                 <option key={turno} value={turno}>{turno}</option>
               ))}
             </select>
-            
-            <button type='submit' className='custom-btn' onClick={handleUpdateTurnos}>
-              {loading ? "Atualizando..." : "Atualizar Turnos"}
-            </button>
-            <button onClick={exportarParaTXT} disabled={able} className={able ? `disable-button` : `able-button`}>
-              Baixar Nomes não encontrados <FaFileDownload className="custom-icon" />
-            </button>
+              <div>
+                 <button type='submit' className='custom-btn' onClick={handleUpdateTurnos}>
+                      {loading ? "Atualizando..." : "Atualizar Turnos"}
+                 </button>
+              </div>
+           
+            <div {...getRootProps()} className='custom-btn'>
+                <input {...getInputProps()} />
+                <p>Enviar Planilha</p>
+             </div>
+            <div>
+                <button onClick={exportarParaTXT} disabled={able} className={able ? `disable-button` : `able-button`}>
+                  Baixar Nomes não encontrados <FaFileDownload className="custom-icon" />
+                </button>
+            </div>
           </form>
           
         </div>
@@ -182,8 +189,8 @@ useEffect(() => {
         </div>
       ) : (
         <div>
-          <UsersList NameList={resultados.nomes} ListName='Usuários Alterados' />
-          <UsersList NameList={resultados.invalidos} ListName='Usuários não encontrados' />
+          <UsersList NameList={resultados.nomes} ListName='Colaboradores Alterados' />
+          <UsersList NameList={resultados.invalidos} ListName='Colaboradores não encontrados' />
         </div>
       )}
     </div>

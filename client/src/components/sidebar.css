@@ -1,0 +1,48 @@
+.custom-sidebar{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 25%;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+
+.custom-sidebar-content{
+    background-color: #364150;
+    display: flex;
+    flex-direction: column;
+    width: 17rem;
+    padding: 1% 0px;
+    height: auto;
+} .custom-sidebar-content li {
+    padding: 5px 10px;
+    width: 100%;
+    height: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: 0.5s;
+    border-bottom: 0.5px solid #70809634;
+} .custom-sidebar-content li a {
+    text-decoration: none;
+    color: #b4bcc8
+    
+} .custom-sidebar-content li:hover {
+    padding: 5px 10px;
+    background-color: #262b31;
+}
+
+.ul-title{
+    color: #708096;
+    margin: 5% 0%;
+    text-align: center;
+}
+
+.custom-sidebar-content li img {
+    width: 30%;
+    height: 50%;
+    color: #b4bcc8;
+}

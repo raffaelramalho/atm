@@ -5,6 +5,8 @@ import Error from "./pages/Error";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home"
 import EsqueciSenha from "./pages/EsqueciSenha";
+import Sidebar from "./components/Sidebar";
+import './App.css'
 
 
 function App({}) {
@@ -12,6 +14,8 @@ function App({}) {
   return ( 
     <BrowserRouter>
     <Navbar/>
+    <div className="app-body">
+      <Sidebar/>
       <Routes>
           <Route path="/" element={<Home />} />
           <Route path="home/" element={<Home />} />
@@ -20,6 +24,8 @@ function App({}) {
           <Route path="EsqueciSenha/" element={<EsqueciSenha />} />
           <Route path="*" element={<Error />} />
       </Routes>
+    </div>
+      
     </BrowserRouter>
   )
 }

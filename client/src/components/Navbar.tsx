@@ -1,13 +1,13 @@
 import { useLocation } from "react-router-dom";
+import './navbar.css'
 
 export default function Navbar() {
   let location = useLocation();
 
   return (
     <div className='custom-navbar'>
-      
-      <h4 className='user-identification'>{ location.state == null ? '' : `Bem vindo, ${location.state.userId}`}</h4>
-      <h3>ID Secure 2.0</h3>
+      <img src="../public/delp-nobg.png" alt="delp-logo" className="logo-fluid" />
+      <h3>CONTROL HUB</h3>
     </div>
   )
 }

@@ -14,7 +14,7 @@ const UsersList = ({ NameList, ListName }) => {
       <h2>{NameList.length === 0 ? '' : ListName}</h2>
       <ul className='name-list'>
         {NameList.map((nome) => (
-          <li key={nome}> <span>[{horaAtual}]</span> Usuário <span className='name-list-spam'>{nome}</span> {ListName === 'Usuários Alterados' ? ' foi alterado com sucesso.' : ' não foi encontrado.'}</li>
+          <li key={nome}> <span>[{horaAtual}]</span> Usuário <span className='name-list-spam'>{nome}</span> {ListName === 'Colaboradores Alterados' ? ' foi alterado com sucesso.' : ' não foi encontrado.'}</li>
         ))}
       </ul>
     </div>

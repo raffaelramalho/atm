@@ -3,6 +3,7 @@ const cors = require('cors');
 const express = require("express");
 const dbconnection = require('./utils/connection');
 const jwt = require('jsonwebtoken');
+const User = require('activedirectory/lib/models/user');
 const PORT = process.env.PORT || 3307;
 const app = express();
 
@@ -36,7 +37,7 @@ app.listen(PORT,'10.0.1.204', () => {
 app.get("/getTurnos", async (req, res) => {
 
   try {
-    const [results] = await dbconnection.execute(`SELECT * FROM groups WHERE idType < 2 AND NOT name LIKE 'Exceção%' and id < 1030  and id > 1`);
+    const [results] = await dbconnection.execute(`SELECT * FROM groups WHERE idType = 1 AND NOT name LIKE 'Exceção%' and id < 1030 and id > 1`);
     const turnos = results.map((result) => result.name);
     return res.json(turnos);
   } catch (error) {
@@ -52,19 +53,15 @@ app.post("/processar-dados", async (req, res) => {
     console.log(req.body);
     const userNameList = req.body.nameList;
     const Turn = req.body.newTurn;
-
     if (!userNameList || userNameList.length === 0) {
       return res.status(400).send('A lista de nomes não pode estar vazia.');
     }
-
-    // Função para obter informações sobre os usuários
+    console.log('1°-'+userNameList);
     const { userIdList, validUsers, errorNameList } = await getAllUsers(dbconnection, userNameList);
-
     // Atualiza os usuários no banco de dados
-    updateUsers(dbconnection, userIdList, Turn);
-
-    res.send({ nomes: validUsers, id: userIdList, invalidos: errorNameList });
-
+    const { notUpdatedMensalista }= await updateUsers(dbconnection, userIdList, Turn);
+    console.log('não são mensalistas '+notUpdatedMensalista)
+    res.send({ nomes: validUsers, id: userIdList, invalidos: errorNameList, notUpdated: notUpdatedMensalista });
   } catch (error) {
     console.error('Erro durante as consultas assíncronas:', error);
     res.status(500).send('Erro no servidor');
@@ -77,16 +74,13 @@ app.post('/login', async (req, res) => {
   try {
     const formLogin = req.body.formLogin;
     const formPassword = req.body.formPassword;
-
     // Verifica se os campos não estão vazios
     if (!formLogin || !formPassword) {
       return res.status(400).send('Os campos não podem estar vazios.');
     }
-
     // Validação do usuário
     const session = await userValidation(dbconnection, formLogin, formPassword);
     res.send({token: session});
-
   } catch (error) {
     console.error('Erro durante a autenticação', error);
     res.status(500).send('Erro no servidor');
@@ -100,9 +94,7 @@ async function userValidation(dbconnection, formLogin, formPassword) {
     // Consulta para obter o ID do usuário com o nome fornecido
     const query = `SELECT delpUser FROM atm  WHERE delpUser = '${formLogin}'`;
     var result = await dbconnection.execute(query);
-
     console.log(result[0][0]['delpUser']); // Log: Exibe o primeiro resultado da consulta para fins de depuração
-    
        // Verifica se o usuário foi encontrado
     if (result[0][0]['delpUser'] != 0 && result[0][0]['delpUser'] != "" ) { 
         console.log("Nome encontrado com sucesso"); // Log: Exibe uma mensagem indicando que o nome foi encontrado
@@ -133,18 +125,18 @@ async function userValidation(dbconnection, formLogin, formPassword) {
 
 // Função para obter informações sobre todos os usuários
 async function getAllUsers(dbconnection, userNameList) {
+
   const userIdList = [];
   let errorNameList = [];
   const validUsers = [];
-  const pastTurn = []
-  for (let nome of userNameList) {
-    const query = `SELECT id FROM Users WHERE name = ? and deleted = 0`;
 
+  for (let nome of userNameList) {
+    const query = `SELECT registration FROM Users WHERE name = ? and deleted = 0`;
     try {
       const [results] = await dbconnection.execute(query, [nome]);
-
+      console.log([results])
       if (results.length > 0) {
-        userIdList.push(results[0].id);
+        userIdList.push(results[0].registration);
         validUsers.push(nome);
       } else {
         if (nome !== '') {
@@ -156,45 +148,72 @@ async function getAllUsers(dbconnection, userNameList) {
       throw error;
     }
   }
-  //Pega os turnos
-  console.log('Buscando...')
-  console.log('Valor de validUser '+validUsers.length)
-  for (id of userIdList){
-    console.log('Buscando')
-    const queryResult = await dbconnection.execute(`SELECT idGroup FROM usergroups WHERE idGroup NOT IN ( SELECT id FROM groups WHERE idType <> 1 ) and idUser = ${id};`);
-    pastTurn.push([0][0]['idGroup'])
-    
-  }
+  
   return { userIdList, validUsers, errorNameList };
 }
 
 // Função para atualizar usuários no banco de dados
 async function updateUsers(dbconnection, userIdList, Turn) {
+  const notUpdatedMensalista = []
+
   try {
     const turnIdResult = await dbconnection.execute(
       `SELECT id from groups WHERE NAME='${Turn}'`
     );
-
     if (turnIdResult && turnIdResult[0] && turnIdResult[0][0]) {
       const turnId = turnIdResult[0][0].id;
-      console.log(turnId)
       for (const user of userIdList) {
-        console.log(`Verificando usuário`)
-        const verification = await dbconnection.execute(` select * from usergroups u inner join groups g on u.idGroup=g.id where g.idType=1 and idUser=${user};`)
-        console.log(verification[0].length == 0);
-        if ( verification[0].length == 0){
-          console.log(`Verificando usuário ${verification[0][0]}`)
-          console.log(`Usuário sem Id Grupo`)       
-          const insertTurn = await dbconnection.execute(` insert into usergroups(idUser, idGroup, isVisitor) values (${user},${turnId},0)`)
-        } else {
-          console.log(`Usuário com Id Grupo`)   
-          const queryResult = await dbconnection.execute(
-          `UPDATE  usergroups u INNER JOIN groups g ON u.idGroup = g.id SET idGroup = ${turnId} WHERE g.idType = 1 AND idUser = ${user};`);
-        } 
-      }
+        console.log('lista de usuários:'+user)
+          if(await verificaGrauColaborador(dbconnection,user)){
+            console.log('Mensalistas não podem ser alterados')
+            const pickName = await dbconnection.execute(`SELECT NAME FROM users WHERE REGISTRATION=${user} and limit 1`)
+            console.log(pickName)
+            notUpdatedMensalista.push(pickName)
+          } else{
+            if ( await verificaGrupoColaborador(dbconnection,user) ){
+              const queryResult = await dbconnection.execute(`UPDATE  usergroups u INNER JOIN groups g ON u.idGroup = g.id SET idGroup = ${turnId} WHERE g.idType = 1 AND idUser = ${user};`);
+            } else {
+              const insertTurn = await dbconnection.execute(` insert into usergroups(idUser, idGroup, isVisitor) values (${user},${turnId},0)`)
+            } 
+          }
+      } 
+
     }
-  } catch (error) {
-    console.error('Error during updateUsers:', error);
+    
+  } catch  {
+  
+  }
+  return {notUpdatedMensalista};
+}
+//Verifica o grau do colaborador, se for mensalista, não permite alterar
+async function verificaGrupoColaborador(dbconnection,user){
+    try {
+      const getId = await dbconnection.execute(`´select id from user where registration =${user} deleted = 0 and inativo = 0`)
+      console.log('Id recebido:'+getId);
+      const verification = await dbconnection.execute(`select * from usergroups u inner join groups g on u.idGroup=g.id where g.idType=1 and idUser=${user}`)
+      if ( verification[0].length == 0){
+        return false
+      } else {
+        return true
+      }
+    }catch(error){
+      console.log(error)
+    }
+}
+
+async function verificaGrauColaborador(dbconnection,user){
+  try {
+    const verification = await dbconnection.execute(`SELECT Count(*) FROM usergroups u  inner JOIN groups g ON u.idGroup=g.id  inner join users us on u.idUser=us.id where us.registration =${user} and g.name = 'Mensalistas';`)
+    const status = verification[0][0]['Count(*)'];
+    if ( status > 0){
+      console.log('É mensalista')
+      return true 
+    } else {
+      console.log('Não é mensalista')
+      return false
+    }
+  }catch(error){
+    console.log(error)
   }
 }
 

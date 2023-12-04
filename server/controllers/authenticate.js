@@ -1,25 +1,59 @@
-const ad = require("../config/activeDirectory");
+const asyncWrapper = require('../middleware/async');
+const dbconnection = require('../utils/connection')
+const jwt = require('jsonwebtoken');
 
-//Método para autenticar usuários
-exports.user_authenticate = async (req, res) => {
-    console.log("/login acessado")
-  const { user, pass, domain } = req.body;
+const loginValidation = 
+asyncWrapper( async (req,res ) => {
+    console.log('Iniciando Validação')
+    const formLogin = req.body.formLogin;
+    const formPassword = req.body.formPassword;
+    if (!formLogin || !formPassword) {
+      return res.status(400).send('Os campos não podem estar vazios.');
+    }
+    const session = await userValidation(dbconnection, formLogin, formPassword);
+    res.send({token: session});
+});
+
+const generateTokenSession = 
+asyncWrapper( async (formLogin) => {
+    console.log('Gerando Token....')
+    const payload = {
+      username: formLogin,
+      salt: Math.random(),
+      timestamp: Date.now(),
+    };
+    const token = jwt.sign(payload, 'delp', { expiresIn: '1h' });
+    return token;
+});
+
+
+
+async function userValidation(dbconnection, formLogin, formPassword) {
   try {
-    await ad.authenticate( domain + "\\" + user, pass,
-     function (err, auth) {
-       if (auth) {
-         return res.status(200).json({
-               message: "Autenticado"
-             });
-         }
-       else {
-         return res.status(401).send({
-             message: "Falha na autenticação",
-             error: err
-         });
-      }
-     });
-   }catch (err) {
-   return res.status(500).send({ message: "ERROR " + err });
+    
+    const query = `SELECT delpUser FROM atm  WHERE delpUser = '${formLogin}'`;
+    var result = await dbconnection.execute(query);
+    if (result[0][0]['delpUser'] != 0 && result[0][0]['delpUser'] != "" ) { 
+        console.log("Nome encontrado com sucesso"); 
+        const queryFinal = `SELECT COUNT(*) FROM atm WHERE delpUser = '${formLogin}' AND password = '${formPassword}'`;
+        result = await dbconnection.execute(queryFinal);
+        if (result[0][0]['COUNT(*)'] > 0) {
+          const token = await generateTokenSession(formLogin); 
+          return { ok: true, token: token }; 
+        } else {
+          console.log("Senha incorreta"); 
+          return { ok: false, message: 'Usuario ou Senha incorreta' }; 
+        }
+    } else {
+      return { ok: false, message: 'Usuario ou Senha incorreta' }; 
+    } 
+  } catch (error) {
+    console.error('Erro durante a consulta ao banco de dados:', error); 
+    throw error; 
   }
-};
+}
+
+
+module.exports = {
+  loginValidation
+}

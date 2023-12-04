@@ -7,7 +7,7 @@ export default function Navbar() {
   return (
     <div className='custom-navbar'>
       <img src="../public/delp-nobg.png" alt="delp-logo" className="logo-fluid" />
-      <h3>CONTROL HUB</h3>
+      <h3>CONTROL</h3>
     </div>
   )
 }

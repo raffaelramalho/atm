@@ -24,7 +24,7 @@ export default function Form() {
 
   // Função para buscar turnos
   useEffect(() => {
-    fetch("http://10.0.1.204:3307/getTurnos/")
+    fetch("http://10.0.1.204:3307/api/v1/getTurn/")
       .then((res) => res.json())
       .then((turnos) => setTurnos(turnos));
   }, []);
@@ -75,7 +75,6 @@ const validateForm = () => {
  // Função para lidar com a submissão do formulário
 const handleSubmit = (e) => {
   e.preventDefault();
-
 };
 
   // Função para lidar com a atualização de turnos
@@ -86,7 +85,7 @@ const handleSubmit = (e) => {
     if(form.nameList.length > 0){
       const nameListArray = [...new Set(form.nameList.toString().split(',').map((name) => name.trim()))]; 
       try {
-        const response = await fetch('http://10.0.1.204:3307/processar-dados', {
+        const response = await fetch('http://10.0.1.204:3307/api/v1/processar-dados', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ nameList: nameListArray, newTurn: form.newTurn }),
@@ -156,6 +155,7 @@ const {getRootProps, getInputProps} = useDropzone({onDrop});
             </label>
             <p>{aviso ? "O formulário não pode estar em branco." :""}</p>
             <select name='newTurn' className='custom-select' onChange={handleChange}>
+                <option value='default'>Selecione um turno</option>
               {turnos.map((turno) => (
                 <option key={turno} value={turno}>{turno}</option>
               ))}

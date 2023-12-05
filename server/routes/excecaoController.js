@@ -1,10 +1,12 @@
 const express = require('express')
 const router = express.Router()
 
-const {
-    turnGetter,
-} = require('../controllers/getTurn');
 
-router.route('/').get(turnGetter);
+const {
+    search
+} = require('../controllers/excecaoUpdater')
+
+
+router.route('/').get(search);
 
 module.exports = router;

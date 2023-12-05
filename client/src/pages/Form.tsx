@@ -1,28 +1,24 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { FaFileDownload,FaQuestion  } from "react-icons/fa";
-import '../index.css'
 import UsersList from '../components/UsersList';
 import { useDropzone } from 'react-dropzone';
 import * as XLSX from "xlsx";
 
 export default function Form() {
-  // Definindo o estado inicial
   const [turnos, setTurnos] = useState([]);
   const [informations, setInformations] = useState([]);
   const [token1, setToken] = useState(false);
-  const [resultados, setResultados] = useState({ nomes: [], id: [], invalidos: [] });
+  const [resultados, setResultados] = useState({ nome: [], id: [], invalido: [], naoAtualizado:[] });
   const [form, setForm] = useState({ nameList: [], newTurn: "" });
   const [loading, setLoading] = useState(false);
   const [able, setable] = useState(true);
   const [aviso, setAviso] = useState(false)
-  // Função para obter o token da URL
+  
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
     if (token) setToken(true);
   }, []);
-
-  // Função para buscar turnos
   useEffect(() => {
     fetch("http://10.0.1.204:3307/api/v1/getTurn/")
       .then((res) => res.json())
@@ -41,7 +37,6 @@ export default function Form() {
     
   };
 
-  // Função para exportar para TXT
   const exportarParaTXT = async () => {
     const infoNome = informations;
     infoNome.unshift("Nomes não encontrados:");
@@ -55,32 +50,24 @@ export default function Form() {
     link.click();
   };
 
-  // Função para lidar com a submissão do formulário
-  // Função para validar o formulário
 const validateForm = () => {
-  // Obter os valores dos campos
   const { nameList, newTurn } = form;
-  // Verificar se estão vazios
   if (nameList.length === 0 ) {
-    // Retornar falso e mostrar uma mensagem de erro
+
     setAviso(true)
     return false;
   }
-  // Caso contrário, retornar verdadeiro
   
   setAviso(false)
   return true;
 };
 
- // Função para lidar com a submissão do formulário
 const handleSubmit = (e) => {
   e.preventDefault();
 };
 
-  // Função para lidar com a atualização de turnos
   const handleUpdateTurnos = async () => {
     if (validateForm()) {
-      // Se o formulário for válido, prosseguir com a atualização de turnos
       setLoading(true);
     if(form.nameList.length > 0){
       const nameListArray = [...new Set(form.nameList.toString().split(',').map((name) => name.trim()))]; 
@@ -92,6 +79,7 @@ const handleSubmit = (e) => {
         });
         if (response.ok) {
           const data = await response.json();
+          console.log(data)
           setResultados(data);
           setable(false);
           setInformations(data.invalidos);
@@ -135,12 +123,12 @@ const {getRootProps, getInputProps} = useDropzone({onDrop});
 
 // Renderização do componente
   return (
-    <div className='grid-helper'>
+    <div className='flex-col p-5 w-full sm:flex-row sm:p-10 h-screen overflow-auto'>
+    <h3 className=' text-3xl my-2'>Alterar turno de colaboradores em massa:</h3>
       {token1 ? (
-        <div className='form-body'>
-          <h3 className=''>Nomes:</h3>
-          <h5 className='form-warning'>Utilize apenas as teclas (Shift + Enter) para separar os nomes nas linhas, não é necessário "," nem "." ao final de cada nome. <a href="https://absorbing-quartz-1d9.notion.site/Documenta-o-ATM-bc267ad520654c6db8337bb28164e8b8" className='form-ajuda' target="_blank" rel="noopener noreferrer">Ajuda</a></h5>
-          <form className='custom-form' onClick={handleSubmit}>
+        <div className='bg-background p-10'>
+          <h5 className='mb-5'>Utilize apenas as teclas (Shift + Enter) para separar os nomes nas linhas, não é necessário "," nem "." ao final de cada nome. <a href="https://absorbing-quartz-1d9.notion.site/Documenta-o-ATM-bc267ad520654c6db8337bb28164e8b8" className='font-medium text-blue-600 dark:text-blue-500 hover:underline' target="_blank" rel="noopener noreferrer">Ajuda</a></h5>
+          <form className='' onClick={handleSubmit}>
             <label className=''>
               <textarea
                 rows={10}
@@ -148,32 +136,34 @@ const {getRootProps, getInputProps} = useDropzone({onDrop});
                 value={form.nameList.join('\n')}
                 onChange={handleChange}
                 placeholder='Lista de Nomes'
-                className='custom-textarea'
+                className='flex-row border-spacing-0 w-full p-5 border border-navbar border-opacity-50'
                 disabled={false}
                 readOnly={false}
               />
             </label>
             <p>{aviso ? "O formulário não pode estar em branco." :""}</p>
-            <select name='newTurn' className='custom-select' onChange={handleChange}>
+            <select name='newTurn' className='h-14 border border-navbar border-opacity-50 px-5 w-full' onChange={handleChange}>
                 <option value='default'>Selecione um turno</option>
               {turnos.map((turno) => (
                 <option key={turno} value={turno}>{turno}</option>
               ))}
             </select>
-              <div>
-                 <button type='submit' className='custom-btn' onClick={handleUpdateTurnos}>
-                      {loading ? "Atualizando..." : "Atualizar Turnos"}
-                 </button>
+            <div className='flex-col justify-between text-navbar  text-[#FFFF]'>
+              <div className='my-10'>
+                  <button type='submit' className='flex justify-center items-center bg-successBtn hover:bg-[#123]' onClick={handleUpdateTurnos}>
+                        {loading ? "Atualizando..." : "Atualizar Turnos"}
+                  </button>
               </div>
-           
-            <div {...getRootProps()} className='custom-btn'>
-                <input {...getInputProps()} />
-                <p>Enviar Planilha</p>
-             </div>
-            <div>
-                <button onClick={exportarParaTXT} disabled={able} className={able ? `disable-button` : `able-button`}>
-                  Baixar Nomes não encontrados <FaFileDownload className="custom-icon" />
-                </button>
+            
+              <div {...getRootProps()} className='flex justify-center items-center h-10 bg-successBtn hover:bg-[#123]'>
+                  <input {...getInputProps()} />
+                  <p className='text-[#FFFF]'>Enviar Planilha</p>
+              </div>
+              <div className='my-10'>
+                  <button onClick={exportarParaTXT} disabled={able} className={able ? `flex justify-center items-center opacity-50 bg-successBtn hover:bg-successBtn` : `flex justify-center items-center opacity-100 bg-successBtn hover:bg-[#123]` }>
+                    Baixar Nomes não encontrados <FaFileDownload className="mx-1 h-4" />
+                  </button>
+              </div>
             </div>
           </form>
           
@@ -188,10 +178,13 @@ const {getRootProps, getInputProps} = useDropzone({onDrop});
           <img src="../public/Spinner.svg" alt="" />
         </div>
       ) : (
-        <div>
-          <UsersList NameList={resultados.nomes} ListName='Colaboradores Alterados' />
-          <UsersList NameList={resultados.invalidos} ListName='Colaboradores não encontrados' />
-        </div>
+        resultados.nome.length > 0 || resultados.invalido.length > 0 || resultados.naoAtualizado.length > 0 ? (
+          <div className='flex flex-row bg-background p-10 sm:flex-col'>
+            <UsersList NameList={resultados.nome} ListName={`Colaboradores Alterados `} messageContent={' foi alterado com sucesso.'}/>
+            <UsersList NameList={resultados.invalido} ListName='Colaboradores não encontrados' messageContent={' não existe.'}/>
+            <UsersList NameList={resultados.naoAtualizado} ListName='Colaboradores não atualizados' messageContent={' não pode ser atualizado.'}/>
+          </div>
+        ) : null
       )}
     </div>
   );

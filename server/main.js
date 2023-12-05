@@ -8,15 +8,16 @@ const PORT = process.env.PORT || 3307;
 const app = express();
 
 //rotas
-const loginValidation = require('./routes/userLogin')
-const  turnGetter   = require('./routes/appController');
-const  dataProcess  = require('./routes/userController');
-
+const loginValidation   = require('./routes/userLogin')
+const turnGetter        = require('./routes/appController');
+const dataProcess       = require('./routes/userController');
+const feriasProcess     = require('./routes/feriasController');
+const search            = require('./routes/excecaoController');
 
 app.use(bodyParser.json()); // Para interpretar corpos de requisição em JSON
 app.use(bodyParser.urlencoded({ extended: true })); // Para interpretar dados de formulário
 app.use(cors());
-app.options('*', cors());
+
 
 
 //Uso de Rotas
@@ -24,7 +25,8 @@ const rota ='/api/v1/'
 app.use(`${rota}loginValidate/`, loginValidation);
 app.use(`${rota}getTurn/`, turnGetter);
 app.use(`${rota}processar-dados/`, dataProcess)
-
+app.use(`${rota}processar-ferias/`, feriasProcess )
+app.use(`${rota}search`, search);
 app.get(`${rota}teste/`, (req, res) => {res.json({"message": "Hello world!"});})
 
 const start = async () => {

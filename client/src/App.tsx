@@ -6,7 +6,9 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home"
 import EsqueciSenha from "./pages/EsqueciSenha";
 import Sidebar from "./components/Sidebar";
+import Ferias from "./pages/Ferias"
 import './App.css'
+import Excecao from "./pages/Excecao";
 
 
 function App({}) {
@@ -22,6 +24,8 @@ function App({}) {
           <Route path="login/" element={<Login />} />
           <Route path="form/" element={<Form />} />
           <Route path="EsqueciSenha/" element={<EsqueciSenha />} />
+          <Route path="ferias/" element={<Ferias />} />
+          <Route path="excecao/" element={<Excecao />} />
           <Route path="*" element={<Error />} />
       </Routes>
     </div>

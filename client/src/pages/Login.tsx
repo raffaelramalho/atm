@@ -47,33 +47,37 @@ const Login = () => {
     }
   };
   return (
-    <div className="login-container">
-      
-      <form className="login-form">
-        <h1 className='title-form'>ATM</h1>
-        <label htmlFor="username">Usuário:</label>
-        <input
-          type="text"
-          id="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-
+    <div className="flex flex-col h-screen w-screen items-center justify-center">
+      <form className="bg-background w-2/6 h-3/6 border border-navbar border-opacity-50 p-10 flex flex-col items-center justify-around">
+        <h1 className='font-medium text-3xl'>DELP Control</h1>
+        <div className='w-full'>
+          <label htmlFor="username">Usuário:</label>
+          <input
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className='bg-section border border-[#08020255] border-opacity-50'
+          />
+        </div>
+        <div className='w-full'>
         <label htmlFor="password">Senha:</label>
         <input
           type="password"
           id="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          className='bg-section border border-[#08020255] border-opacity-50'
         />
+        </div>
 
-        <button type="button" onClick={handleLogin}>
+        <button type="button" onClick={handleLogin} className='bg-successBtn hover:bg-[#2e3464]'>
           {loading ?  " carregando" : "Login"}
         </button>
-        <Link to={'/EsqueciSenha'} className='password-link'>Esqueci minha senha</Link>
-        
+        <Link to={'/EsqueciSenha'} className='my-2'>Esqueci minha senha</Link>
+        <p className='h-14'>{warningText ? "Usuário ou senha incorretos" : ""}</p>
       </form>
-      <p className='warning-text'>{warningText ? "Usuário ou senha incorretos" : ""}</p>
+      
     </div>
   );
 };

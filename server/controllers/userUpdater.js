@@ -17,12 +17,36 @@ const dataProcess = asyncWrapper (async (req,res) =>{
             console.log(userId , userMatricula, userName,userInvalid)
     
     const { notUpdated } = await updateUsers(dbconnection, userMatricula, userName, userId, turn);
-    res.send({ 
+    
+    const updatedUserName = removeNotUpdatedNames(userName, notUpdated);
+    
+    return res.send({ 
             matricula:userMatricula, 
-            nome:userName, 
+            nome:updatedUserName, 
             id:userId, 
-            invalido:userInvalid   });
-        })
+            invalido:userInvalid,
+            naoAtualizado: notUpdated   });
+})
+
+const feriasProcess = asyncWrapper (async (req,res) =>{
+   
+    const userNameList = req.body.nameList;
+    const dataInicio = req.body.dataInicio;
+    const dataFim = req.body.dataFim;
+
+    const { userMatricula,userName, userId, userInvalid } = await userExist(dbconnection, userNameList);
+    const { notUpdated } = await updateUsers(dbconnection, userMatricula, userName, userId, dataInicio, dataFim);
+    const updatedUserName = removeNotUpdatedNames(userName, notUpdated);
+    return res.send({ 
+            matricula:userMatricula, 
+            nome:updatedUserName, 
+            id:userId, 
+            invalido:userInvalid,
+            naoAtualizado: notUpdated,
+            feriasInicio: dataInicio,
+            feriasFim: dataFim   });
+})
+
 
 async function userExist(dbconnection, userNameList) {
             const userMatricula = []
@@ -85,12 +109,16 @@ async function updateUsers(dbconnection, userMatricula, userName, userId, turn){
                     console.log('Inserido com sucesso!')
                 }
             }
-            console.log(notUpdated);
+            return { notUpdated };
 }
         
-        
+function removeNotUpdatedNames(userName, notUpdated) {
+    return userName.filter(name => !notUpdated.includes(name));
+}
+
 
 
 module.exports = {
-    dataProcess
+    dataProcess,
+    feriasProcess
 }

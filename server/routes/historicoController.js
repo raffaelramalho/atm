@@ -1,13 +1,10 @@
 const express = require('express')
 const router = express.Router()
 
-
 const {
-    search,
-   
-} = require('../controllers/excecaoUpdater')
+    logGetter,
+} = require('../controllers/getLog');
 
-
-router.route('/').get(search);
+router.route('/').get(logGetter);
 
 module.exports = router;

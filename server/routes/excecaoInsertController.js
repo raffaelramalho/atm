@@ -3,11 +3,11 @@ const router = express.Router()
 
 
 const {
-    search,
-   
-} = require('../controllers/excecaoUpdater')
+    exception,
+} = require('../controllers/excecaoInsert')
 
 
-router.route('/').get(search);
+router.route('/').post(exception);
+
 
 module.exports = router;

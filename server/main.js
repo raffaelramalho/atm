@@ -8,32 +8,34 @@ const PORT = process.env.PORT || 3307;
 const app = express();
 
 //rotas
-const loginValidation   = require('./routes/userLogin')
-const turnGetter        = require('./routes/appController');
-const dataProcess       = require('./routes/userController');
-const feriasProcess     = require('./routes/feriasController');
-const search            = require('./routes/excecaoController');
+const loginValidation = require('./routes/userLogin')
+const turnGetter = require('./routes/appController');
+const dataProcess = require('./routes/userController');
+const feriasProcess = require('./routes/feriasController');
+const excecaoController = require('./routes/excecaoController');
+const excecaoInsert = require('./routes/excecaoInsertController')
+const logController = require('./routes/historicoController')
 
-app.use(bodyParser.json()); // Para interpretar corpos de requisição em JSON
-app.use(bodyParser.urlencoded({ extended: true })); // Para interpretar dados de formulário
+
+app.use(bodyParser.json()); 
+app.use(bodyParser.urlencoded({ extended: true })); 
 app.use(cors());
 
-
-
-//Uso de Rotas
-const rota ='/api/v1/'
+const rota = '/api/v1/'
 app.use(`${rota}loginValidate/`, loginValidation);
 app.use(`${rota}getTurn/`, turnGetter);
+app.use(`${rota}getLog/`, logController);
 app.use(`${rota}processar-dados/`, dataProcess)
-app.use(`${rota}processar-ferias/`, feriasProcess )
-app.use(`${rota}search`, search);
-app.get(`${rota}teste/`, (req, res) => {res.json({"message": "Hello world!"});})
+app.use(`${rota}processar-ferias/`, feriasProcess)
+app.use(`${rota}search`, excecaoController);
+app.use(`${rota}exception`, excecaoInsert);
+app.get(`${rota}teste/`, (req, res) => { res.json({ "message": "Hello world!" }); })
 
 const start = async () => {
     try {
         dbconnection.getConnection()
-        app.listen(PORT,'10.0.1.204', console.log(`URL: 10.0.1.204:${PORT}`))
-    } catch(error) {
+        app.listen(PORT, '10.0.1.204', console.log(`URL: 10.0.1.204:${PORT}`))
+    } catch (error) {
         console.log(error)
     }
 }

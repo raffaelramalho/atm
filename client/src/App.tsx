@@ -9,6 +9,7 @@ import Sidebar from "./components/Sidebar";
 import Ferias from "./pages/Ferias"
 import './App.css'
 import Excecao from "./pages/Excecao";
+import LogException from "./pages/LogException";
 
 
 function App({}) {
@@ -26,6 +27,7 @@ function App({}) {
           <Route path="EsqueciSenha/" element={<EsqueciSenha />} />
           <Route path="ferias/" element={<Ferias />} />
           <Route path="excecao/" element={<Excecao />} />
+          <Route path="logexcecao/" element={<LogException />} />
           <Route path="*" element={<Error />} />
       </Routes>
     </div>

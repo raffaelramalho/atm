@@ -15,6 +15,7 @@ const feriasProcess = require('./routes/feriasController');
 const excecaoController = require('./routes/excecaoController');
 const excecaoInsert = require('./routes/excecaoInsertController')
 const logController = require('./routes/historicoController')
+const logSearcher = require('./routes/historicoSearchController')
 
 
 app.use(bodyParser.json()); 
@@ -25,10 +26,12 @@ const rota = '/api/v1/'
 app.use(`${rota}loginValidate/`, loginValidation);
 app.use(`${rota}getTurn/`, turnGetter);
 app.use(`${rota}getLog/`, logController);
+app.use(`${rota}searchGetter`, logSearcher);
 app.use(`${rota}processar-dados/`, dataProcess)
 app.use(`${rota}processar-ferias/`, feriasProcess)
 app.use(`${rota}search`, excecaoController);
 app.use(`${rota}exception`, excecaoInsert);
+app.use(`${rota}dashboard`, logSearcher);
 app.get(`${rota}teste/`, (req, res) => { res.json({ "message": "Hello world!" }); })
 
 const start = async () => {

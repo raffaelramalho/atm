@@ -13,10 +13,16 @@
   "dependencies": {
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
+    "@nivo/bar": "^0.84.0",
+    "@nivo/core": "^0.84.0",
+    "@nivo/pie": "^0.84.0",
+    "@nivo/radial-bar": "^0.84.0",
     "@reduxjs/toolkit": "^1.9.7",
     "axios": "^1.6.2",
+    "chart.js": "^4.4.1",
     "jquery": "^3.7.1",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
     "react-excel-renderer": "^1.1.0",
@@ -27,6 +33,7 @@
     "react-spinners": "^0.13.8",
     "read-excel-file": "^5.7.1",
     "redux": "^4.2.1",
+    "victory": "^36.7.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

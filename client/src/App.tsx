@@ -10,6 +10,7 @@ import Ferias from "./pages/Ferias"
 import './App.css'
 import Excecao from "./pages/Excecao";
 import LogException from "./pages/LogException";
+import Dashboard from "./pages/Dashboard";
 
 
 function App({}) {
@@ -17,7 +18,7 @@ function App({}) {
   return ( 
     <BrowserRouter>
     <Navbar/>
-    <div className="app-body">
+    <div className="app-body ">
       <Sidebar/>
       <Routes>
           <Route path="/" element={<Home />} />
@@ -29,6 +30,7 @@ function App({}) {
           <Route path="excecao/" element={<Excecao />} />
           <Route path="logexcecao/" element={<LogException />} />
           <Route path="*" element={<Error />} />
+          <Route path="dashboard/" element={<Dashboard/>}/>
       </Routes>
     </div>
       

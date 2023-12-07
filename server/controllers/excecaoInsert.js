@@ -54,7 +54,8 @@ async function userInsert(dbconnection, nameC, regC) {
             const results = await dbconnection.execute(query, [nameC,regC]);
             const queryInsert = `insert into usergroups(idUser,idGroup) values(?,?);`
             const insert = await dbconnection.execute(queryInsert, [results[0][0]['id'],groupExc])
-            scheduleDeletion(results[0][0]['id'],groupExc, dbconnection)
+            const id = results[0][0]['id']; 
+            scheduleDeletion(id,groupExc, dbconnection)
           } catch (error) {
             console.error('Erro durante a consulta ao banco de dados:', error);
             throw error;
@@ -67,7 +68,18 @@ async function userInsert(dbconnection, nameC, regC) {
 async function  logInsert(dbconnection, nameC, regC,nameL, regL, message) {
     console.log('Salvando no log....')
     const current_datetime = new Date();
-    const formatted_date = current_datetime.toISOString().slice(0, 19).replace('T', ' ');
+    let day = current_datetime.getDate();
+    let month = current_datetime.getMonth() + 1; 
+    let year = current_datetime.getFullYear();
+    let hours = current_datetime.getHours();
+    let minutes = current_datetime.getMinutes();
+    let seconds = current_datetime.getSeconds();
+    day = (day < 10) ? '0' + day : day;
+    month = (month < 10) ? '0' + month : month;
+    hours = (hours < 10) ? '0' + hours : hours;
+    minutes = (minutes < 10) ? '0' + minutes : minutes;
+    seconds = (seconds < 10) ? '0' + seconds : seconds;
+    const formatted_date = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
     const query = `insert into excecao(nomeLiberado,matriculaLiberado,nomeRequerente,matriculaRequerente,dataLiberacao,duracao,observacao) values (?,?,?,?,?,?,?)`;
     try {
       const results = await dbconnection.execute(query, [nameC, regC,nameL, regL,formatted_date, 30, message]);
@@ -84,7 +96,8 @@ async function  logInsert(dbconnection, nameC, regC,nameL, regL, message) {
     setTimeout(async () => {
         try {
             const query = `delete from usergroups where idUser = ? and idGroup = ?`
-            await dbconnection.execute(query,[])
+            console.log(`delete from usergroups where idUser = ${id} and idGroup = ${grupo}`)
+            await dbconnection.execute(query,[id,grupo])
             console.log('Linha deletada com sucesso!');
         } catch (error) {
             console.error('Erro ao deletar a linha:', error);

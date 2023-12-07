@@ -3,6 +3,7 @@ const router = express.Router()
 
 const {
     logGetter,
+    dashboardFilter  // Importe o novo módulo
 } = require('../controllers/getLog');
 
 router.route('/').get(logGetter);

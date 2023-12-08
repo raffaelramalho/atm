@@ -85,7 +85,7 @@ useEffect(() => {
   }
   dashboardFill();
   return (
-    <div className="flex flex-col sm:flex-row h-screen justify-center w-full sm:p-5 ">
+    <div className="flex flex-col sm:flex-row h-screen justify-center w-3/4 sm:p-5 ">
       <div className='h-full sm:w-full p-3 sm:p-1 w-full sm:w-1/12'>
         <h3 className='text-3xl my-2'>Início</h3>
         <div className='flex flex-col mr-2 h-5/6 my-5'>

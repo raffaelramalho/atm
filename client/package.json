@@ -20,6 +20,7 @@
     "@reduxjs/toolkit": "^1.9.7",
     "axios": "^1.6.2",
     "chart.js": "^4.4.1",
+    "date-fns": "^2.30.0",
     "jquery": "^3.7.1",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
@@ -33,6 +34,7 @@
     "react-spinners": "^0.13.8",
     "read-excel-file": "^5.7.1",
     "redux": "^4.2.1",
+    "sweetalert": "^2.1.2",
     "victory": "^36.7.0",
     "xlsx": "^0.18.5"
   },

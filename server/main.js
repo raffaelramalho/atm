@@ -16,6 +16,7 @@ const excecaoController = require('./routes/excecaoController');
 const excecaoInsert = require('./routes/excecaoInsertController')
 const logController = require('./routes/historicoController')
 const logSearcher = require('./routes/historicoSearchController')
+const dataProcessSheet = require('./routes/userSheetController');
 
 
 app.use(bodyParser.json()); 
@@ -28,6 +29,7 @@ app.use(`${rota}getTurn/`, turnGetter);
 app.use(`${rota}getLog/`, logController);
 app.use(`${rota}searchGetter`, logSearcher);
 app.use(`${rota}processar-dados/`, dataProcess)
+app.use(`${rota}processar-dados-planilha/`, dataProcessSheet)
 app.use(`${rota}processar-ferias/`, feriasProcess)
 app.use(`${rota}search`, excecaoController);
 app.use(`${rota}exception`, excecaoInsert);

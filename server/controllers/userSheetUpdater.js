@@ -3,9 +3,8 @@ const dbconnection = require('../utils/connection');
 
 
 const dataProcess = asyncWrapper (async (req,res) =>{
-   
     const userNameList = req.body.nameList;
-    const turn = req.body.newTurn;  c
+    const turn = req.body.newTurn;  
     if (!userNameList || userNameList.length === 0) {
         return res.status(400).send('A lista de nomes não pode estar vazia.');
     }
@@ -19,29 +18,6 @@ const dataProcess = asyncWrapper (async (req,res) =>{
     const { notUpdated,turnIdList } = await updateUsers(dbconnection, userMatricula, userName, userId, turn);
     
     const updatedUserName = removeNotUpdatedNames(userName, notUpdated);
-    scheduleDeletion(dbconnection,userId,turnIdList)
-    return res.send({ 
-            matricula:userMatricula, 
-            nome:updatedUserName, 
-            id:userId, 
-            invalido:userInvalid,
-            naoAtualizado: notUpdated   });
-})
-
-const dataProcessSheet = asyncWrapper (async (req,res) => {
-    const sheet = req.body
-    const nameList = sheet.LinhaUm
-    const regList = req.body.LinhaZero
-    const turnList = req.body.LinhaDois
-    const { userMatricula, 
-        userName, 
-        userId, 
-        userInvalid,
-          } = await userExist(dbconnection, nameList);
-    const { notUpdated, 
-            turnIdList
-      } = await updateUsersSheet(dbconnection, userMatricula, userName, userId, turnList);
-    console.log(turnIdList)
     scheduleDeletion(dbconnection,userId,turnIdList)
     return res.send({ 
             matricula:userMatricula, 
@@ -120,40 +96,7 @@ async function updateUsers(dbconnection, userMatricula, userName, userId, turn){
             return { notUpdated, turnIdList };
 }
 
-async function updateUsersSheet(dbconnection, userMatricula, userName, userId, turn){
-    console.log('Atualizando usuários')
-    const notUpdated = []
-    const turnIdList = []
-    for(let y = 0; y<turn.length;y++){
-        const queryTurn = await dbconnection.execute(`SELECT id from groups WHERE NAME='${turn[y]}'`);
-        turnIdList.push(JSON.stringify([queryTurn][0][0][0]['id']))
-        console.log([queryTurn][0][0][0]['id'])
-    }
-    console.log('ID do turno obtido com sucesso')
-    for (let i = 0; i < userId.length; i++){
-        console.log('Verificando id: '+userId[i])
-        const query = `select g.id from usergroups ug inner join groups g on g.id=ug.idGroup inner join users u on u.id=ug.idUser where u.deleted = 0 and g.idType = 1 and u.registration = ? and u.id = ? limit 1;`;
-        const [result] = await dbconnection.execute(query, [userMatricula[i], userId[i]]);
-        if(result[0]){
-            const turnOld = JSON.stringify(result[0]['id'])
-            if(turnOld == '1002' ){
-                console.log(userName[i]+' é mensalista e não foi alterado')
-                notUpdated.push(userName[i])
-            } else {
-                const updateQuery = `into usergroups(idUser, idGroup, isVisitor) values (?,?,0);`
-                const update = await dbconnection.execute(updateQuery,[  userId[i],turnIdList[i]])
-                console.log(userName[i]+' foi atualizado com sucesso')
-            }
-        } else{
-            console.log(userName[i]+' não possui grupo');
-            const insertQuery = `insert into usergroups(idUser, idGroup, isVisitor) values (?,?,0);`
-            const insert = await dbconnection.execute(insertQuery,[userId[i], turnIdList[i]])
-            console.log('Inserido com sucesso!')
-        }
-    }
-    console.log('retornando valores...'+turnIdList)
-    return { notUpdated,turnIdList };
-}
+
 
 async function  logInsert(dbconnection, nameC, regC,nameL, regL, message) {
     console.log('Salvando no log....')
@@ -197,5 +140,4 @@ function removeNotUpdatedNames(userName, notUpdated) {
 
 module.exports = {
     dataProcess,
-    dataProcessSheet
 }

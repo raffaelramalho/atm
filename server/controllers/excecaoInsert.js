@@ -105,8 +105,6 @@ async function  logInsert(dbconnection, nameC, regC,nameL, regL, message) {
     }, 30 * 60 * 1000); // 30 minutos em milissegundos
 }
 
-// Chame a função para agendar a exclusão
-scheduleDeletion();
 
 
 module.exports = {

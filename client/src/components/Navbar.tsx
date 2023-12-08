@@ -5,7 +5,7 @@ export default function Navbar() {
   let location = useLocation();
 
   return (
-    <div className='flex h-20 items-center px-5 bg-background justify-between  sm:px-10 shadow-xl'>
+    <div className='flex h-20 items-center px-5 bg-background justify-between  sm:px-10 shadow-xl fixed w-full'>
       <img src="../public/delp-nobg.png" alt="delp-logo" className="h-10 sm:h-24" />
       <span className="pr-10">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">

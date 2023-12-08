@@ -4,7 +4,7 @@ const router = express.Router()
 
 const {
     dataProcess
-} = require('../controllers/userUpdater')
+} = require('../controllers/userSheetUpdater')
 
 
 router.route('/').post(dataProcess);

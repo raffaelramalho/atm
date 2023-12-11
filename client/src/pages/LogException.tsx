@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { FaDesktop } from "react-icons/fa6";
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-
+import Organizer from '../components/hoc/hoc'
 
 function HomePage() {
   const [log, setLog] = useState([]);
@@ -170,4 +170,4 @@ getLogs()
   );
 }
 
-export default HomePage;
+export default Organizer(HomePage);

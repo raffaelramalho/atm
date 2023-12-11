@@ -11,6 +11,7 @@ import './App.css'
 import Excecao from "./pages/Excecao";
 import LogException from "./pages/LogException";
 import Dashboard from "./pages/Dashboard";
+import LogChanges from "./pages/LogChanges";
 
 
 function App({}) {
@@ -31,6 +32,7 @@ function App({}) {
           <Route path="logexcecao/" element={<LogException />} />
           <Route path="*" element={<Error />} />
           <Route path="dashboard/" element={<Dashboard/>}/>
+          <Route path="logchanges/" element={<LogChanges/>}/>
       </Routes>
     </div>
       

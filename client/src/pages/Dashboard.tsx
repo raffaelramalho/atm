@@ -104,4 +104,4 @@ useEffect(() => {
   );
 }
 
-export default HomePage;
+export default (HomePage);

@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { FaFileDownload, FaQuestion } from "react-icons/fa";
 import UsersList from '../components/UsersList';
 import swal from 'sweetalert';
-export default function Ferias() {
+import Organizer from '../components/hoc/hoc';
+ function Ferias() {
 
   const [informations, setInformations] = useState([]);
   const [token1, setToken] = useState(false);
@@ -187,3 +188,4 @@ export default function Ferias() {
   );
 }
 
+export default Organizer(Ferias)

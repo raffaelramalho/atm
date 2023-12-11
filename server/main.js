@@ -17,7 +17,7 @@ const excecaoInsert = require('./routes/excecaoInsertController')
 const logController = require('./routes/historicoController')
 const logSearcher = require('./routes/historicoSearchController')
 const dataProcessSheet = require('./routes/userSheetController');
-
+const changeLog = require('./routes/changeController')
 
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true })); 
@@ -34,6 +34,7 @@ app.use(`${rota}processar-ferias/`, feriasProcess)
 app.use(`${rota}search`, excecaoController);
 app.use(`${rota}exception`, excecaoInsert);
 app.use(`${rota}dashboard`, logSearcher);
+app.use(`${rota}changeLog`,changeLog)
 app.get(`${rota}teste/`, (req, res) => { res.json({ "message": "Hello world!" }); })
 
 const start = async () => {

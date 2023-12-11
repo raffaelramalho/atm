@@ -2,8 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import UsersList from '../components/UsersList';
 import axios from 'axios';
 import swal from 'sweetalert';
+import Organizer from '../components/hoc/hoc';
 
-export default function Excecao() {
+function Excecao() {
 
   const [informations, setInformations] = useState([]);
   const [token1, setToken] = useState(false);
@@ -16,6 +17,7 @@ export default function Excecao() {
   const [inputCol, setInputCol] = useState('');
   const [inputColReg, setInputColReg] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const [suggestionsReg, setSuggestionsReg] = useState([]);
   const [inputLib, setInputLib] = useState('');
   const [inputLibReg, setInputLibReg] = useState('');
   const [search, setSearch] = useState('')
@@ -42,7 +44,21 @@ export default function Excecao() {
       setAutoComplete('liberado')
       setInputCol(value);
       setForm({ ...form, nameC: value })
-    } else if(inputType == 'liberadorReg'){
+    } 
+    if (value.length > 0) {
+      const results = await axios.get(`http://10.0.1.204:3307/api/v1/search?username=${value}`);
+      setSuggestions(results.data[0]);
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const handleInputChangeReg = async (event) => {
+    setSuggestions([])
+    const inputType = event.target.name
+    const value = event.target.value;
+    console.log(inputType, value)
+    if(inputType == 'liberadorReg'){
       setAutoComplete('liberado')
       setInputLibReg(value);
       setForm({ ...form, regL: value })
@@ -51,14 +67,14 @@ export default function Excecao() {
       setInputColReg(value);
       setForm({ ...form, regC: value })
     }
-
     if (value.length > 0) {
-      const results = await axios.get(`http://10.0.1.204:3307/api/v1/search?username=${value}`);
-      setSuggestions(results.data[0]);
+      const results = await axios.get(`http://10.0.1.204:3307/api/v1/search?registration=${value}`);
+      console.log(results.data[0])
+      setSuggestionsReg(results.data[0]);
     } else {
-      setSuggestions([]);
+      setSuggestionsReg([]);
     }
-  };
+  }
 
   const handleSearchSelect = async (event) => {
     setAutoComplete('');
@@ -70,7 +86,17 @@ export default function Excecao() {
       setInputCol(selectedValue)
       setInputColReg(id)
       setForm({ ...form, nameC: selectedValue, regC: id })
-    } else {
+    } else if (name === 'liberador') {
+      setSearch(selectedValue)
+      setInputLib(selectedValue)
+      setInputLibReg(id)
+      setForm({ ...form, nameL: selectedValue, regL: id })
+    } else if (name === 'liberadorReg') {
+      setSearch(selectedValue)
+      setInputLib(selectedValue)
+      setInputLibReg(id)
+      setForm({ ...form, nameL: selectedValue, regL: id })
+    } else if (name === 'liberadoReg') {
       setSearch(selectedValue)
       setInputLib(selectedValue)
       setInputLibReg(id)
@@ -154,18 +180,6 @@ export default function Excecao() {
       setLoading(false);
     }
   };
-  const [delay, setDelay] = useState(0);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setDelay(200000), 0);
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), delay);
-    return () => clearTimeout(timer);
-  }, [delay]);
-
-
 
 
   return (
@@ -208,9 +222,25 @@ export default function Excecao() {
                   <p>Matrícula:</p>
                   <input type="number"
                     value={inputColReg}
-                    onChange={handleInputChange}
+                    onChange={handleInputChangeReg}
                     name='liberadoReg'
                     className='border border-navbar border-opacity-50 border-solid bg-background' />
+                    <div className='flex flex-col  bg-background  border-x border-solid border-b  overflow-y-scroll'>
+                    {autocomplete == 'liberadoReg' ? (
+                      suggestionsReg.map((suggestion) => (
+                        <a key={suggestion.registration}
+                          className='flex items-center h-10 w-full px-5 bg-background text-navbar hover:bg-section cursor-pointer'
+                          onClick={handleSearchSelect}
+                          name='liberadoReg'
+                          id={suggestion.registration}
+                        >
+                          {suggestion.registration}
+                        </a>
+                      ))
+                    ) : ( 
+                      ""
+                    )}
+                  </div>
                 </div>
               </div>
               <div className='flex flex-col w-full sm:my-5 sm:flex-row '>
@@ -240,9 +270,23 @@ export default function Excecao() {
                   <p>Matrícula do liberador:</p>
                   <input type="number"
                     value={inputLibReg}
-                    onChange={handleInputChange}
+                    onChange={handleInputChangeReg}
                     name='liberadorReg'
                     className='border border-navbar border-opacity-50 border-solid bg-background' />
+                    {autocomplete == 'liberadorReg' ? (
+                      suggestionsReg.map((suggestion) => (
+                        <a key={suggestionReg.registration}
+                          className='flex items-center h-10 w-full px-5 bg-background text-navbar hover:bg-section cursor-pointer'
+                          onClick={handleSearchSelect}
+                          name='liberadorReg'
+                          id={suggestionReg.registration}
+                        >
+                          {suggestion.registration}
+                        </a>
+                      ))
+                    ) : ( 
+                      ""
+                    )}
                 </div>
               </div>
               <div className='mb-1 sm:mb-5'>
@@ -292,3 +336,4 @@ export default function Excecao() {
   );
 }
 
+export default Organizer(Excecao)

@@ -1,5 +1,5 @@
-# ATM - Alterador de Turnos em Massa
-ATM é uma aplicação desenvolvida para facilitar a alteração de turnos em massa, permitindo que os usuários processem uma lista de nomes e atualizem seus turnos de uma só vez.
+# ADDON DELP Control ID
+O delpinho é uma ferramenta adicional para o control ID, tornando processos manuais em simples tarefas.
 
 ## Como Usar
 ### Clone o repositório do GitHub:
@@ -11,9 +11,13 @@ git clone https://github.com/raffaelramalho/atm.git
 ```
 npm install
 ```
-### Inicie a aplicação:
+### Inicie a API:
 ```
 npm start
+```
+### Inicie a aplicação:
+```
+npm run dev
 ```
 Acesse a aplicação no navegador:
 ```
@@ -21,8 +25,9 @@ http://localhost:3000
 ```
 ## Funcionalidades
 Atualização em Massa de Turnos: Os usuários podem fornecer uma lista de nomes e um novo turno para atualizar em massa.
-
-Exportação para Arquivo TXT: Após a atualização, a aplicação permite exportar os resultados para um arquivo TXT, incluindo os nomes alterados e não encontrados.
+Bloqueio de férias em grupo: o usuário pode fornecer uma lista de matriculas para serem bloqueadas até uma data X.
+Liberação temporária: uma exceção pode ser criada, permitindo uma pessoa entrar nos ambientes por até cinco minutos.
+Log de criação de liberações e log ver a fila de alterações pendentes.
 
 ## Estrutura do Projeto
 src/components: Componentes React reutilizáveis.\
@@ -30,10 +35,14 @@ src/pages: Páginas da aplicação.\
 src/services: Configurações e lógica relacionadas aos serviços da aplicação.\
 src/styles: Estilos globais e específicos da aplicação.\
 src/App.js: Ponto de entrada principal da aplicação.\
+
 ## Tecnologias Utilizadas
 React: Biblioteca JavaScript para construção de interfaces de usuário.\
-Fetch API: Utilizada para fazer requisições HTTP para o backend.
-CSS: Estilos da aplicação.\
+Axios: Utilizada para fazer requisições HTTP para o backend.\
+Tailwind: Estilos da aplicação.\
+Node.js: backend para contato com o banco de dados.\
+MySql: banco de dados.\
+
 ## Configuração do Backend
 Certifique-se de configurar corretamente o backend da aplicação. As configurações de conexão com o banco de dados e outros detalhes específicos do ambiente podem ser definidas no arquivo .env.
 

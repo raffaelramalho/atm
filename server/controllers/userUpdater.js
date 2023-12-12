@@ -29,40 +29,36 @@ const dataProcessSheet = asyncWrapper (async (req,res) => {
 
 
 async function userExist(dbconnection, userNameList) {
-            const userMatricula = []
-            const userName = []
-            const userId = []
-            const userInvalid  = []
-            
-            for (let nome of userNameList) {
-              const query = `SELECT name,id FROM Users WHERE registration = ? and deleted = 0 limit 1`;
-              try {
-                const [results] = await dbconnection.execute(query, [nome]);
-                if( results.length > 0){
-                    console.log("Resultados"+ JSON.stringify([results]))
-                    const matricula = [results][0][0]['name'];
-                    const id = [results][0][0]['id']
-                    userMatricula.push(nome)
-                    userId.push(id)
-                    userName.push(matricula)
-                } else {
-                    if (nome !== ''){
-                        userInvalid.push(nome)
-                    }
-                }
-              } catch (error) {
-                console.error('Erro durante a consulta ao banco de dados:', error);
-                throw error;
-              }
+    const userMatricula = [];
+    const userName = [];
+    const userId = [];
+    const userInvalid = [];
+
+    for (let nome of userNameList) {
+        const query = `SELECT id,registration FROM Users WHERE name = ? and  deleted = 0  and registration != '' limit 1`;
+
+        try {
+            const [results] = await dbconnection.execute(query, [nome]);
+            if (results.length > 0) {
+                for (let result of results) {
+                    userId.push(result.id);
+                    userName.push(result.registration);
+                }    
+            } else if (nome !== '') {
+                userInvalid.push(nome);
             }
-            
-            return { userId, userName, userMatricula, userInvalid };
-          }
+        } catch (error) {
+            console.error('Erro durante a consulta ao banco de dados:', error);
+            throw error;
+        }
+    }
+    console.log(userId, userName, userMatricula, userInvalid)
+    return { userId, userName, userMatricula, userInvalid };
+}
 
 
 
 async function updateUsersSheet(dbconnection, userMatricula, userName, userId, turn){
-    console.log('Atualizando usuários')
     const notUpdated = []
     const turnIdList = []
     for(let y = 0; y<turn.length;y++){
@@ -70,11 +66,12 @@ async function updateUsersSheet(dbconnection, userMatricula, userName, userId, t
         turnIdList.push(JSON.stringify([queryTurn][0][0][0]['id']))
         console.log([queryTurn][0][0][0]['id'])
     }
-    console.log('ID do turno obtido com sucesso')
+    console.log(userId)
+    console.log(userId.length)
     for (let i = 0; i < userId.length; i++){
-        console.log('Verificando id: '+userId[i])
+        console.log('Verificando id: '+userId[i], userName[i])
         const query = `select g.id from usergroups ug inner join groups g on g.id=ug.idGroup inner join users u on u.id=ug.idUser where u.deleted = 0 and g.idType = 1 and u.registration = ? and u.id = ? limit 1;`;
-        const [result] = await dbconnection.execute(query, [userName[i], userId[i]]);
+        const [result] = await dbconnection.execute(query, [ userId[i], userName[i]]);
         if(result[0]){
             const turnOld = JSON.stringify(result[0]['id'])
             if(turnOld == '1002' ){

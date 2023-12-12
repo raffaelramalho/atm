@@ -46,6 +46,7 @@ const getLogs = async() => {
         });
 
         setLog(formattedLog);
+        console.log(formattedLog)
       })
       .catch((error) => console.error(`Erro: ${error}`));
   }, []);
@@ -117,44 +118,19 @@ getLogs()
                     <p className='font-medium'>Colaborador:</p>
                     <p> {entry.nomeLiberado} </p>
                   </div>
-                  <div className='flex flex-col w-2/6'>
+                  <div className='flex flex-col w-1/6'>
                     <p className='font-medium'>Matricula:</p>
                     <p> {entry.matriculaLiberado} </p>
                   </div>
-                  <div className='flex flex-row items-center justify-center w-1/6' >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 mr-1">
-                      <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z" clipRule="evenodd" />
-                    </svg>
+                  <div className='flex flex-col items-center justify-center w-1/6' >
+                  <p className='font-medium'>Horário</p>
                     <p>{entry.dataLiberacao} </p>
                   </div>
-                  <div className='flex flex-row items-center justify-center w-1/6' >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-6 h-6 transition ease-in-out duration-300 ${expandedEntry === index ? '' : 'rotate-180'}`}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
-                    </svg>
+                  <div className='flex flex-col w-2/6 items-center'>
+                    <p className='font-medium'>Requerente</p>
+                        {entry.nomeRequerente}
                   </div>
                 </div>
-                {/* info adicionais */}
-                {expandedEntry === index ? (
-                  <div className='flex flex-row h-3/4 w-full my-5 pb-5 '>
-                    <div className='w-9/12 mr-5'>
-                      <p className='font-medium'>Observação:</p>
-                      <div className='p-3 border border-solid border-opacity-20 border-navbar h-full'>
-
-                        <p>{entry.observacao}</p>
-                      </div>
-                    </div>
-                    <div className='flex flex-col h-full justify-center'>
-                      <div className='flex flex-col '>
-                        <p className='font-medium'>Requerente:</p>
-                        <p>{entry.nomeRequerente}</p>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className='flex items-center justify-center h-full'>
-                    <p></p>
-                  </div>
-                )}
               </div>
             </div>
             ))

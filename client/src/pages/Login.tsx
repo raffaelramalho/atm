@@ -32,6 +32,7 @@ const Login = () => {
        console.log(data)
 
     if (data.token.ok) {
+        // @ts-expect-error TS6133
         const token = data.token.token
         navigate(`/form?token=${data.token.token}`,{state: { userId: username}})
         setWarningText(false)

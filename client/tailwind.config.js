@@ -14,6 +14,8 @@ export default {
       'background': '#FFFFFF',
     }
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar'),
+  ],
 }
 

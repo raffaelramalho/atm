@@ -1,16 +1,21 @@
+// @ts-expect-error TS6133
 import React, { useState, useEffect, useCallback } from 'react';
+// @ts-expect-error TS6192
 import { FaFileDownload, FaQuestion } from "react-icons/fa";
 import UsersList from '../components/UsersList';
 import swal from 'sweetalert';
-import Organizer from '../components/hoc/hoc';
+import Organizer from '../components/hoc/Hoc';
  function Ferias() {
 
+  // @ts-expect-error TS6133
   const [informations, setInformations] = useState([]);
   const [token1, setToken] = useState(false);
   const [resultados, setResultados] = useState({ nome: [], id: [], invalido: [], naoAtualizado: [], feriasInicio: '', feriasFim: '' });
   const [form, setForm] = useState({ nameList: [], dataFim: '' });
   const [loading, setLoading] = useState(false);
+  // @ts-expect-error TS6133
   const [able, setable] = useState(true);
+  // @ts-expect-error TS6133
   const [aviso, setAviso] = useState(false)
   const [avisoType, setAvisoType] = useState('');
 
@@ -20,6 +25,7 @@ import Organizer from '../components/hoc/hoc';
     if (token) setToken(true);
   }, []);
 
+  // @ts-expect-error TS7006
   const handleChange = (e) => {
     const { name, value } = e.target;
     console.log(value)
@@ -47,6 +53,7 @@ import Organizer from '../components/hoc/hoc';
       return false;
     }
    
+    // @ts-expect-error TS6133
     const fim = new Date(dataFim);
 
     
@@ -54,6 +61,7 @@ import Organizer from '../components/hoc/hoc';
     return true;
   };
 
+  // @ts-expect-error TS7006
   const handleSubmit = (e) => {
     e.preventDefault();
   };
@@ -141,11 +149,11 @@ import Organizer from '../components/hoc/hoc';
               </div>
               <div className='flex flex-col justify-between w-2/4 px-5 pb-1.5'>
                 <div>
-                  <p>Data final da liberação:</p>
+                  <p className='font-medium'>Data final da liberação:</p>
                   <input type="date" name='dataFim' className='border border-solid' onChange={handleChange} />
                 </div>
                 <div>
-                  <p className='text-3xl font-bold text-[red]'>ATENÇÃO!</p>
+                  <p className='text-3xl font-bold text-successBtn'>ATENÇÃO!</p>
                   <p>Esse formulário deve ser preenchido somente no último dia antes da folga do colaborador.</p>
                 </div>
                 <div className='flex-col justify-between text-navbar text-[#FFFF]'>

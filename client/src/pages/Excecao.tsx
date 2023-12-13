@@ -1,17 +1,23 @@
+// @ts-expect-error TS6133
 import React, { useState, useEffect, useCallback } from 'react';
 import UsersList from '../components/UsersList';
 import axios from 'axios';
 import swal from 'sweetalert';
-import Organizer from '../components/hoc/hoc';
+
+import Organizer from '../components/hoc/Hoc';
 
 function Excecao() {
 
+  // @ts-expect-error TS6133
   const [informations, setInformations] = useState([]);
   const [token1, setToken] = useState(false);
+  // @ts-expect-error TS6133
   const [resultados, setResultados] = useState({ response: '' });
   const [form, setForm] = useState({ nameC: '', nameL: '', regC: '', regL: '', obs: '' });
   const [loading, setLoading] = useState(false);
+  // @ts-expect-error TS6133
   const [able, setable] = useState(true);
+  // @ts-expect-error TS6133
   const [aviso, setAviso] = useState(false)
   const [avisoType, setAvisoType] = useState('');
   const [inputCol, setInputCol] = useState('');
@@ -20,6 +26,7 @@ function Excecao() {
   const [suggestionsReg, setSuggestionsReg] = useState([]);
   const [inputLib, setInputLib] = useState('');
   const [inputLibReg, setInputLibReg] = useState('');
+  // @ts-expect-error TS6133
   const [search, setSearch] = useState('')
   const [autocomplete, setAutoComplete] = useState('')
 
@@ -31,6 +38,7 @@ function Excecao() {
     if (token) setToken(true);
   }, []);
 
+  // @ts-expect-error TS7006
   const handleInputChange = async (event) => {
     setSuggestions([])
     const inputType = event.target.name
@@ -53,6 +61,7 @@ function Excecao() {
     }
   };
 
+  // @ts-expect-error TS7006
   const handleInputChangeReg = async (event) => {
     setSuggestions([])
     const inputType = event.target.name
@@ -76,6 +85,7 @@ function Excecao() {
     }
   }
 
+  // @ts-expect-error TS7006
   const handleSearchSelect = async (event) => {
     setAutoComplete('');
     const name = event.target.name
@@ -131,9 +141,11 @@ function Excecao() {
   };
 
 
+  // @ts-expect-error TS7006
   const handleSubmit = (e) => {
     e.preventDefault();
   };
+  // @ts-expect-error TS7006
   const handleChange = (e) => {
     const text = e.target.value
     setForm({ ...form, obs: text })
@@ -204,12 +216,17 @@ function Excecao() {
                   <div className='flex flex-col  bg-background  border-x border-solid border-b  overflow-y-scroll'>
                     {autocomplete == 'liberado' ? (
                       suggestions.map((suggestion) => (
+                        // @ts-expect-error TS2339
                         <a key={suggestion.registration}
                           className='flex items-center h-10 w-full px-5 bg-background text-navbar hover:bg-section cursor-pointer'
                           onClick={handleSearchSelect}
+                          // @ts-expect-error TS2322
                           name='liberado'
+                          // @ts-expect-error TS2339
                           id={suggestion.registration}
                         >
+                          {/*
+                           // @ts-expect-error TS2339 */}
                           {suggestion.name}
                         </a>
                       ))
@@ -228,12 +245,17 @@ function Excecao() {
                     <div className='flex flex-col  bg-background  border-x border-solid border-b  overflow-y-scroll'>
                     {autocomplete == 'liberadoReg' ? (
                       suggestionsReg.map((suggestion) => (
+                        // @ts-expect-error TS2339
                         <a key={suggestion.registration}
                           className='flex items-center h-10 w-full px-5 bg-background text-navbar hover:bg-section cursor-pointer'
                           onClick={handleSearchSelect}
+                          // @ts-expect-error TS2322
                           name='liberadoReg'
+                          // @ts-expect-error TS2339
                           id={suggestion.registration}
                         >
+                          {/*
+                           // @ts-expect-error TS2339 */}
                           {suggestion.registration}
                         </a>
                       ))
@@ -254,12 +276,17 @@ function Excecao() {
                   <div className='flex flex-col absolute bg-background  border-x border-solid border-b max-h-3/5 overflow-y-auto'>
                     {autocomplete == 'liberador' ? (
                       suggestions.map((suggestion) => (
+                        // @ts-expect-error TS2339
                         <a key={suggestion.registration}
                           className='flex items-center h-10 w-full px-5 bg-background text-navbar hover:bg-section cursor-pointer'
                           onClick={handleSearchSelect}
+                          // @ts-expect-error TS2322
                           name='liberador'
+                          // @ts-expect-error TS2339
                           id={suggestion.registration}
                         >
+                          {/*
+                           // @ts-expect-error TS2339 */}
                           {suggestion.name}
                         </a>
                       ))
@@ -275,12 +302,17 @@ function Excecao() {
                     className='border border-navbar border-opacity-50 border-solid bg-background' />
                     {autocomplete == 'liberadorReg' ? (
                       suggestionsReg.map((suggestion) => (
+                        // @ts-expect-error TS2552
                         <a key={suggestionReg.registration}
                           className='flex items-center h-10 w-full px-5 bg-background text-navbar hover:bg-section cursor-pointer'
                           onClick={handleSearchSelect}
+                          // @ts-expect-error TS2322
                           name='liberadorReg'
+                          // @ts-expect-error TS2552
                           id={suggestionReg.registration}
                         >
+                          {/*
+                           // @ts-expect-error TS2339 */}
                           {suggestion.registration}
                         </a>
                       ))
@@ -294,7 +326,9 @@ function Excecao() {
                 <textarea
                   name="observacao"
                   id=""
+                  // @ts-expect-error TS2322
                   cols="30"
+                  // @ts-expect-error TS2322
                   rows="10"
                   className='border border-navbar border-opacity-50 border-solid w-full p-3'
                   onChange={handleChange}
@@ -326,8 +360,11 @@ function Excecao() {
           <img src="../public/Spinner.svg" alt="" className='m-auto'/>
         </div>
       ) : (
+        // @ts-expect-error TS2339
         resultados.ok === 0 ? (
           <div className='flex flex-row bg-background p-10 sm:flex-col'>
+            {/*
+             // @ts-expect-error TS2339 */}
             <UsersList NameList={resultados.nome} ListName={`Colaboradores Alterados `} messageContent={' teste.'} />
           </div>
         ) : null

@@ -3,10 +3,8 @@ const dbconnection = require('../utils/connection');
 
 
 const feriasProcess = asyncWrapper (async (req,res) =>{
-   
     const userNameList = req.body.nameList;
     const dataFim = req.body.dataFim;
-
     const { userMatricula,userName, userId, userInvalid } = await userExist(dbconnection, userNameList);
     const { notUpdated } = await updateUsers(dbconnection, userMatricula, userName, userId, dataFim);
     const updatedUserName = removeNotUpdatedNames(userName, notUpdated);
@@ -32,7 +30,6 @@ async function userExist(dbconnection, userNameList) {
               try {
                 const [results] = await dbconnection.execute(query, [nome]);
                 if( results.length > 0){
-                    console.log("Resultados"+ JSON.stringify([results]))
                     const matricula = [results][0][0]['name'];
                     const id = [results][0][0]['id']
                     userMatricula.push(matricula)
@@ -54,26 +51,20 @@ async function userExist(dbconnection, userNameList) {
 
 
           async function updateUsers(dbconnection, userMatricula, userName, userId, dataFim){
-            console.log('Lançando férias...')
             const notUpdated = []
             for (let i = 0; i < userId.length; i++){
-                console.log('Ferias para: '+userMatricula[i])
                 const query = `UPDATE users
                 SET dateLimit = ? 
                 WHERE id = ? and registration = ? AND deleted = 0;`;
-                console.log(`UPDATE users SET dateLimit = '${dataFim} 23:59:59',  WHERE id = ${userId[i]} and registration = ${userName[i]} AND deleted = 0;`)
                 const [result] = await dbconnection.execute(query, [`${dataFim} 23:59:59`, userId[i], userName[i]]);
             }
             return { notUpdated };
         }
         
-        
+
 function removeNotUpdatedNames(userMatricula, notUpdated) {
     return userMatricula.filter(name => !notUpdated.includes(name));
 }
-
-
-
 module.exports = {
     feriasProcess
 }

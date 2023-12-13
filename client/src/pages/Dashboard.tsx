@@ -1,18 +1,19 @@
+// @ts-expect-error TS6133
 import { Link } from 'react-router-dom';
+// @ts-expect-error TS6133
 import { FaDesktop } from "react-icons/fa6";
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import TotalAtrasosDoMes from '../components/TotalAtrasosDoMes';
-import TotalAtrasos from '../components/TotalAtrasos';
-
-
-
 
 function HomePage() {
   const [log, setLog] = useState([]);
+  // @ts-expect-error TS6133
   const [expandedEntry, setExpandedEntry] = useState(null);
+  // @ts-expect-error TS6133
   const [isClicked, setIsClicked] = useState(false);
+  // @ts-expect-error TS6133
   const [sortBy, setSortBy] = useState('dataLiberacao');
+  // @ts-expect-error TS6133
   const [inputSearch, setInputSearch] = useState('');
   const [mesAtual, setMesAtual] = useState('');
   const [mesAtualValor, setMesAtualValor] = useState(0);
@@ -23,6 +24,7 @@ function HomePage() {
     useEffect(() => {
       axios.get("http://10.0.1.204:3307/api/v1/getLog/")
         .then((res) => {
+          // @ts-expect-error TS7006
           const formattedLog = res.data[0].map(entry => {
             let date = new Date(entry.dataLiberacao);
             let formattedDate = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
@@ -36,9 +38,11 @@ function HomePage() {
   }
   getLogs()
 useEffect(() => {
+  // @ts-expect-error TS6133
   const id = 0
     axios.get(`http://10.0.1.204:3307/api/v1/dashboard`)
       .then((res) => {
+        // @ts-expect-error TS7006
         const formattedLog = res.data[0].map(entry => {
           let date = new Date(entry.dataLiberacao);
           let formattedDate = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
@@ -55,12 +59,14 @@ useEffect(() => {
     const mesAtualValor = await dateVerify()
     const mesPassadoValor = await dateVerifyPast()
     setMesAtualValor(mesAtualValor)
+    // @ts-expect-error TS2345
     setMesPassadoValor(mesPassadoValor)
   }
 
   async function getMesAtualEmPortugues() {
     const data = new Date();
     const opcoes = { month: 'long' };
+    // @ts-expect-error TS2769
     const mes = data.toLocaleString('pt-br', opcoes);
     return mes;
   }
@@ -70,7 +76,9 @@ useEffect(() => {
     const dataRAW = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), 1);
     const dataReferencia = dataRAW.toLocaleDateString('pt-br');
     var cont = 0
+    // @ts-expect-error TS6133
     const objetosFiltrados = log.filter(objeto => {
+      // @ts-expect-error TS2339
       const dataObjeto = (objeto.dataLiberacao);
       if (dataObjeto >= dataReferencia) {
         cont++

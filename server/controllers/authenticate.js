@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 
 const loginValidation = 
 asyncWrapper( async (req,res ) => {
-    console.log('Iniciando Validação')
     const formLogin = req.body.formLogin;
     const formPassword = req.body.formPassword;
     if (!formLogin || !formPassword) {
@@ -16,7 +15,6 @@ asyncWrapper( async (req,res ) => {
 
 const generateTokenSession = 
 asyncWrapper( async (formLogin) => {
-    console.log('Gerando Token....')
     const payload = {
       username: formLogin,
       salt: Math.random(),
@@ -34,14 +32,12 @@ async function userValidation(dbconnection, formLogin, formPassword) {
     const query = `SELECT delpUser FROM atm  WHERE delpUser = '${formLogin}'`;
     var result = await dbconnection.execute(query);
     if (result[0][0]['delpUser'] != 0 && result[0][0]['delpUser'] != "" ) { 
-        console.log("Nome encontrado com sucesso"); 
         const queryFinal = `SELECT COUNT(*) FROM atm WHERE delpUser = '${formLogin}' AND password = '${formPassword}'`;
         result = await dbconnection.execute(queryFinal);
         if (result[0][0]['COUNT(*)'] > 0) {
           const token = await generateTokenSession(formLogin); 
           return { ok: true, token: token }; 
         } else {
-          console.log("Senha incorreta"); 
           return { ok: false, message: 'Usuario ou Senha incorreta' }; 
         }
     } else {

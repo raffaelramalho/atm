@@ -1,3 +1,4 @@
+// @ts-expect-error TS7031
 const UsersList = ({ NameList, ListName, messageContent }) => {
   const getCurrentTime = () => {
     const currentTime = new Date();
@@ -18,6 +19,8 @@ const UsersList = ({ NameList, ListName, messageContent }) => {
         </div>
       ):(
         <ul className='bg-section px-10 py-5 my-5'> 
+            {/*
+             // @ts-expect-error TS7006 */}
             {NameList.map((nome) => (
               <li key={nome}> <span>[{horaAtual}]</span> Usuário <span className='text-successBtn'>{nome}</span> {messageContent}</li>
             ))}

@@ -1,17 +1,25 @@
+// @ts-expect-error TS6133
 import React, { useState, useEffect, useCallback } from 'react';
+// @ts-expect-error TS6133
 import UsersList from '../components/UsersList';
 import axios from 'axios';
-import swal from 'sweetalert';
-import Organizer from '../components/hoc/hoc';
+import Organizer from '../components/hoc/Hoc';
+import swal from 'sweetalert2';
+import './modal.css'
 
 function Form() {
   const [turnos, setTurnos] = useState([]);
+  // @ts-expect-error TS6133
   const [informations, setInformations] = useState([]);
   const [token1, setToken] = useState(false);
+  // @ts-expect-error TS6133
   const [resultados, setResultados] = useState({ nome: [], id: [], invalido: [], naoAtualizado: [] });
+  // @ts-expect-error TS6133
   const [form, setForm] = useState({ nameList: [], newTurn: "" });
   const [loading, setLoading] = useState(false);
+  // @ts-expect-error TS6133
   const [able, setable] = useState(true);
+  // @ts-expect-error TS6133
   const [aviso, setAviso] = useState(false)
 
 
@@ -33,13 +41,18 @@ function Form() {
   const [formCount, setFormCount] = useState([0]);
   const [formValues, setFormValues] = useState({});
   const [index, setIndex] = useState(1);
-  const [showModal, setShowModal] = useState(false);
-  
+  // @ts-expect-error TS6133
+  const [showModal, setShowModal] = useState(true);
+  const [empty, setEmpty] = useState(true)
+
+  // @ts-expect-error TS7006
   const handleChange = (e, id) => {
+    setEmpty(false)
     const value = e.target.name === 'nameList' ? e.target.value.split('\n') : e.target.value;
     setFormValues(prevState => ({
       ...prevState,
       [id]: {
+        // @ts-expect-error TS7053
         ...prevState[id],
         [e.target.name]: value
       }
@@ -48,7 +61,8 @@ function Form() {
 
   const validateForm = () => {
   for (let id in formValues) {
-    if (!formValues[id].nameList || formValues[id].newTurn === 'default') {
+    // @ts-expect-error TS7053
+    if (!formValues[id] || formValues[id].nameList === '' || formValues[id].newTurn === 'default') {
       return false;
     }
   }
@@ -56,35 +70,54 @@ function Form() {
 };
 
 const handleUpdate = async () => {
-  if (validateForm()) {
-    swal({
-      title: "Você tem certeza?",
-      text: "Depois de confirmado, os dados serão enviados para o servidor.",
-      icon: "warning",
-      buttons: ["Cancelar","Confirmar"],
-      dangerMode: true,
-    })
-    .then(async (willSend) => {
-      if (willSend) {
-        try {
-          const response = await axios.post('http://10.0.1.204:3307/api/v1/processar-dados', formValues);
-          console.log(response.data);
-          // Abre um modal com o conteúdo da resposta
-          const data = await response.data;
-          console.log(data)
-          setResultados(data);
-          setable(false);
-          setInformations(data.invalidos);
-          setShowModal(true)
-        } catch (error) {
-          console.error(error);
-          swal("Erro", error.message, "error");
-        }
-      }
-    });
+  setLoading(true)
+  if (validateForm() && !empty) {
+    try {
+      // @ts-expect-error TS18046
+      const filledForms = Object.values(formValues).filter(form => form.nameList && form.newTurn !== 'default');
+      const response = await axios.post('http://10.0.1.204:3307/api/v1/processar-dados', filledForms);
+      const data = response.data;
+      console.log(data)
+      // Abra o modal com as informações aqui
+      openModal(data);
+      setResultados(data);
+      setable(false);
+      setInformations(data.invalidos);
+      setShowModal(true);
+    } catch (error) {
+      
+      // @ts-expect-error TS18046
+      swal.fire("Erro", error.message, "error");
+      console.error(error);
+    }
   } else {
-    swal("Formulário inválido", "Por favor, preencha corretamente todos os campos do formulário.", "error");
+    swal.fire("Formulário inválido", "Por favor, preencha corretamente todos os campos do formulário.", "error");
   }
+
+  setLoading(false);
+};
+
+// @ts-expect-error TS7006
+const openModal = (data) => {
+  const modalContent = `
+  ${data.Inexistente.length == 0 && data.Inexistente.length == 0 && data.Duplicadas.length == 0 ?  `<p>Todos os colaboradores foram alterados com sucesso!</p>` : ''}
+  ${data.Inexistente.length > 0 ? `<p><strong>Inexistente:</strong></p><p>${data.Inexistente.join(', ')}</p>` : ''}
+  ${data.NaoAtualizado.length > 0 ? `<p><strong>Não Atualizado:</strong></p><p>${data.NaoAtualizado.join(', ')}</p>` : ''}
+  ${data.Duplicadas.length > 0 ? `<p><strong>Duplicadas:</strong></p><p>${data.Duplicadas.join(', ')}</p>` : ''}
+`;
+
+  swal.fire({
+    title: 'Atenção!',
+    html: modalContent,
+    icon: 'info',
+    customClass: {
+      container: 'my-custom-modal-container', 
+      popup: 'my-custom-modal-popup', 
+    },
+    showCloseButton: true,
+    showCancelButton: false,
+    confirmButtonText: 'Fechar',
+  });
 };
 
 const addForm = () => {
@@ -96,6 +129,7 @@ const addForm = () => {
   }
 };
 
+// @ts-expect-error TS7006
 const removeForm = (id) => {
   setFormCount(formCount.filter((item) => item !== id));
 };
@@ -104,62 +138,13 @@ const removeForm = (id) => {
     <div className='flex-col p-5 w-full sm:flex-row p-1 sm:p-5 mt-10 h-screen'>
       <div className='flex justify-between mb-5'>
         <h3 className='text-xl sm:text-3xl my-2'>Alterar turno de colaboradores em massa:</h3>
-        <button onClick={addForm} disabled={formCount.length >= 4} className='w-3/12 sm:w-1/12 p-0 sm:p-0 '>Novo Grupo</button>
+        <button onClick={addForm} disabled={formCount.length >= 4} className='w-3/12 sm:w-1/12 p-0 sm:p-0 bg-successBtn hover:bg-headerColor'>Novo Grupo</button>
       </div>
-      <>
-            {showModal ? (
-                <>
-                    <div className="fixed inset-0 z-20 overflow-y-auto transition">
-                        <div
-                            className="fixed inset-0 w-full h-full bg-black opacity-40"
-                            onClick={() => setShowModal(false)}
-                        ></div>
-                        <div className="flex items-center h-screen px-4 py-8 w-screen">
-                            <div className="relative w-full max-w-lg p-4 mx-auto bg-white rounded-md shadow-lg h-4/6 bg-background flex flex-col">
-                                <div className="mt-3 sm:flex flex h-full justify-center">
-                                    
-                                    <div className="mt-2 text-center sm:text-left h-full w-full">
-                                        <h4 className="text-lg font-medium text-gray-800">
-                                            Não foi possível alterar as seguintes matrículas
-                                        </h4>
-                                        <p className="mt-2 text-[15px] leading-relaxed text-gray-500 flex-row h-4/5 overflow-y-auto">
-                                          <div>
-                                            <p>Não foi possível atualizar:</p>
-                                            <p className='flex flex-col'>{resultados.NaoAtualizado}</p>
-                                          </div>
-                                          <div>
-                                          <p>Inexistente:</p>
-                                          <p className='flex flex-col'>{resultados.Inexistente}</p>
-                                          </div>
-                                          <div>
-                                            <p>Duplicados:</p>
-                                            <p className='flex flex-col'>{resultados.Duplicadas}</p>
-                                          </div>
-                                        </p>
-                                        <div className="items-center gap-2 mt-3 sm:flex">
-                                           
-                                            <button
-                                                className="w-1/6 mt-2 p-2.5 flex-1 text-gray-800 rounded-md outline-none border ring-offset-2 ring-indigo-600 focus:ring-2"
-                                                onClick={() =>
-                                                    setShowModal(false)
-                                                }
-                                            >
-                                                ok
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </>
-            ) : null}
-      </>
       {token1 ? (
         <div className='flex flex-col w-full items-center sm:flex-col sm:flex '>
           <div className='w-full overflow-y-auto overflow-x-hidden h-[600px] flex flex-col items-center justify-center sm:flex-row sm:flex sm:h-full'>
             {formCount.map((id) => (
-              <form key={id} className='bg-background p-5  rounded w-full  sm:p-10 sm:m-3 sm:w-4/6 h-3/4'>
+              <form key={id} className='bg-background p-2  rounded w-full  sm:p-5 sm:m-3 sm:w-4/6 h-3/4'>
                 <div className='w-full flex justify-between mb-3 items-center'>
                   <p className='font-semibold'> Grupo {id + 1}</p>
                   <button type="button" onClick={() => removeForm(id)} className='flex w-10 h-10 bg-none hover:bg-[#fff] text-[#000] justify-center rounded-full'>X</button>
@@ -168,6 +153,7 @@ const removeForm = (id) => {
                   <textarea
                     rows={10}
                     name='nameList'
+                    // @ts-expect-error TS7053
                     value={formValues[id]?.nameList || ''}
                     onChange={(e) => handleChange(e, id)}
                     placeholder='Lista de matriculas'

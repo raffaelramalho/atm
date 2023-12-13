@@ -4,7 +4,6 @@ const dbconnection = require('../utils/connection');
 
 const search =
     asyncWrapper(async (req, res) => {
-        console.log('Buscando por pessoas parecidas');
         const request = req.query;
         if ('registration' in request) {
             const { registration } = req.query;

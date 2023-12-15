@@ -99,7 +99,7 @@ function HomePage() {
             </select>
           </div>
           <div>
-            <button className='flex bg-headerColor hover:bg-navbar rounded-xl items-center'
+            <button className='flex bg-headerColor hover:bg-navbar rounded-xl items-center font-medium'
             onClick={() => exportToExcel(`historico_${new Date().toISOString()}`)}
             >Exportar <SiMicrosoftexcel className='ml-1' />
             </button>

@@ -26,10 +26,6 @@ const deleteInsert = async(matricula, dbconnection)=>{
     const query = `SELECT newTurn from DeleteQueue where registration=?`
     const [result] = await dbconnection.execute(query,[matricula])
     const newTurn = result[0]['newTurn'];
- 
-    WHERE idUser IN (
-        SELECT id FROM users WHERE registration = ${matricula}
-    ) AND idGroup =${newTurn} `)
     const queryDelete = `DELETE FROM usergroups 
     WHERE idUser IN (
         SELECT id FROM users WHERE registration = ?

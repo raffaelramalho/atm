@@ -5,13 +5,13 @@ const moment = require('moment');
 
 const dataProcess = asyncWrapper(async (req, res) => {
   const forms = req.body;
-
+  console.log(forms)
   let naoExiste = [];
   let duplicadoMatricula = [];
   let naoAtualizado = [];
   for (let key in forms) {
     const matriculas = forms[key].nameList[0].split(',');
-
+    
     if (matriculas.length == '') {
       res.json({ error: 'Formulário em branco' });
       return;
@@ -25,16 +25,19 @@ const dataProcess = asyncWrapper(async (req, res) => {
     const matriculasParaAtualizar = [];
     for (let i = 0; i < matriculas.length; i++) {
       const matricula = matriculas[i].trim();
+      console.log(matricula)
       if (seenMatriculas.has(matricula)) {
         duplicadoMatricula.push(matricula);
       } else {
         seenMatriculas.add(matricula);
         try {
+          console.log('alterando....')
           const [rows] = await dbconnection.execute(
-            'SELECT id, name FROM users WHERE registration = ? AND deleted = 0 and inativo = 0 LIMIT 1',
+            'SELECT id, name FROM users WHERE registration = ? AND deleted = 0 and inativo = 0',
             [matricula]
           );
           if (rows.length === 0) {
+            console.log('não existe')
             naoExiste.push(matricula);
           } else {
             matriculasParaAtualizar.push(matricula);
@@ -71,8 +74,10 @@ async function updateUsers(dbconnection, matricula, turno, id) {
 
   try {
     const [result] = await dbconnection.execute('select g.id,u.name from usergroups ug inner join groups g on g.id=ug.idGroup inner join users u on u.id=ug.idUser where u.deleted = 0 and g.idType = 1 and u.registration = ? and u.id = ? limit 1;', [matricula, id]);
+    console.log(result)
     if (result[0]) {
       const turnOld = JSON.stringify(result[0]['id'])
+      console.log(turnOld)
       const nome = result[0]['name']
       oldTurnList.push(turnOld)
       if (turnOld != '1002') {
@@ -97,7 +102,7 @@ async function updateUsers(dbconnection, matricula, turno, id) {
 
 
 async function logInsert(dbconnection, matricula, oldTurn, newTurn, id, nome) {
-  
+  console.log('inserindo no log')
   const query = 'insert into DeleteQueue(comando,horarioExecucao,registration,oldTurn,newTurn,nome) values (?,?,?,?,?,?)';
   const proxDomingo = await getNextSunday()
   const queryCommand = `delete from usergroups where idUser = ${id} and idGroup = ${oldTurn}`
@@ -107,14 +112,12 @@ async function logInsert(dbconnection, matricula, oldTurn, newTurn, id, nome) {
   } catch (error) {
     console.log(error)
   }
+  console.log('inserido com sucesso')
+  return ''
 }
 
 
 
-function removeNotUpdatedNames(userName, notUpdated) {
-  
-  return userName.filter(name => !notUpdated.includes(name));
-}
 
 async function getNextSunday() {
   let now = moment();

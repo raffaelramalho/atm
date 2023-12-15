@@ -23,9 +23,9 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: st
 
     return (
         <>
-            <table className="table-auto w-full">
+            <table className="table-auto w-full border">
                 <thead>
-                    <tr className='sticky top-0 bg-background h-20 rounded'>
+                    <tr className='sticky top-0 bg-[#555] text-[#fff] h-20 rounded'>
                         <th className='font-medium'>Nome</th>
                         <th className='font-medium'>Matricula</th>
                         <th className='font-medium'>Dia</th>
@@ -33,35 +33,36 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: st
                         <th className='font-medium'>Requerente</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody >
                     {logPaginado.sort((a, b) => {
-                  if (sortBy === 'dataMaisRecente') {
-                    // Ordene por dataMaisRecente
-                    // @ts-expect-error TS2362
-                    return new Date(b.dataLiberacao) - new Date(a.dataLiberacao);
-                  } else if (sortBy === 'esseMes') {
-                    const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-                    const filteredLog = log.filter((entry) => new Date(entry.dataLiberacao) >= firstDayOfMonth);
+                        if (sortBy === 'dataMaisRecente') {
+                            // Ordene por dataMaisRecente
+                            // @ts-expect-error TS2362
+                            return new Date(b.dataLiberacao) - new Date(a.dataLiberacao);
+                        } else if (sortBy === 'esseMes') {
+                            const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+                            const filteredLog = log.filter((entry) => new Date(entry.dataLiberacao) >= firstDayOfMonth);
 
-                    setLog(filteredLog);
-                  } else {
-                    // Lógica de ordenação existente
-                    if (a[sortBy] < b[sortBy]) return -1;
-                    if (a[sortBy] > b[sortBy]) return 1;
-                    return 0;
-                  }
-                  return 0;
-                }).map((entry, index) => (
+                            setLog(filteredLog);
+                        } else {
+                            // Lógica de ordenação existente
+                            if (a[sortBy] < b[sortBy]) return -1;
+                            if (a[sortBy] > b[sortBy]) return 1;
+                            return 0;
+                        }
+                        return 0;
+                    }).map((entry, index) => (
                         <tr
                             key={index}
-                            className={`bg-background px-8 py-3 0 h-30 shadow-md mb-5 w-full justify-between transition duration-300 border-b-[0.1px] border-solid border-y-navbar first:border-t-[0.1px] ease-in-out rounded-md hover:bg-[#DFF4FA] items-start last:border-none last:rounded-lg`}
+                            className={`${index % 2 === 0 ? 'bg-gray-200' : 'bg-background'
+                                } px-8 py-3 0 h-30  mb-5 w-full justify-between transition duration-300 border-b-[0.1px] border-solid border-y-navbar first:border-t-[0.1px] ease-in-out rounded-md hover:bg-[#DFF4FA] items-start last:border-none last:rounded-lg`}
                         >
-                            <td className='pl-5 h-20 flex flex-row justify-center items-center text-xs sm:text-base'>{entry.nomeLiberado}</td>
-                            <td className='pl-5 text-center text-xs sm:text-base'>{entry.matriculaLiberado}</td>
-                            <td className='pl-5 h-20 flex flex-row justify-center items-center text-xs sm:text-base'>
+                            <td className='pl-5 h-20 flex flex-row justify-center items-center text-xs sm:text-base border-r border-y-navbar'>{entry.nomeLiberado}</td>
+                            <td className='pl-5 text-center text-xs sm:text-base border-r border-y-navbar'>{entry.matriculaLiberado}</td>
+                            <td className='pl-5 h-20 flex flex-row justify-center items-center text-xs sm:text-base border-r border-y-navbar'>
                                 {entry.dataLiberacao && (<p>{entry.dataLiberacao.split(' ')[0]}</p>)}
                             </td>
-                            <td className='pl-5 text-xs sm:text-base'>
+                            <td className='pl-5 text-xs sm:text-base border-r border-y-navbar'>
                                 {entry.dataLiberacao && (<p> {entry.dataLiberacao.split(' ')[1].slice(0, 5)}</p>)}
                             </td>
                             <td className='pl-5 h-20 flex flex-row justify-center items-center text-xs sm:text-base'>{entry.nomeRequerente}</td>

@@ -14,7 +14,6 @@ function LogChanges() {
       axios.get("http://10.0.1.204:3307/api/v1/changeLog?log=1")
         .then((res) => {
           const formattedLog = res.data[0]
-          console.log(formattedLog[0])
           setLog(formattedLog[0]);
         })
         .catch((error) => console.error(`Erro: ${error}`));
@@ -24,7 +23,6 @@ function LogChanges() {
 
   // @ts-expect-error TS7006
   const handleChangeClick = async (event) => {
-    console.log(event.currentTarget.name)
     const target = event.currentTarget.name
     swal({
       title: "Tem certeza?",
@@ -42,7 +40,7 @@ function LogChanges() {
             const response = await axios.get(`http://10.0.1.204:3307/api/v1/changeLog?delete=${target}`)
             window.location.reload();
           } catch (error) {
-            console.log(error)
+        
           }
           getLogs();
         } else {
@@ -59,8 +57,6 @@ function LogChanges() {
       <div className='h-full w-full'>
         <h3 className='text-3xl my-2'>Relação de mudanças de turno</h3>
         <div className={`flex flex-row bg-background px-8 py-3 shadow-md mb-5 w-full justify-between transition duration-500  ease-in-out rounded-md h-26 font-medium`}>
-          {/*
-           // @ts-expect-error TS2322 */}
           <div className='flex flex-row items-center'>
             Colaborador</div>
           <div>Turno Novo</div>

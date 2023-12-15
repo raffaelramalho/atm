@@ -22,17 +22,15 @@ const exception =
 
 
 async function userExist(dbconnection, nameC, nameL,regC,regL,idc) {
-          console.log(nameC,regC)
-          console.log(nameL,regL)
           const query = `SELECT id FROM Users WHERE name = ? and registration = ? and deleted = 0 limit 1`;
+          const query1 = `SELECT id FROM Users WHERE name = ? and registration = ? and deleted = 0 and isLeader = 1 limit 1`;
           try {
             const results = await dbconnection.execute(query, [nameC,regC]);
-            const results1 = await dbconnection.execute(query, [nameL,regL]);
-            console.log(results[0].length)
-            console.log(results1[0].length)
-            if( results[0].length > 0 && results1.length > 0){
+            const results1 = await dbconnection.execute(query1, [nameL,regL]);  
+            if( results[0].length > 0 && results1[0].length > 0){
                 return true
             } else {
+    
                 return false
             }
           } catch (error) {

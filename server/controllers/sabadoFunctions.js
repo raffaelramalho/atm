@@ -1,0 +1,41 @@
+const asyncWrapper = require('../middleware/async');
+const dbconnection = require('../utils/connection');
+
+
+const sabadoInsert =
+    asyncWrapper(async (req, res) => {
+        const request = req.body;
+        const inexistente = []
+        const rawArray =request[0]['nameList'][0].split(',')
+        const filteredArray = [...new Set(rawArray)]
+        for( let matricula in filteredArray){
+          try {
+           const [resultSelect] = await dbconnection.execute(`Select id from users where registration = ?`,[filteredArray[matricula]])
+          if( resultSelect.length > 0 ){
+      
+            const [resultTurnId] = await dbconnection.execute(`select id from groups where name='Sábado Exceção'`)
+            const id = resultTurnId[0]['id']
+            try {
+              const [resultInsert] = await dbconnection.execute(`insert into usergroups(idUser,idGroup, isVisitor) values (?,?,0)`,[resultSelect[0].id, id])
+              const deleteCommand = `delete from usersgroups where idUser =${resultSelect[0].id} and idGroup = ${id}`
+              const [deleteQueueInsert] = await dbconnection.execute(`insert into DeleteQueue(comando,status,oldTurn) values(?,'sabado',?)`,[deleteCommand,id])
+            }catch(error){
+              console.log(error)
+            }
+           
+
+          } else {
+            inexistente.push(filteredArray[matricula])
+          }
+          } catch (error) {
+            console.error(error);
+          }
+        }
+        let responseList = filteredArray.filter(item => !inexistente.includes(item));
+        return res.status(202).send({responseList,inexistente})
+    })
+
+
+module.exports = {
+  sabadoInsert
+}

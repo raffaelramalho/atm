@@ -5,13 +5,13 @@ const moment = require('moment');
 
 const dataProcess = asyncWrapper(async (req, res) => {
   const forms = req.body;
-  console.log(forms)
+
   let naoExiste = [];
   let duplicadoMatricula = [];
   let naoAtualizado = [];
   for (let key in forms) {
     const matriculas = forms[key].nameList[0].split(',');
-    console.log(matriculas)
+
     if (matriculas.length == '') {
       res.json({ error: 'Formulário em branco' });
       return;
@@ -50,7 +50,6 @@ const dataProcess = asyncWrapper(async (req, res) => {
     // Atualizar matriculas apenas com as não duplicadas
     forms[key].nameList[0] = matriculasParaAtualizar.join(',');
 
-    console.log(matriculasParaAtualizar);
   }
 
   res.json({ Inexistente: naoExiste, NaoAtualizado: naoAtualizado, Duplicadas: duplicadoMatricula });
@@ -63,7 +62,7 @@ const dataProcess = asyncWrapper(async (req, res) => {
 
 
 async function updateUsers(dbconnection, matricula, turno, id) {
-  console.log(matricula, turno, id)
+ 
   const notUpdated = []
   const oldTurnList = []
   const turnIdList = []
@@ -79,10 +78,10 @@ async function updateUsers(dbconnection, matricula, turno, id) {
       if (turnOld != '1002') {
         turnIdList.push(turnOld)
         await dbconnection.execute('insert into usergroups(idUser, idGroup,isVisitor) values (?,?,0);', [id, turnNew])
-        console.log('inserido')
+    
         logInsert(dbconnection, matricula, turnOld, turnNew, id, nome)
       } else {
-        console.log('Mensalista: ' + matricula)
+      
         return matricula;
       }
     } else {
@@ -98,14 +97,13 @@ async function updateUsers(dbconnection, matricula, turno, id) {
 
 
 async function logInsert(dbconnection, matricula, oldTurn, newTurn, id, nome) {
-  console.log('Salvando no log....')
+  
   const query = 'insert into DeleteQueue(comando,horarioExecucao,registration,oldTurn,newTurn,nome) values (?,?,?,?,?,?)';
   const proxDomingo = await getNextSunday()
   const queryCommand = `delete from usergroups where idUser = ${id} and idGroup = ${oldTurn}`
-  console.log(proxDomingo)
+ 
   try {
     const [result] = await dbconnection.execute(query, [queryCommand, proxDomingo, matricula, oldTurn, newTurn, `${nome}`])
-    console.log('Log cadastrado com sucesso!')
   } catch (error) {
     console.log(error)
   }
@@ -114,7 +112,7 @@ async function logInsert(dbconnection, matricula, oldTurn, newTurn, id, nome) {
 
 
 function removeNotUpdatedNames(userName, notUpdated) {
-  console.log("removendo..." + userName, notUpdated)
+  
   return userName.filter(name => !notUpdated.includes(name));
 }
 

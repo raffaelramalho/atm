@@ -12,6 +12,7 @@ import Excecao from "./pages/Excecao";
 import LogException from "./pages/LogException";
 import Dashboard from "./pages/Dashboard";
 import LogChanges from "./pages/LogChanges";
+import Sabado from "./pages/Sabado";
 
 
 function App({}) {
@@ -33,6 +34,7 @@ function App({}) {
           <Route path="*" element={<Error />} />
           <Route path="dashboard/" element={<Dashboard/>}/>
           <Route path="logchanges/" element={<LogChanges/>}/>
+          <Route path="sabado/" element={<Sabado/>}/>
       </Routes>
     </div>
       

@@ -5,7 +5,8 @@ import { FaFileDownload, FaQuestion } from "react-icons/fa";
 import UsersList from '../components/UsersList';
 import swal from 'sweetalert';
 import Organizer from '../components/hoc/Hoc';
- function Ferias() {
+import "./ferias.css"
+function Ferias() {
 
   // @ts-expect-error TS6133
   const [informations, setInformations] = useState([]);
@@ -28,7 +29,6 @@ import Organizer from '../components/hoc/Hoc';
   // @ts-expect-error TS7006
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(value)
     if (name === 'nameList') {
       const nameListArray = value.split('\n');
       setForm({ ...form, [name]: nameListArray });
@@ -42,8 +42,6 @@ import Organizer from '../components/hoc/Hoc';
 
   const validateForm = () => {
     const { nameList, dataFim } = form;
-    console.log(dataFim)
-    console.log(nameList)
     if (nameList.length === 0) {
       setAvisoType('branco');
       return false;
@@ -52,11 +50,11 @@ import Organizer from '../components/hoc/Hoc';
       setAvisoType('branco');
       return false;
     }
-   
+
     // @ts-expect-error TS6133
     const fim = new Date(dataFim);
 
-    
+
     setAvisoType('');
     return true;
   };
@@ -67,7 +65,7 @@ import Organizer from '../components/hoc/Hoc';
   };
 
   const handleUpdate = async () => {
-    const {dataFim } = form
+    const { dataFim } = form
     if (validateForm()) {
       setLoading(true);
       swal({
@@ -76,56 +74,55 @@ import Organizer from '../components/hoc/Hoc';
         icon: "warning",
         buttons: ["Cancelar", "Sim"],
       })
-      .then(async (willDelete) => {
-        if (willDelete) {
-          swal("Bloqueio de férias registrado com sucesso! :D", {
-            icon: "success",
-          });
+        .then(async (willDelete) => {
+          if (willDelete) {
+            swal("Bloqueio de férias registrado com sucesso! :D", {
+              icon: "success",
+            });
 
-          if (form.nameList.length > 0) {
-            const {  dataFim } = form;
-            const nameListArray = [...new Set(form.nameList.toString().split(',').map((name) => name.trim()))];
-            try {
-              const response = await fetch('http://10.0.1.204:3307/api/v1/processar-ferias', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nameList: nameListArray,  dataFim: dataFim }),
-              });
-              if (response.ok) {
-                const data = await response.json();
-                console.log(data)
-                setResultados(data);
-                setable(false);
-                setInformations(data.invalidos);
-              } else {
-                throw new Error(`Erro na requisição: ${response.statusText}`);
+            if (form.nameList.length > 0) {
+              const { dataFim } = form;
+              const nameListArray = [...new Set(form.nameList.toString().split(',').map((name) => name.trim()))];
+              try {
+                const response = await fetch('http://10.0.1.204:3307/api/v1/processar-ferias', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ nameList: nameListArray, dataFim: dataFim }),
+                });
+                if (response.ok) {
+                  const data = await response.json();
+                  setResultados(data);
+                  setable(false);
+                  setInformations(data.invalidos);
+                } else {
+                  throw new Error(`Erro na requisição: ${response.statusText}`);
+                }
+              } catch (error) {
+                console.error('Erro ao enviar dados para o backend', error);
+              } finally {
+                setLoading(false);
               }
-            } catch (error) {
-              console.error('Erro ao enviar dados para o backend', error);
-            } finally {
+            } else {
               setLoading(false);
+              setable(true);
+              setAviso(true)
             }
+
           } else {
+            swal("A operação foi cancelada");
             setLoading(false);
             setable(true);
-            setAviso(true)
+            setForm(({ nameList: [], dataFim: '' }))
           }
-          
-        } else {
-          swal("A operação foi cancelada");
-          setLoading(false);
-          setable(true);
-          setForm(({ nameList: [], dataFim: '' }))
-        }
-      });
-      
+        });
+
 
     }
   };
 
 
   return (
-    
+
     <div className='flex-col p-5 w-full sm:flex-row sm:p-10 overflow-y-visible mt-10 h-screen'>
       <h3 className='text-3xl my-2'>Bloqueio de férias em massa na catraca:</h3>
       {token1 ? (
@@ -157,12 +154,16 @@ import Organizer from '../components/hoc/Hoc';
                   <p>Esse formulário deve ser preenchido somente no último dia antes da folga do colaborador.</p>
                 </div>
                 <div className='flex-col justify-between text-navbar text-[#FFFF]'>
-              <div className='my-5'>
-                <button type='submit' className='flex justify-center items-center bg-successBtn hover:bg-[#123]' onClick={handleUpdate}>
-                  {loading ? "Atualizando..." : "Lançar bloqueio de féria"}
-                </button>
-              </div>
-            </div>
+                  <div className='my-5'>
+                    <button type='submit' className='flex justify-center items-center bg-successBtn hover:bg-[#123]' onClick={handleUpdate}>
+                      {loading ? "Atualizando..." : (<p className='flex justify-center items-center h-full font-medium'>
+                        Lançar Bloqueio <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                        </svg>
+                      </p>)}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
             <div className='flex w-full h-8 items-center'>
@@ -170,7 +171,7 @@ import Organizer from '../components/hoc/Hoc';
               <p>{avisoType === 'datas' ? "As datas não podem estar em branco." : ""}</p>
               <p>{avisoType === 'invalido' ? "A data de término não pode ser menor que a data de início." : ""}</p>
             </div>
-            
+
           </form>
 
         </div>

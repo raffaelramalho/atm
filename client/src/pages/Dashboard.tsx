@@ -19,78 +19,7 @@ function HomePage() {
   const [mesAtualValor, setMesAtualValor] = useState(0);
   const [mesPassadoValor, setMesPassadoValor] = useState(0);
 
-  //Recebe as informações dos logs
-  const getLogs = async () => {
-    useEffect(() => {
-      axios.get("http://10.0.1.204:3307/api/v1/getLog/")
-        .then((res) => {
-          // @ts-expect-error TS7006
-          const formattedLog = res.data[0].map(entry => {
-            let date = new Date(entry.dataLiberacao);
-            let formattedDate = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
-            return { ...entry, dataLiberacao: formattedDate };
 
-          });
-          setLog(formattedLog);
-        })
-        .catch((error) => console.error(`Erro: ${error}`));
-    }, []);
-  }
-  getLogs()
-useEffect(() => {
-  // @ts-expect-error TS6133
-  const id = 0
-    axios.get(`http://10.0.1.204:3307/api/v1/dashboard`)
-      .then((res) => {
-        // @ts-expect-error TS7006
-        const formattedLog = res.data[0].map(entry => {
-          let date = new Date(entry.dataLiberacao);
-          let formattedDate = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
-          return { ...entry, dataLiberacao: formattedDate };
-
-        });
-        setLog(formattedLog);
-      })
-      .catch((error) => console.error(`Erro: ${error}`));
-  }, []);
-  const dashboardFill = async () => {
-    const mesAtual = await getMesAtualEmPortugues()
-    setMesAtual(mesAtual)
-    const mesAtualValor = await dateVerify()
-    const mesPassadoValor = await dateVerifyPast()
-    setMesAtualValor(mesAtualValor)
-    // @ts-expect-error TS2345
-    setMesPassadoValor(mesPassadoValor)
-  }
-
-  async function getMesAtualEmPortugues() {
-    const data = new Date();
-    const opcoes = { month: 'long' };
-    // @ts-expect-error TS2769
-    const mes = data.toLocaleString('pt-br', opcoes);
-    return mes;
-  }
-
-  const dateVerify = async () => {
-    const dataAtual = new Date();
-    const dataRAW = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), 1);
-    const dataReferencia = dataRAW.toLocaleDateString('pt-br');
-    var cont = 0
-    // @ts-expect-error TS6133
-    const objetosFiltrados = log.filter(objeto => {
-      // @ts-expect-error TS2339
-      const dataObjeto = (objeto.dataLiberacao);
-      if (dataObjeto >= dataReferencia) {
-        cont++
-      }
-
-    });
-    return cont
-  }
-
-  const dateVerifyPast = async () => {
-   
-  }
   dashboardFill();
   return (
     <div className="flex flex-col sm:flex-row h-screen justify-center w-3/4 sm:p-5 ">

@@ -16,8 +16,8 @@ const excecaoController = require('./routes/excecaoController');
 const excecaoInsert = require('./routes/excecaoInsertController')
 const logController = require('./routes/historicoController')
 const logSearcher = require('./routes/historicoSearchController')
-const dataProcessSheet = require('./routes/userSheetController');
 const changeLog = require('./routes/changeController')
+const sabado = require('./routes/sabadoInsertController')
 
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true })); 
@@ -25,24 +25,24 @@ app.use(cors());
 
 const rota = '/api/v1/'
 app.use(`${rota}loginValidate/`, loginValidation);
-app.use(`${rota}getTurn/`, turnGetter);
-app.use(`${rota}getLog/`, logController);
-app.use(`${rota}searchGetter`, logSearcher);
+app.use(`${rota}getTurn/`, turnGetter)
+app.use(`${rota}getLog/`, logController)
+app.use(`${rota}searchGetter`, logSearcher)
 app.use(`${rota}processar-dados/`, dataProcess)
-app.use(`${rota}processar-dados-planilha/`, dataProcessSheet)
 app.use(`${rota}processar-ferias/`, feriasProcess)
-app.use(`${rota}search`, excecaoController);
-app.use(`${rota}exception`, excecaoInsert);
-app.use(`${rota}dashboard`, logSearcher);
+app.use(`${rota}search`, excecaoController)
+app.use(`${rota}exception`, excecaoInsert)
+app.use(`${rota}dashboard`, logSearcher)
 app.use(`${rota}changeLog`,changeLog)
+app.use(`${rota}sabado`,sabado)
 app.get(`${rota}teste/`, (req, res) => { res.json({ "message": "Hello world!" }); })
 
 const start = async () => {
     try {
         dbconnection.getConnection()
-        app.listen(PORT, '10.0.1.204', console.log(`URL: 10.0.1.204:${PORT}`))
+        app.listen(PORT, '10.0.1.204')
     } catch (error) {
-        console.log(error)
+     
     }
 }
 

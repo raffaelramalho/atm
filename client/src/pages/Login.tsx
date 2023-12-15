@@ -11,9 +11,9 @@ const Login = () => {
   const handleLogin = async () => {
     setLoading(true);
 
-    console.log(`Usuário: ${username}, Senha: ${password}`);
+  
     try {
-      console.log('Enviado requisição ')
+     
         
        var response =  await fetch('http://10.0.1.204:3307/api/v1/loginValidate', {
          method: 'POST',
@@ -29,7 +29,7 @@ const Login = () => {
        });
  
        const data = await response.json();
-       console.log(data)
+   
 
     if (data.token.ok) {
         // @ts-expect-error TS6133

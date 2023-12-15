@@ -2,7 +2,10 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Organizer from '../components/hoc/Hoc'
-
+import TabelaHistorico from '../components/ListaPaginada'
+import * as XLSX from 'xlsx';
+import { SiMicrosoftexcel } from "react-icons/si";
+import { FaArrowDownWideShort,FaArrowUpShortWide } from "react-icons/fa6";
 function HomePage() {
   const [log, setLog] = useState([]);
   const [expandedEntry, setExpandedEntry] = useState(null);
@@ -24,12 +27,18 @@ function HomePage() {
         let formattedDate = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
         return { ...entry, dataLiberacao: formattedDate };
       });
-      console.log(results.data[0])
       setLog(formattedLog);
     } else {
       setLog([]);
       await getLogs()
     }
+  };
+
+  const exportToExcel = (fileName) => {
+    const ws = XLSX.utils.json_to_sheet(log);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, `${fileName}.xlsx`);
   };
 
   // @ts-expect-error TS7006
@@ -49,7 +58,7 @@ function HomePage() {
           });
 
           setLog(formattedLog);
-          console.log(formattedLog)
+          
         })
         .catch((error) => console.error(`Erro: ${error}`));
     }, []);
@@ -84,55 +93,25 @@ function HomePage() {
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
             >
-              <option value='dataMaisRecente'>Data de Liberação ⥘</option>
-              <option value='dataLiberacao'>Data de Liberação ⥙</option>
+              <option value='dataMaisRecente'>Data de Liberação <FaArrowUpShortWide /> </option>
+              <option value='dataLiberacao'>Data de Liberação <FaArrowDownWideShort /></option>
               <option value='nomeLiberado'>Nome</option>
             </select>
+          </div>
+          <div>
+            <button className='flex bg-headerColor hover:bg-navbar rounded-xl items-center'
+            onClick={() => exportToExcel(`historico_${new Date().toISOString()}`)}
+            >Exportar <SiMicrosoftexcel className='ml-1' />
+            </button>
           </div>
         </div>
         <div className='flex flex-col overflow-y-auto h-5/6 mb-10 scrollbar-track-background'>
           {log.length > 0 ? (
-            <table className="table-auto w-full ">
-              <thead>
-                <tr className='sticky top-0 bg-background h-20 rounded'>
-                  <th className='font-medium'>Colaborador</th>
-                  <th className='font-medium'>Matricula</th>
-                  <th className='font-medium'>Horário</th>
-                  <th className='font-medium'>Requerente</th>
-                </tr>
-              </thead>
-              <tbody>
-                {log.sort((a, b) => {
-                  if (sortBy === 'dataMaisRecente') {
-                    // Ordene por dataMaisRecente
-                    // @ts-expect-error TS2362
-                    return new Date(b.dataLiberacao) - new Date(a.dataLiberacao);
-                  } else if (sortBy === 'esseMes') {
-                    const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-                    console.log(firstDayOfMonth)
-                    const filteredLog = log.filter((entry) => new Date(entry.dataLiberacao) >= firstDayOfMonth);
-
-                    setLog(filteredLog);
-                  } else {
-                    // Lógica de ordenação existente
-                    if (a[sortBy] < b[sortBy]) return -1;
-                    if (a[sortBy] > b[sortBy]) return 1;
-                    return 0;
-                  }
-                  return 0;
-                }).map((entry, index) => (
-                  <tr
-                    key={index}
-                    className={`bg-background px-8 py-3 shadow-md mb-5 w-full justify-between transition duration-300  ease-in-out rounded-md hover:bg-[#DFF4FA] ${expandedEntry === index ? ' items-start mb-10' : ' items-center sm:h-20'}`}
-                  >
-                    <td className='pl-5'>{entry.nomeLiberado}</td>
-                    <td className='pl-5'>{entry.matriculaLiberado}</td>
-                    <td className='pl-5'>{entry.dataLiberacao.split(' ')}</td>
-                    <td className='pl-5'>{entry.nomeRequerente}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <TabelaHistorico
+              log={log}
+              sortBy={sortBy}
+              itemsPerPage={10}
+            />
           ) : (
             <div className='flex items-center justify-center h-full'>
               <p className='font-medium text-lg'>Nenhum resultado encontrado para essa pesquisa.</p>

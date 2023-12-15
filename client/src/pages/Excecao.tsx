@@ -20,6 +20,7 @@ function Excecao() {
   // @ts-expect-error TS6133
   const [aviso, setAviso] = useState(false)
   const [avisoType, setAvisoType] = useState('');
+  const [inputTextarea, setInputTextarea] = useState('');
   const [inputCol, setInputCol] = useState('');
   const [inputColReg, setInputColReg] = useState('');
   const [suggestions, setSuggestions] = useState([]);
@@ -66,19 +67,17 @@ function Excecao() {
     setSuggestions([])
     const inputType = event.target.name
     const value = event.target.value;
-    console.log(inputType, value)
     if(inputType == 'liberadorReg'){
-      setAutoComplete('liberado')
+      setAutoComplete('liberadorReg')
       setInputLibReg(value);
       setForm({ ...form, regL: value })
     } else if(inputType == 'liberadoReg'){
-      setAutoComplete('liberado')
+      setAutoComplete('liberadoReg')
       setInputColReg(value);
       setForm({ ...form, regC: value })
     }
     if (value.length > 0) {
       const results = await axios.get(`http://10.0.1.204:3307/api/v1/search?registration=${value}`);
-      console.log(results.data[0])
       setSuggestionsReg(results.data[0]);
     } else {
       setSuggestionsReg([]);
@@ -103,14 +102,14 @@ function Excecao() {
       setForm({ ...form, nameL: selectedValue, regL: id })
     } else if (name === 'liberadorReg') {
       setSearch(selectedValue)
-      setInputLib(selectedValue)
-      setInputLibReg(id)
-      setForm({ ...form, nameL: selectedValue, regL: id })
+      setInputLib(id)
+      setInputLibReg(selectedValue)
+      setForm({ ...form, nameL:id , regL: selectedValue })
     } else if (name === 'liberadoReg') {
       setSearch(selectedValue)
-      setInputLib(selectedValue)
-      setInputLibReg(id)
-      setForm({ ...form, nameL: selectedValue, regL: id })
+      setInputCol(id)
+      setInputColReg(selectedValue)
+      setForm({ ...form, nameC:id , regL: selectedValue })
     }
     setSuggestions([])
   }
@@ -118,25 +117,16 @@ function Excecao() {
 
   const validateForm = () => {
     setAvisoType('');
-    console.log(form)
     const { nameC, nameL, regC, regL, obs } = form;
     if (!nameC || !nameL || !regC || !regL || !obs) {
-      console.log('Todos os campos devem ser preenchidos.');
-      setAvisoType('branco');
       return false;
     }
     if (nameC === nameL) {
-      console.log('nameC e nameL não podem ser iguais.');
-      setAvisoType('igual');
       return false;
     }
-    if (regL === regC) {
-      console.log('regL e regC não podem ser iguais.');
-      setAvisoType('igual');
+    if (regL === regC) {      
       return false;
     }
-
-    setAvisoType('');
     return true;
   };
 
@@ -148,6 +138,7 @@ function Excecao() {
   // @ts-expect-error TS7006
   const handleChange = (e) => {
     const text = e.target.value
+    setInputTextarea(text)
     setForm({ ...form, obs: text })
   };
   const handleUpdate = async () => {
@@ -175,45 +166,64 @@ function Excecao() {
             const response = await axios.post(`http://10.0.1.204:3307/api/v1/exception`, formData);
     
             if (response.status === 200) {
-              console.log('Atualização bem-sucedida!');
-              setAvisoType('sucesso');
+              
             } else {
-              console.log('Erro na atualização:', response);
             }
           } catch (error) {
-            console.error('Erro na atualização:', error);
+            swal({
+              title: "Algo deu errado!",
+              text: "Essa pessoa não pode autorizar liberar nenhum colaborador",
+              icon: "warning",
+              dangerMode: true,
+            })
           }
+          setInputCol('')
+          setInputColReg('')
+          setInputLib('')
+          setInputLibReg('')
+          setInputTextarea('')
         } else {
-          swal("A operação foi cancelada");
+          swal("A operação foi cancelada",{
+            icon:"warning",
+          });
         }
       });
       
 
       setLoading(false);
+    } else {
+      swal({
+        title: "Atenção!",
+        text: "Formulário preenchido de forma incorreta",
+        icon: "warning",
+        dangerMode: true,
+      })
     }
   };
 
 
   return (
-    <div className='flex-col p-5 w-full sm:flex-row sm:p-10  overflow-y-visible h-screen mt-10'>
+    <div className='flex-col p-5 w-full sm:flex-row sm:p-10  overflow-y-visible h-screen mt-10 justify-center ' >
       <h3 className='text-3xl my-2'>Liberação para passagem na catraca:</h3>
       {token1 ? (
-        <div className='bg-background p-10 '>
+        <div className='bg-background p-10 flex flex-col w-12/12 m-auto mt-5 sm:w-4/6'>
           <div className='mb-5'>
             <h5 className=''>Preencha todos os campos para poder liberar o colaborar por um período de <span>5 MINUTOS</span>  <a href="https://absorbing-quartz-1d9.notion.site/Documenta-o-ATM-bc267ad520654c6db8337bb28164e8b8" className='font-medium text-blue-600 dark:text-blue-500 hover:underline' target="_blank" rel="noopener noreferrer">Ajuda</a></h5>
           </div>
           <form className='flex flex-col ' onClick={handleSubmit}>
             <div>
               <div className='flex flex-col w-full my-1 sm:my-5 sm:flex-row'>
-                <div className='sm:w-4/6 sm:pr-5 w-full'>
-                  <p>Colaborador a ser liberado:</p>
+                <div className='flex flex-row justify-between w-full'>
+                <div className='sm:w-3/6 sm:pr-5 w-full mr-2'>
+                  <p className='text-xs sm:text-base'>Colaborador a ser liberado:</p>
                   <input type="text"
                     value={inputCol}
                     onChange={handleInputChange}
-                    className='border border-navbar border-opacity-50 border-solid bg-background'
+                    className='border border-navbar border-opacity-50 border-solid bg-background '
                     name='liberado'
                   />
-                  <div className='flex flex-col  bg-background  border-x border-solid border-b  overflow-y-scroll'>
+                  <div className='flex flex-col  bg-background  border-x border-solid border-b absolute max-h-96'>
+                    <div className='overflow-y-auto'>
                     {autocomplete == 'liberado' ? (
                       suggestions.map((suggestion) => (
                         // @ts-expect-error TS2339
@@ -233,16 +243,18 @@ function Excecao() {
                     ) : ( 
                       ""
                     )}
+                    </div>
                   </div>
                 </div>
                 <div className='sm:w-2/6 w-full '>
-                  <p>Matrícula:</p>
+                  <p className='text-xs sm:text-base'>Matrícula:</p>
                   <input type="number"
                     value={inputColReg}
                     onChange={handleInputChangeReg}
                     name='liberadoReg'
                     className='border border-navbar border-opacity-50 border-solid bg-background' />
-                    <div className='flex flex-col  bg-background  border-x border-solid border-b  overflow-y-scroll'>
+                    <div className='flex flex-col  bg-background  border-x border-solid border-b  overflow-y-scroll max-h-96 absolute'>
+                    <div className='h-full w-full'>
                     {autocomplete == 'liberadoReg' ? (
                       suggestionsReg.map((suggestion) => (
                         // @ts-expect-error TS2339
@@ -252,7 +264,7 @@ function Excecao() {
                           // @ts-expect-error TS2322
                           name='liberadoReg'
                           // @ts-expect-error TS2339
-                          id={suggestion.registration}
+                          id={suggestion.name}
                         >
                           {/*
                            // @ts-expect-error TS2339 */}
@@ -262,20 +274,25 @@ function Excecao() {
                     ) : ( 
                       ""
                     )}
+                    </div>
                   </div>
+                </div>
                 </div>
               </div>
               <div className='flex flex-col w-full sm:my-5 sm:flex-row '>
-                <div className='sm:w-4/6 sm:pr-5 w-full'>
-                  <p>Liberador:</p>
+                <div className='flex flex-row w-full justify-between'>
+                <div className='sm:w-3/6 sm:pr-5 w-full mr-2'>
+                  <p className='text-xs sm:text-base'>Liberador:</p>
                   <input type="text"
                     value={inputLib}
                     onChange={handleInputChange}
                     className='border border-navbar border-opacity-50 border-solid bg-background'
                     name='liberador' />
-                  <div className='flex flex-col absolute bg-background  border-x border-solid border-b max-h-3/5 overflow-y-auto'>
+                  <div className='flex flex-col absolute bg-background  border-x border-solid border-b max-h-96 '>
+                    <div className='overflow-y-auto'>
                     {autocomplete == 'liberador' ? (
-                      suggestions.map((suggestion) => (
+                      suggestions.filter(suggestion => suggestion.isLeader === 1)
+                      .map((suggestion) => (
                         // @ts-expect-error TS2339
                         <a key={suggestion.registration}
                           className='flex items-center h-10 w-full px-5 bg-background text-navbar hover:bg-section cursor-pointer'
@@ -292,24 +309,27 @@ function Excecao() {
                       ))
                     ) : null}
                   </div>
+                    </div>
                 </div>
                 <div className='sm:w-2/6 w-full'>
-                  <p>Matrícula do liberador:</p>
+                  <p className='text-xs sm:text-base'>Matrícula do liberador:</p>
                   <input type="number"
                     value={inputLibReg}
                     onChange={handleInputChangeReg}
                     name='liberadorReg'
-                    className='border border-navbar border-opacity-50 border-solid bg-background' />
+                    className='border border-navbar border-opacity-50 border-solid bg-background max-h-96 ' />
+                    <div className='overflow-y-auto absolute max-h-96 border-x border-solid border-b'>
                     {autocomplete == 'liberadorReg' ? (
-                      suggestionsReg.map((suggestion) => (
+                      suggestionsReg.filter(suggestion => suggestion.isLeader === 1)
+                      .map((suggestion) => (
                         // @ts-expect-error TS2552
-                        <a key={suggestionReg.registration}
-                          className='flex items-center h-10 w-full px-5 bg-background text-navbar hover:bg-section cursor-pointer'
+                        <a key={suggestion.registration}
+                          className='flex items-center h-10  px-5 bg-background text-navbar hover:bg-section cursor-pointer '
                           onClick={handleSearchSelect}
                           // @ts-expect-error TS2322
                           name='liberadorReg'
                           // @ts-expect-error TS2552
-                          id={suggestionReg.registration}
+                          id={suggestion.name}
                         >
                           {/*
                            // @ts-expect-error TS2339 */}
@@ -319,13 +339,16 @@ function Excecao() {
                     ) : ( 
                       ""
                     )}
+                    </div>
+                </div>
                 </div>
               </div>
-              <div className='mb-1 sm:mb-5'>
-                <p>Observação:</p>
+              <div className='mb-1 sm:mb-5 mt-5'>
+                <p className='text-xs sm:text-base'>Observação:</p>
                 <textarea
                   name="observacao"
                   id=""
+                  value={inputTextarea}
                   // @ts-expect-error TS2322
                   cols="30"
                   // @ts-expect-error TS2322
@@ -335,11 +358,11 @@ function Excecao() {
                 >
                 </textarea>
               </div>
-              <div>
-                <button className='bg-successBtn hover:bg-[#123] ' onClick={handleUpdate}>
+              <div className='flex flex-row w-full justify-center'>
+                <button className='bg-successBtn hover:bg-[#123] font-medium w-3/5' onClick={handleUpdate}>
                   { loading ? ( 
                     <img src="../public/Spinner.svg" alt="" className='h-10 m-auto'/>
-                  ) :'Cadastrar liberação temporária' }
+                  ) :'Liberar' }
                 </button>
               </div>
               <div className='flex justify-center h-14 items-center'>

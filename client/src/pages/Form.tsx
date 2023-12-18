@@ -6,6 +6,7 @@ import axios from 'axios';
 import Organizer from '../components/hoc/Hoc';
 import swal from 'sweetalert2';
 import './modal.css'
+import { Tooltip, Typography } from "@material-tailwind/react";
 
 function Form() {
   
@@ -63,7 +64,7 @@ function Form() {
   const validateForm = () => {
   for (let id in formValues) {
     // @ts-expect-error TS7053
-    if (!formValues[id] || formValues[id].nameList === '' || formValues[id].newTurn === 'default') {
+    if (!formValues[id] || formValues[id].nameList === ''|| formValues[id].nameList === ' ' || formValues[id].newTurn === 'default') {
       return false;
     }
   }
@@ -151,9 +152,13 @@ const removeForm = (id) => {
 // 
   return (
     <div className='flex-col p-5 w-full sm:flex-row p-1 sm:p-5 mt-10 h-screen'>
-      <div className='flex justify-between mb-5'>
-        <h3 className='text-xl sm:text-3xl my-2'>Alterar turno de colaboradores em massa:</h3>
-        <button onClick={addForm} disabled={formCount.length >= 4} className='w-3/12 sm:w-1/12 p-0 sm:p-0 bg-successBtn hover:bg-headerColor'>Novo Grupo</button>
+      <div className='flex flex-col mb-5 bg-background p-1 rounded-lg shadow-sm'>
+        <div className='flex justify-between w-full'>
+            <h3 className='text-xl sm:text-3xl my-2 ml-5 font-medium'>Alterar turnos em massa:
+            </h3>
+            <button onClick={addForm} disabled={formCount.length >= 4} className='w-1/12 sm:w-1/12 p-0 sm:p-0 bg-successBtn hover:bg-headerColor my-1 mr-3 rounded-lg'>+</button>
+        </div>
+        
       </div>
       {token1 ? (
         <div className='flex flex-col w-full items-center sm:flex-col sm:flex '>

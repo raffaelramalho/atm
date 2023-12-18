@@ -204,7 +204,7 @@ function Excecao() {
 
   return (
     <div className='flex-col p-5 w-full sm:flex-row sm:p-10  overflow-y-visible h-screen mt-10 justify-center ' >
-      <h3 className='text-3xl my-2'>Liberação para passagem na catraca:</h3>
+      <h3 className='text-3xl my-2 font-medium'>Liberação para passagem na catraca:</h3>
       {token1 ? (
         <div className='bg-background p-10 flex flex-col w-12/12 m-auto mt-5 sm:w-4/6'>
           <div className='mb-5'>

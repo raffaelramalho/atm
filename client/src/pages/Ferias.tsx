@@ -125,7 +125,7 @@ function Ferias() {
   return (
 
     <div className='flex-col p-5 w-full sm:flex-row sm:p-10 overflow-y-visible mt-10 h-screen'>
-      <h3 className='text-3xl my-2'>Bloqueio de férias em massa na catraca:</h3>
+      <h3 className='text-3xl my-2 font-medium'>Bloqueio de férias em massa na catraca:</h3>
       {token1 ? (
         <div className='bg-background p-10'>
           <div className='mb-5'>

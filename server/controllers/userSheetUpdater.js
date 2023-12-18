@@ -20,7 +20,7 @@ const dataProcess = asyncWrapper(async (req, res) => {
     const promises = matriculas.map(async (matricula) => {
       try {
         const [rows] = await dbconnection.execute(
-          'SELECT id, name FROM users WHERE registration = ? AND deleted = 0 and inativo = 0',
+          'SELECT id, name FROM users WHERE registration like ? AND deleted = 0 and inativo = 0',
           [matricula]
         );
 

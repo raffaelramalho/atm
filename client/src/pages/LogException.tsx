@@ -36,6 +36,7 @@ function HomePage() {
 
   const exportToExcel = (fileName) => {
     const ws = XLSX.utils.json_to_sheet(log);
+    console.log(ws)
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, `${fileName}.xlsx`);

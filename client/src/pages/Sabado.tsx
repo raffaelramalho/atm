@@ -142,7 +142,7 @@ const removeForm = (id) => {
   return (
     <div className='flex-col p-5 w-full sm:flex-row p-1 sm:p-5 mt-10 h-screen'>
       <div className='flex justify-between mb-5'>
-        <h3 className='text-xl sm:text-3xl my-2'>Liberação de colaboradores para sábado:</h3>
+        <h3 className='text-xl sm:text-3xl my-2 font-medium'>Liberação de colaboradores para sábado:</h3>
       </div>
       {token1 ? (
         <div className='flex flex-col w-full items-center sm:flex-col sm:flex '>

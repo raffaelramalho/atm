@@ -23,9 +23,9 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: st
 
     return (
         <>
-            <table className="table-auto w-full border">
-                <thead className=''>
-                    <tr className='sticky top-0 bg-[#555] text-[#fff] h-20 rounded border border-navbar border-solid'>
+            <table className="table-auto w-full border border-t-8 border-t-[#555]">
+                <thead className='pt-3'>
+                    <tr className='sticky top-0 bg-[#555]  text-[#fff] h-20 rounded border border-navbar border-solid'>
                         <th className='font-medium w-4/12 sm:text-base text-xs'>Nome</th>
                         <th className='font-medium w-1/12 sm:text-base text-xs'>Matricula</th>
                         <th className='font-medium w-1/12 sm:text-base text-xs'>Dia</th>
@@ -55,7 +55,7 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: st
                         <tr
                             key={index}
                             className={`${index % 2 === 0 ? 'bg-gray-200' : 'bg-background'
-                                } px-8 py-3 0 h-30  mb-5 w-full justify-between transition duration-300 border-b-[0.1px] border-solid border-y-navbar first:border-t-[0.1px] ease-in-out rounded-md hover:bg-[#DFF4FA] items-start last:border-none last:rounded-lg`}
+                                } px-8 h-30  mb-5 w-full justify-between transition duration-300 border-b-[0.1px] border-solid border-y-navbar  ease-in-out rounded-md hover:bg-[#DFF4FA] items-start last:border-none last:rounded-lg`}
                         >
                             <td className='pl-5 h-20  text-xs sm:text-base border-r border-y-navbar'>
                                 {entry.nomeLiberado}
@@ -74,13 +74,13 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: st
                     ))}
                 </tbody>
             </table>
-            <div className='flex justify-center mt-4'>
+            <div className='flex justify-center mt-4 w-full'>
                 <button onClick={handlePaginaAnterior} disabled={paginaAtual === 1} className='px-3 py-2 bg-headerColor text-navbar hover:bg-[#2f4e7e] rounded-md ml-2 justify-center flex items-center w-12'>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-background">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                     </svg>
                 </button>
-                <span className='text-navbar mx-5 flex justify-center h-full'>{`Página ${paginaAtual} de ${totalPages}`}</span>
+                <span className='text-navbar mx-5 flex justify-center h-full items-center font-medium'>{`Página ${paginaAtual} de ${totalPages}`}</span>
                 <button onClick={handleProximaPagina} disabled={paginaAtual === totalPages} className='px-3 py-2 bg-headerColor text-navbar hover:bg-[#2f4e7e] rounded-md ml-2 justify-center flex items-center w-12'>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-background">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />

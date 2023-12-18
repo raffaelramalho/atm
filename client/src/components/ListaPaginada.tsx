@@ -24,13 +24,13 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: st
     return (
         <>
             <table className="table-auto w-full border">
-                <thead>
-                    <tr className='sticky top-0 bg-[#555] text-[#fff] h-20 rounded'>
-                        <th className='font-medium'>Nome</th>
-                        <th className='font-medium'>Matricula</th>
-                        <th className='font-medium'>Dia</th>
-                        <th className='font-medium'>Horário</th>
-                        <th className='font-medium'>Requerente</th>
+                <thead className=''>
+                    <tr className='sticky top-0 bg-[#555] text-[#fff] h-20 rounded border border-navbar border-solid'>
+                        <th className='font-medium w-4/12 sm:text-base text-xs'>Nome</th>
+                        <th className='font-medium w-1/12 sm:text-base text-xs'>Matricula</th>
+                        <th className='font-medium w-1/12 sm:text-base text-xs'>Dia</th>
+                        <th className='font-medium w-1/12 sm:text-base text-xs'>Horário</th>
+                        <th className='font-medium w-1/6  sm:text-base text-xs'>Requerente</th>
                     </tr>
                 </thead>
                 <tbody >
@@ -57,15 +57,19 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: st
                             className={`${index % 2 === 0 ? 'bg-gray-200' : 'bg-background'
                                 } px-8 py-3 0 h-30  mb-5 w-full justify-between transition duration-300 border-b-[0.1px] border-solid border-y-navbar first:border-t-[0.1px] ease-in-out rounded-md hover:bg-[#DFF4FA] items-start last:border-none last:rounded-lg`}
                         >
-                            <td className='pl-5 h-20 flex flex-row justify-center items-center text-xs sm:text-base border-r border-y-navbar'>{entry.nomeLiberado}</td>
-                            <td className='pl-5 text-center text-xs sm:text-base border-r border-y-navbar'>{entry.matriculaLiberado}</td>
-                            <td className='pl-5 h-20 flex flex-row justify-center items-center text-xs sm:text-base border-r border-y-navbar'>
+                            <td className='pl-5 h-20  text-xs sm:text-base border-r border-y-navbar'>
+                                {entry.nomeLiberado}
+                                </td>
+                            <td className=' text-center text-xs border-r border-y-navbar'>
+                                {entry.matriculaLiberado}
+                                </td>
+                            <td className=' h-20  text-xs sm:text-base border-r border-y-navbar text-center'>
                                 {entry.dataLiberacao && (<p>{entry.dataLiberacao.split(' ')[0]}</p>)}
                             </td>
-                            <td className='pl-5 text-xs sm:text-base border-r border-y-navbar'>
+                            <td className='text-xs sm:text-base border-r border-y-navbar text-center'>
                                 {entry.dataLiberacao && (<p> {entry.dataLiberacao.split(' ')[1].slice(0, 5)}</p>)}
                             </td>
-                            <td className='pl-5 h-20 flex flex-row justify-center items-center text-xs sm:text-base'>{entry.nomeRequerente}</td>
+                            <td className='pl-5 h-20  text-xs sm:text-base'>{entry.nomeRequerente}</td>
                         </tr>
                     ))}
                 </tbody>

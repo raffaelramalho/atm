@@ -21,8 +21,9 @@ function Ferias() {
   const [avisoType, setAvisoType] = useState('');
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
+    
+    const token = localStorage.getItem('token');
+    console.log(token)
     if (token) setToken(true);
   }, []);
 

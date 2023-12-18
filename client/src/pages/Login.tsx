@@ -2,6 +2,9 @@ import  { useState } from 'react';
 import {  Link, useNavigate } from 'react-router-dom';
 import '../index.css'; 
 
+
+
+
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -29,12 +32,13 @@ const Login = () => {
        });
  
        const data = await response.json();
-   
+       
 
     if (data.token.ok) {
-        // @ts-expect-error TS6133
+        
         const token = data.token.token
-        navigate(`/form?token=${data.token.token}`,{state: { userId: username}})
+        localStorage.setItem('token', token);
+        navigate(`/form?token=${token}`,{state: { userId: username}})
         setWarningText(false)
     } else {
             throw new Error(`Erro na requisição: ${data.statusText}`);
@@ -49,7 +53,7 @@ const Login = () => {
   };
   return (
     <div className="flex flex-col h-screen w-screen items-center justify-center">
-      <form className="bg-background w-2/6 h-3/6 border border-navbar border-opacity-50 p-10 flex flex-col items-center justify-around">
+      <form className="bg-background w-5/6 h-3/6 border border-navbar border-opacity-50 p-10 flex flex-col items-center justify-around sm:w-/6">
         <h1 className='font-medium text-3xl'>DELP Control</h1>
         <div className='w-full'>
           <label htmlFor="username">Usuário:</label>

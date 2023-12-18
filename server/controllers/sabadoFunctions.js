@@ -10,7 +10,7 @@ const sabadoInsert =
         const filteredArray = [...new Set(rawArray)]
         for( let matricula in filteredArray){
           try {
-           const [resultSelect] = await dbconnection.execute(`Select id from users where registration = ?`,[filteredArray[matricula]])
+           const [resultSelect] = await dbconnection.execute(`Select id from users where registration = ? and deleted = 0 and inativo = 0`,[filteredArray[matricula]])
           if( resultSelect.length > 0 ){
       
             const [resultTurnId] = await dbconnection.execute(`select id from groups where name='Sábado Exceção'`)

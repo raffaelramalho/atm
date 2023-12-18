@@ -34,8 +34,8 @@ function Excecao() {
   
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
+    
+    const token = localStorage.getItem('token');
     if (token) setToken(true);
   }, []);
 

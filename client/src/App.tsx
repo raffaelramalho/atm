@@ -13,28 +13,36 @@ import LogException from "./pages/LogException";
 import Dashboard from "./pages/Dashboard";
 import LogChanges from "./pages/LogChanges";
 import Sabado from "./pages/Sabado";
+import RequireAuth from './components/ProtectedRoute'
+
 
 
 function App({}) {
+
   
   return ( 
     <BrowserRouter>
     <Navbar/>
     <div className="app-body ">
+      
       <Sidebar/>
       <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="home/" element={<Home />} />
           <Route path="login/" element={<Login />} />
-          <Route path="form/" element={<Form />} />
-          <Route path="EsqueciSenha/" element={<EsqueciSenha />} />
-          <Route path="ferias/" element={<Ferias />} />
-          <Route path="excecao/" element={<Excecao />} />
-          <Route path="logexcecao/" element={<LogException />} />
-          <Route path="*" element={<Error />} />
-          <Route path="dashboard/" element={<Dashboard/>}/>
-          <Route path="logchanges/" element={<LogChanges/>}/>
-          <Route path="sabado/" element={<Sabado/>}/>
+          <Route path="/" element={<Login />} />
+          <Route element={<RequireAuth/>}>
+                      <Route path="home/" element={<Home />} />
+                      <Route path="form/" element={<Form />} />
+                      <Route path="EsqueciSenha/" element={<EsqueciSenha />} />
+                      <Route path="ferias/" element={<Ferias />} />
+                      <Route path="excecao/" element={<Excecao />} />
+                      <Route path="logexcecao/" element={<LogException />} />
+                      <Route path="*" element={<Error />} />
+                      <Route path="dashboard/" element={<Dashboard/>}/>
+                      <Route path="logchanges/" element={<LogChanges/>}/>
+                      <Route path="sabado/" element={<Sabado/>}/>
+          </Route>
+          
+          
       </Routes>
     </div>
       

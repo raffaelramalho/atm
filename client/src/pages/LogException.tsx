@@ -5,7 +5,7 @@ import Organizer from '../components/hoc/Hoc'
 import TabelaHistorico from '../components/ListaPaginada'
 import * as XLSX from 'xlsx';
 import { SiMicrosoftexcel } from "react-icons/si";
-import { FaArrowDownWideShort,FaArrowUpShortWide } from "react-icons/fa6";
+import { FaArrowDownWideShort, FaArrowUpShortWide } from "react-icons/fa6";
 function HomePage() {
   const [log, setLog] = useState([]);
   const [expandedEntry, setExpandedEntry] = useState(null);
@@ -58,7 +58,7 @@ function HomePage() {
           });
 
           setLog(formattedLog);
-          
+
         })
         .catch((error) => console.error(`Erro: ${error}`));
     }, []);
@@ -87,20 +87,24 @@ function HomePage() {
             </div>
           </div>
           <div className='font-medium flex items-center'>
-            Ordenar:
+            <p className=' hidden sm:visible'>Ordenar:</p>
             <select
               className='ml-2 px-2 py-1 border border-navbar border-opacity-50 rounded-md'
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
             >
-              <option value='dataMaisRecente'>Data de Liberação <FaArrowUpShortWide /> </option>
-              <option value='dataLiberacao'>Data de Liberação <FaArrowDownWideShort /></option>
+              <option value='dataMaisRecente'>
+                Data ↧
+              </option>
+              <option value='dataLiberacao'>
+                Data ↥
+              </option>
               <option value='nomeLiberado'>Nome</option>
             </select>
           </div>
           <div>
             <button className='flex bg-headerColor hover:bg-navbar rounded-xl items-center font-medium'
-            onClick={() => exportToExcel(`historico_${new Date().toISOString()}`)}
+              onClick={() => exportToExcel(`historico_${new Date().toISOString()}`)}
             >Exportar <SiMicrosoftexcel className='ml-1' />
             </button>
           </div>

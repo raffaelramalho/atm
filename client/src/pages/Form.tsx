@@ -8,6 +8,7 @@ import swal from 'sweetalert2';
 import './modal.css'
 
 function Form() {
+  
   const [turnos, setTurnos] = useState([]);
   // @ts-expect-error TS6133
   const [informations, setInformations] = useState([]);
@@ -24,8 +25,8 @@ function Form() {
 
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
+    
+    const token = localStorage.getItem('token');
     if (token) setToken(true);
   }, []);
   useEffect(() => {
@@ -47,17 +48,17 @@ function Form() {
 
   // @ts-expect-error TS7006
   const handleChange = (e, id) => {
-    setEmpty(false)
+    setEmpty(false);
     const value = e.target.name === 'nameList' ? e.target.value.split('\n') : e.target.value;
     setFormValues(prevState => ({
       ...prevState,
       [id]: {
-        // @ts-expect-error TS7053
         ...prevState[id],
         [e.target.name]: value
       }
     }));
   };
+  
 
   const validateForm = () => {
   for (let id in formValues) {
@@ -76,7 +77,6 @@ const handleUpdate = async () => {
     try {
       // @ts-expect-error TS18046
       const filledForms = Object.values(formValues).filter(form => form.nameList && form.newTurn !== 'default');
-
       // Use SweetAlert2 para confirmar a atualização
       const { value: confirmUpdate } = await swal.fire({
         title: 'Confirmação',
@@ -90,7 +90,7 @@ const handleUpdate = async () => {
       if (confirmUpdate) {
         const response = await axios.post('http://10.0.1.204:3307/api/v1/processar-dados', filledForms);
         const data = response.data;
-
+        console.log(data)
         // Abra o modal com as informações aqui
         openModal(data);
         setResultados(data);
@@ -115,10 +115,10 @@ const handleUpdate = async () => {
 // @ts-expect-error TS7006
 const openModal = (data) => {
   const modalContent = `
-  ${data.Inexistente.length == 0 && data.Inexistente.length == 0 && data.Duplicadas.length == 0 ?  `<p>Todos os colaboradores foram alterados com sucesso!</p>` : ''}
+  ${data.Inexistente.length == 0 && data.Inexistente.length == 0  ?  `<p>Todos os colaboradores foram alterados com sucesso!</p> <br>` : ''}
   ${data.Inexistente.length > 0 ? `<p><strong>Inexistente:</strong></p><p>${data.Inexistente.join(', ')}</p>` : ''}
-  ${data.NaoAtualizado.length > 1 ? `<p><strong>Não Atualizado:</strong></p><p>${data.NaoAtualizado.join(', ')}</p>` : ''}
-  ${data.Duplicadas.length > 0 ? `<p><strong>Duplicadas:</strong></p><p>${data.Duplicadas.join(', ')}</p>` : ''}
+  ${data.NaoAtualizado.length > 0 ? `<p><strong>Não Atualizado:</strong></p><p>${data.NaoAtualizado.join(', ')}</p>` : ''}
+
 `;
 
   swal.fire({
@@ -169,7 +169,7 @@ const removeForm = (id) => {
                     rows={10}
                     name='nameList'
                     // @ts-expect-error TS7053
-                    value={formValues[id]?.nameList || ''}
+                    value={(formValues[id]?.nameList || []).join('\n') || ''}
                     onChange={(e) => handleChange(e, id)}
                     placeholder='Lista de matriculas'
                     className='flex-row border-spacing-0 w-full p-5 border border-navbar border-opacity-50  mb-5'

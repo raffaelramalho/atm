@@ -13,17 +13,20 @@ asyncWrapper( async (req,res ) => {
     res.send({token: session});
 });
 
-const generateTokenSession = 
-asyncWrapper( async (formLogin) => {
+const generateTokenSession = async (formLogin, formPassword,userRole) => {
+ try {
     const payload = {
-      username: formLogin,
-      salt: Math.random(),
-      timestamp: Date.now(),
-    };
+        username: formLogin,
+        salt: Math.random(),
+        role: 'admin',
+      };
     const token = jwt.sign(payload, 'delp', { expiresIn: '1h' });
     return token;
-});
-
+  } catch (error) {
+    console.error('Erro durante a geração do token:', error);
+    throw error;
+  }
+};
 
 
 async function userValidation(dbconnection, formLogin, formPassword) {
@@ -35,7 +38,9 @@ async function userValidation(dbconnection, formLogin, formPassword) {
         const queryFinal = `SELECT COUNT(*) FROM atm WHERE delpUser = '${formLogin}' AND password = '${formPassword}'`;
         result = await dbconnection.execute(queryFinal);
         if (result[0][0]['COUNT(*)'] > 0) {
-          const token = await generateTokenSession(formLogin); 
+          const [getRole] = await dbconnection.execute(`SELECT level FROM atm where delpUser = ? AND password = ?`,[formLogin, formPassword])
+          const token = await generateTokenSession(formLogin, formPassword,getRole[0]['level']);
+
           return { ok: true, token: token }; 
         } else {
           return { ok: false, message: 'Usuario ou Senha incorreta' }; 

@@ -23,14 +23,17 @@ const deleteLine = async(matricula,dbconnection) => {
 }
 
 const deleteInsert = async(matricula, dbconnection)=>{
-    const query = `SELECT newTurn from DeleteQueue where registration=?`
-    const [result] = await dbconnection.execute(query,[matricula])
-    const newTurn = result[0]['newTurn'];
-    const queryDelete = `DELETE FROM usergroups 
-    WHERE idUser IN (
-        SELECT id FROM users WHERE registration = ?
-    ) AND idGroup = ?;`
-    const [resultFinal] = await dbconnection.execute(queryDelete,[matricula,newTurn])
+    try {
+        const query = `SELECT newTurn from DeleteQueue where registration=?`
+        const [result] = await dbconnection.execute(query,[matricula])
+        const newTurn = result[0]['newTurn'];
+        const [getId] = await dbconnection.execute(`SELECT id FROM USERS WHERE registration=? AND DELETED = 0 AND INATIVO = 0`,[matricula])
+        const id = getId[0]['id']
+        const queryDelete = `DELETE FROM usergroups WHERE idUser =? AND idGroup = ?;`
+        const [resultFinal] = await dbconnection.execute(queryDelete,[id,newTurn])
+    } catch (error){
+        console.log(error)
+    }
 }
 module.exports = {
     logGetter,

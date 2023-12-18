@@ -5,61 +5,40 @@ const moment = require('moment');
 
 const dataProcess = asyncWrapper(async (req, res) => {
   const forms = req.body;
-  console.log(forms)
   let naoExiste = [];
-  let duplicadoMatricula = [];
   let naoAtualizado = [];
+
   for (let key in forms) {
-    const matriculas = forms[key].nameList[0].split(',');
-    
-    if (matriculas.length == '') {
-      res.json({ error: 'Formulário em branco' });
-      return;
-    }
+    const matriculas = forms[key].nameList;
     const turno = forms[key].newTurn;
+
     if (turno == '') {
       res.json({ error: 'Turno em branco' });
       return;
     }
-    const seenMatriculas = new Set();
-    const matriculasParaAtualizar = [];
-    for (let i = 0; i < matriculas.length; i++) {
-      const matricula = matriculas[i].trim();
-      console.log(matricula)
-      if (seenMatriculas.has(matricula)) {
-        duplicadoMatricula.push(matricula);
-      } else {
-        seenMatriculas.add(matricula);
-        try {
-          console.log('alterando....')
-          const [rows] = await dbconnection.execute(
-            'SELECT id, name FROM users WHERE registration = ? AND deleted = 0 and inativo = 0',
-            [matricula]
-          );
-          if (rows.length === 0) {
-            console.log('não existe')
-            naoExiste.push(matricula);
-          } else {
-            matriculasParaAtualizar.push(matricula);
-            naoAtualizado.push(await updateUsers(dbconnection, matricula, turno, rows[0]['id']));
-          }
-        } catch (error) {
-          res.status(500).json({ error: error.message });
-          return;
+
+    const promises = matriculas.map(async (matricula) => {
+      try {
+        const [rows] = await dbconnection.execute(
+          'SELECT id, name FROM users WHERE registration = ? AND deleted = 0 and inativo = 0',
+          [matricula]
+        );
+
+        if (rows.length === 0) {
+          naoExiste.push(matricula);
+        } else {
+          naoAtualizado.push(await updateUsers(dbconnection, matricula, turno, rows[0]['id']));
         }
+      } catch (error) {
+        console.log(error);
       }
-    }
+    });
 
-    // Atualizar matriculas apenas com as não duplicadas
-    forms[key].nameList[0] = matriculasParaAtualizar.join(',');
-
+    await Promise.all(promises);
   }
 
-  res.json({ Inexistente: naoExiste, NaoAtualizado: naoAtualizado, Duplicadas: duplicadoMatricula });
+  res.json({ Inexistente: naoExiste, NaoAtualizado: naoAtualizado });
 });
-
-
-
 
 
 
@@ -73,28 +52,28 @@ async function updateUsers(dbconnection, matricula, turno, id) {
   const turnNew = JSON.stringify(queryTurn[0]['id'])
 
   try {
+    const [isMensalista] = await dbconnection.execute('select g.id from users u inner join usergroups ug on u.id=ug.idUser inner join groups g on ug.idGroup=g.id where g.name = "Mensalistas" and u.registration= ? and u.deleted=0 and u.inativo=0;', [matricula]);
     const [result] = await dbconnection.execute('select g.id,u.name from usergroups ug inner join groups g on g.id=ug.idGroup inner join users u on u.id=ug.idUser where u.deleted = 0 and g.idType = 1 and u.registration = ? and u.id = ? limit 1;', [matricula, id]);
-    console.log(result)
     if (result[0]) {
       const turnOld = JSON.stringify(result[0]['id'])
-      console.log(turnOld)
       const nome = result[0]['name']
-      oldTurnList.push(turnOld)
-      if (turnOld != '1002') {
+      if(isMensalista[0]){
+        console.log('é mensalista')
+        notUpdated.push( matricula);
+      } else {
+        console.log('Inserindo no '+matricula+', lá ele')
         turnIdList.push(turnOld)
         await dbconnection.execute('insert into usergroups(idUser, idGroup,isVisitor) values (?,?,0);', [id, turnNew])
-    
-        logInsert(dbconnection, matricula, turnOld, turnNew, id, nome)
-      } else {
-      
-        return matricula;
+        await logInsert(dbconnection, matricula, turnOld, turnNew, id, nome)
       }
     } else {
-      await dbconnection.execute('insert into usergroups(idUser, idGroup, isVisitor) values (?,?,0);', [id, turnNew])
+        await dbconnection.execute('insert into usergroups(idUser, idGroup, isVisitor) values (?,?,0);', [id, turnNew])
     }
   } catch (error) {
     console.log(error)
   }
+
+  return notUpdated
 }
 
 
@@ -102,19 +81,17 @@ async function updateUsers(dbconnection, matricula, turno, id) {
 
 
 async function logInsert(dbconnection, matricula, oldTurn, newTurn, id, nome) {
-  console.log('inserindo no log')
   const query = 'insert into DeleteQueue(comando,horarioExecucao,registration,oldTurn,newTurn,nome) values (?,?,?,?,?,?)';
-  const proxDomingo = await getNextSunday()
-  const queryCommand = `delete from usergroups where idUser = ${id} and idGroup = ${oldTurn}`
- 
-  try {
-    const [result] = await dbconnection.execute(query, [queryCommand, proxDomingo, matricula, oldTurn, newTurn, `${nome}`])
-  } catch (error) {
-    console.log(error)
-  }
-  console.log('inserido com sucesso')
-  return ''
+  const proxDomingo = await getNextSunday();
+  const queryCommand = `delete from usergroups where idUser = ${id} and idGroup = ${oldTurn}`;
+    try {
+      const [result] = await dbconnection.execute(query, [queryCommand, proxDomingo, matricula, oldTurn, newTurn, `${nome}`]);
+      console.log('Inserido com sucesso');
+    } catch (error) {
+      console.log(error);
+    }
 }
+
 
 
 

@@ -6,6 +6,8 @@ import UsersList from '../components/UsersList';
 import swal from 'sweetalert';
 import Organizer from '../components/hoc/Hoc';
 import "./ferias.css"
+import { format } from 'date-fns';
+
 function Ferias() {
 
   // @ts-expect-error TS6133
@@ -64,14 +66,19 @@ function Ferias() {
   const handleSubmit = (e) => {
     e.preventDefault();
   };
-
+  const formatDate = async(dateString) => {
+    const date = new Date(dateString);
+    const formattedDate = format(date, 'dd/MM/yyyy', { timeZone: 'UTC' });
+    return formattedDate;
+  };
   const handleUpdate = async () => {
     const { dataFim } = form
     if (validateForm()) {
       setLoading(true);
+      const dataFormatada = await formatDate(dataFim);
       swal({
         title: "Tem certeza?",
-        text: `Uma vez lançado o bloqueio, os colaboradores vão ficar impossibilitados de acessar a DELP até a data de ${dataFim}`,
+        text: `Uma vez lançado o bloqueio, os colaboradores vão ficar impossibilitados de acessar a DELP até a data de ${dataFormatada}`,
         icon: "warning",
         buttons: ["Cancelar", "Sim"],
       })
@@ -95,6 +102,7 @@ function Ferias() {
                   setResultados(data);
                   setable(false);
                   setInformations(data.invalidos);
+                  setForm({ nameList: [], dataFim: '' });
                 } else {
                   throw new Error(`Erro na requisição: ${response.statusText}`);
                 }
@@ -124,12 +132,12 @@ function Ferias() {
 
   return (
 
-    <div className='flex-col p-1 w-full sm:flex-row sm:p-10 overflow-y-visible mt-10 h-screen sm:p-5'>
+    <div className='flex-col p-1 w-full sm:flex-row sm:p-10 overflow-y-visible mt-10 h-screen sm:p-5 '>
       <h3 className='text-3xl my-2 font-medium'>Bloqueio de férias em massa na catraca:</h3>
       {token1 ? (
-        <div className='bg-background p-10'>
+        <div className=' p-10 w-5/5 bg-background'>
           <div className='mb-5'>
-            <h5 className=''>Utilize apenas as teclas (Shift + Enter) para separar as informações nas linhas, não é necessário "," nem "." ao final de cada nome. <a href="https://absorbing-quartz-1d9.notion.site/Documenta-o-ATM-bc267ad520654c6db8337bb28164e8b8" className='font-medium text-blue-600 dark:text-blue-500 hover:underline' target="_blank" rel="noopener noreferrer">Ajuda</a></h5>
+            <h5 className='w-full text-center'>Utilize apenas as teclas (Shift + Enter) para separar as informações nas linhas, não é necessário "," nem "." ao final de cada nome. <a href="https://absorbing-quartz-1d9.notion.site/Documenta-o-ATM-bc267ad520654c6db8337bb28164e8b8" className='font-medium text-blue-600 dark:text-blue-500 hover:underline' target="_blank" rel="noopener noreferrer">Ajuda</a></h5>
           </div>
           <form className='flex flex-col ' onClick={handleSubmit}>
             <div className='flex flex-row h-full justify-center'>
@@ -169,7 +177,7 @@ function Ferias() {
                 </div>
               </div>
             </div>
-            <div className='flex w-full h-8 items-center'>
+            <div className='flex w-full h-8 items-center justify-center'>
               <p>{avisoType === 'branco' ? "O formulário não pode estar em branco." : ""}</p>
               <p>{avisoType === 'datas' ? "As datas não podem estar em branco." : ""}</p>
               <p>{avisoType === 'invalido' ? "A data de término não pode ser menor que a data de início." : ""}</p>
@@ -189,8 +197,7 @@ function Ferias() {
         </div>
       ) : (
         resultados.nome.length > 0 || resultados.invalido.length > 0 || resultados.naoAtualizado.length > 0 ? (
-          <div className='flex flex-row bg-background px-10 sm:flex-col'>
-            <UsersList NameList={resultados.nome} ListName={`Colaboradores Alterados `} messageContent={' foi alterado com sucesso.'} />
+          <div className='flex flex-row bg-background px-10 sm:flex-col'>   
             <UsersList NameList={resultados.invalido} ListName='Colaboradores não encontrados' messageContent={' não existe.'} />
             <UsersList NameList={resultados.naoAtualizado} ListName='Colaboradores não atualizados' messageContent={' não pode ser atualizado.'} />
           </div>

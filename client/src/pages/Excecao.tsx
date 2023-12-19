@@ -206,7 +206,7 @@ function Excecao() {
     <div className='flex-col p-5 w-full sm:flex-row sm:p-10  overflow-y-visible h-screen mt-10 justify-center ' >
       <h3 className='text-3xl my-2 font-medium'>Liberação para passagem na catraca:</h3>
       {token1 ? (
-        <div className='bg-background p-10 flex flex-col w-12/12 m-auto mt-5 sm:w-4/6'>
+        <div className='bg-background p-10 flex flex-col w-12/12 m-auto mt-5 sm:w-5/6'>
           <div className='mb-5'>
             <h5 className=''>Preencha todos os campos para poder liberar o colaborar por um período de <span>5 MINUTOS</span>  <a href="https://absorbing-quartz-1d9.notion.site/Documenta-o-ATM-bc267ad520654c6db8337bb28164e8b8" className='font-medium text-blue-600 dark:text-blue-500 hover:underline' target="_blank" rel="noopener noreferrer">Ajuda</a></h5>
           </div>
@@ -312,7 +312,7 @@ function Excecao() {
                     </div>
                 </div>
                 <div className='sm:w-2/6 w-full'>
-                  <p className='text-xs sm:text-base'>Matrícula do liberador:</p>
+                  <p className='text-xs sm:text-base'>Liberador:</p>
                   <input type="number"
                     value={inputLibReg}
                     onChange={handleInputChangeReg}

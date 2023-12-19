@@ -28,6 +28,7 @@ const dataProcess = asyncWrapper(async (req, res) => {
           naoExiste.push(matricula);
         } else {
           naoAtualizado.push(await updateUsers(dbconnection, matricula, turno, rows[0]['id']));
+          console.log(naoAtualizado)
         }
       } catch (error) {
         console.log(error);
@@ -36,8 +37,9 @@ const dataProcess = asyncWrapper(async (req, res) => {
 
     await Promise.all(promises);
   }
-
-  res.json({ Inexistente: naoExiste, NaoAtualizado: naoAtualizado });
+  const formattedNaoAtualizado = naoAtualizado.filter((element) => element !== '' && element !== undefined && element !== null);
+  console.log(naoAtualizado,formattedNaoAtualizado)
+  res.json({ Inexistente: naoExiste, NaoAtualizado: formattedNaoAtualizado });
 });
 
 
@@ -59,7 +61,7 @@ async function updateUsers(dbconnection, matricula, turno, id) {
       const nome = result[0]['name']
       if(isMensalista[0]){
         console.log('é mensalista')
-        notUpdated.push( matricula);
+        return matricula
       } else {
         console.log('Inserindo no '+matricula+', lá ele')
         turnIdList.push(turnOld)
@@ -73,7 +75,6 @@ async function updateUsers(dbconnection, matricula, turno, id) {
     console.log(error)
   }
 
-  return notUpdated
 }
 
 

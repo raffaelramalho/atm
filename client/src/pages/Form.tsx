@@ -6,7 +6,7 @@ import axios from 'axios';
 import Organizer from '../components/hoc/Hoc';
 import swal from 'sweetalert2';
 import './modal.css'
-import { Tooltip, Typography } from "@material-tailwind/react";
+
 
 function Form() {
   
@@ -29,6 +29,7 @@ function Form() {
     
     const token = localStorage.getItem('token');
     if (token) setToken(true);
+    
   }, []);
   useEffect(() => {
     fetch("http://10.0.1.204:3307/api/v1/getTurn/")
@@ -64,7 +65,8 @@ function Form() {
   const validateForm = () => {
   for (let id in formValues) {
     // @ts-expect-error TS7053
-    if (!formValues[id] || formValues[id].nameList === ''|| formValues[id].nameList === ' ' || formValues[id].newTurn === 'default') {
+    if (!formValues[id] || formValues[id].nameList === ' ' || formValues[id].newTurn === 'default') {
+      console.log()
       return false;
     }
   }
@@ -91,13 +93,12 @@ const handleUpdate = async () => {
       if (confirmUpdate) {
         const response = await axios.post('http://10.0.1.204:3307/api/v1/processar-dados', filledForms);
         const data = response.data;
-        console.log(data)
-        // Abra o modal com as informações aqui
         openModal(data);
         setResultados(data);
         setable(false);
         setInformations(data.invalidos);
         setShowModal(true);
+        setFormValues({ nameList: [] });
       } else {
         // Ação cancelada pelo usuário
         swal.fire('Ação Cancelada', 'A atualização foi cancelada pelo usuário.', 'info');
@@ -115,10 +116,13 @@ const handleUpdate = async () => {
 };
 // @ts-expect-error TS7006
 const openModal = (data) => {
+  const notExist = data.Inexistente.filter(Boolean)
+  const notUpdated = data.NaoAtualizado
   const modalContent = `
-  ${data.Inexistente.length == 0 && data.Inexistente.length == 0  ?  `<p>Todos os colaboradores foram alterados com sucesso!</p> <br>` : ''}
-  ${data.Inexistente.length > 0 ? `<p><strong>Inexistente:</strong></p><p>${data.Inexistente.join(', ')}</p>` : ''}
-  ${data.NaoAtualizado.length > 0 ? `<p><strong>Não Atualizado:</strong></p><p>${data.NaoAtualizado.join(', ')}</p>` : ''}
+  ${notExist.length == 0 && notUpdated.length <= 1  ?  `<p>Todos os colaboradores foram alterados com sucesso!</p> <br>` : ''}
+  ${notExist.length > 0 || notUpdated.length > 1  ?  `<p>Colaboradores não alterados pelos motivos:</p> <br>` : ''}
+  ${notExist.length > 0 ? `<p><strong>Inexistente:</strong></p><p>${notExist.join(', ').replace(/,+\s*$/, "")}</p>` : ''}
+  ${notUpdated.length > 0 ? `<p><strong>Não Atualizado:</strong></p><p>${notUpdated.join(', ').replace(/,+\s*$/, "")}</p>` : ''}
 
 `;
 

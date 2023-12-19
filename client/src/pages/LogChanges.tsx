@@ -27,9 +27,7 @@ function LogChanges() {
 
   // @ts-expect-error TS7006
   const handleChangeClick = async (event, id) => {
-    const target = event.currentTarget.id;
-    console.log(target);
-  
+    const target = event.currentTarget.id; 
     swal({
       title: "Tem certeza?",
       text: "O colaborador não será mais alterado caso você faça isso",
@@ -53,11 +51,8 @@ function LogChanges() {
         swal("Ação cancelada");
       }
     });
-      await pageRealoder()
+      
   };
-  const pageRealoder = async () => {
-    window.location.reload();
-  }
   // @ts-expect-error TS6133
   const [show, setShow] = useState(true);
 

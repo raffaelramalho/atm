@@ -56,7 +56,7 @@ const Login = () => {
         localStorage.setItem('token', token);
         const decodedToken = jwtDecode(token);
         localStorage.setItem('userLevel',  decodedToken.role);
-        navigate(`/form?token=${token}`,{state: { userId: username}})
+        navigate(`/home?token=${token}`,{state: { userId: username}})
         window.location.reload();
         setWarningText(false)
       } else {

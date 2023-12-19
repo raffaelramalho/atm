@@ -29,9 +29,6 @@ function Sabado() {
     if (token) setToken(true);
   }, []);
 
-
-
-
   //Formulários e afins
   const [formCount, setFormCount] = useState([0]);
   const [formValues, setFormValues] = useState({});
@@ -84,10 +81,11 @@ const handleUpdate = async () => {
         const data = response.data;
 
         // Abra o modal com as informações aqui
-        openModal(data);
+        
         setResultados(data);
         setable(false);
         setInformations(data.invalidos);
+        openModal(data);
         setShowModal(true);
       } else {
         // Ação cancelada pelo usuário

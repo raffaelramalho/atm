@@ -10,16 +10,30 @@ asyncWrapper( async (req,res ) => {
       return res.status(400).send('Os campos não podem estar vazios.');
     }
     const session = await userValidation(dbconnection, formLogin, formPassword);
-    res.send({token: session});
+    res.send({token: session });
 });
 
-const generateTokenSession = async (formLogin, formPassword,userRole) => {
- try {
+const generateTokenSession = async (formLogin, formPassword, userRole) => {
+  try {
+    let role = '';
+
+    // Determine o valor de 'role' com base em 'userRole'
+    if (userRole === 1) {
+      role = 'portaria';
+    } else if (userRole === 2) {
+      role = 'rh';
+    } else if (userRole === 3) {
+      role = 'admin';
+    } else {
+      // Valor padrão se 'userRole' não estiver dentro dos valores esperados
+      role = 'basico';
+    }
     const payload = {
-        username: formLogin,
-        salt: Math.random(),
-        role: 'admin',
-      };
+      username: formLogin,
+      salt: Math.random(),
+      role: role,
+    };
+
     const token = jwt.sign(payload, 'delp', { expiresIn: '1h' });
     return token;
   } catch (error) {

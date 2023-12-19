@@ -20,12 +20,26 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: st
             setPaginaAtual(paginaAtual + 1);
         }
     };
-
+    useEffect(() => {
+        const sortedLog = [...log].sort((a, b) => {
+            if (sortBy === 'dataMaisRecente') {
+                return new Date(b.dataLiberacao) - new Date(a.dataLiberacao);
+            } else {
+                if (a[sortBy] < b[sortBy]) return -1;
+                if (a[sortBy] > b[sortBy]) return 1;
+                return 0;
+            }
+        });
+    
+        setTotalPages(Math.ceil(sortedLog.length / itemsPerPage));
+        setLogPaginado(sortedLog.slice((paginaAtual - 1) * itemsPerPage, paginaAtual * itemsPerPage));
+    }, [log, itemsPerPage, paginaAtual, sortBy]);
+    
     return (
         <>
             <table className="table-auto w-full border border-t-8 border-t-[#555]">
                 <thead className='pt-3'>
-                    <tr className='sticky top-0 bg-[#555]  text-[#fff] h-20 rounded border border-navbar border-solid'>
+                    <tr className='sticky top-0 bg-[#555]  text-[#fff] h-12 rounded border border-navbar border-solid'>
                         <th className='font-medium w-4/12 sm:text-base text-xs'>Nome</th>
                         <th className='font-medium w-1/12 sm:text-base text-xs'>Matricula</th>
                         <th className='font-medium w-1/12 sm:text-base text-xs'>Dia</th>
@@ -39,37 +53,31 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: st
                             // Ordene por dataMaisRecente
                             // @ts-expect-error TS2362
                             return new Date(b.dataLiberacao) - new Date(a.dataLiberacao);
-                        } else if (sortBy === 'esseMes') {
-                            const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-                            const filteredLog = log.filter((entry) => new Date(entry.dataLiberacao) >= firstDayOfMonth);
-
-                            setLog(filteredLog);
                         } else {
                             // Lógica de ordenação existente
                             if (a[sortBy] < b[sortBy]) return -1;
                             if (a[sortBy] > b[sortBy]) return 1;
                             return 0;
                         }
-                        return 0;
                     }).map((entry, index) => (
                         <tr
                             key={index}
                             className={`${index % 2 === 0 ? 'bg-gray-200' : 'bg-background'
-                                } px-8 h-30  mb-5 w-full justify-between transition duration-300 border-b-[0.1px] border-solid border-y-navbar  ease-in-out rounded-md hover:bg-[#DFF4FA] items-start last:border-none last:rounded-lg`}
+                                } px-8  w-full justify-between transition duration-300 border-b-[0.1px] border-solid border-y-navbar  ease-in-out rounded-md hover:bg-[#DFF4FA] items-start last:border-none last:rounded-lg`}
                         >
-                            <td className='pl-5 h-20  text-xs sm:text-base border-r border-y-navbar'>
+                            <td className='pl-5 h-12  text-xs sm:text-base border-r border-y-navbar'>
                                 {entry.nomeLiberado}
                                 </td>
                             <td className=' text-center text-xs border-r border-y-navbar'>
                                 {entry.matriculaLiberado}
                                 </td>
-                            <td className=' h-20  text-xs sm:text-base border-r border-y-navbar text-center'>
+                            <td className=' h-12  text-xs sm:text-base border-r border-y-navbar text-center'>
                                 {entry.dataLiberacao && (<p>{entry.dataLiberacao.split(' ')[0]}</p>)}
                             </td>
                             <td className='text-xs sm:text-base border-r border-y-navbar text-center'>
                                 {entry.dataLiberacao && (<p> {entry.dataLiberacao.split(' ')[1].slice(0, 5)}</p>)}
                             </td>
-                            <td className='pl-5 h-20  text-xs sm:text-base'>{entry.nomeRequerente}</td>
+                            <td className='pl-5 h-12  text-xs sm:text-base'>{entry.nomeRequerente}</td>
                         </tr>
                     ))}
                 </tbody>

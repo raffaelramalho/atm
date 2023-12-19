@@ -9,7 +9,14 @@ const Component: React.FC = () => {
   const [active, setActive] = useState<string>("");
   // @ts-expect-error TS6133
   const [link, setLink] = useState<string>("");
+  const [token, setToken] = useState(false);
+  useEffect(() => {
 
+    const token = localStorage.getItem('token');
+
+    console.log(token)
+    if (token) setToken(true);
+  }, []);
   useEffect(() => {
     setActive(location.pathname);
   }, [location.pathname]);
@@ -22,10 +29,10 @@ const Component: React.FC = () => {
         title: "Inicio",
         // @ts-expect-error TS2322
         icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-        <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" />
-        <path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" />
-      </svg>
-      ,
+          <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" />
+          <path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" />
+        </svg>
+        ,
       },
     ],
     "": [
@@ -43,9 +50,9 @@ const Component: React.FC = () => {
         url: "/sabado",
         title: "Liberação Sábado",
         icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
-      </svg>
-      ,
+          <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+        </svg>
+        ,
       },
       {
         id: 4,
@@ -74,45 +81,63 @@ const Component: React.FC = () => {
         title: "Histórico",
         // @ts-expect-error TS2322
         icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-        <path fill-rule="evenodd" d="M12 6.75a5.25 5.25 0 016.775-5.025.75.75 0 01.313 1.248l-3.32 3.319c.063.475.276.934.641 1.299.365.365.824.578 1.3.64l3.318-3.319a.75.75 0 011.248.313 5.25 5.25 0 01-5.472 6.756c-1.018-.086-1.87.1-2.309.634L7.344 21.3A3.298 3.298 0 112.7 16.657l8.684-7.151c.533-.44.72-1.291.634-2.309A5.342 5.342 0 0112 6.75zM4.117 19.125a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008z" clip-rule="evenodd" />
-      </svg>,
+          <path fill-rule="evenodd" d="M12 6.75a5.25 5.25 0 016.775-5.025.75.75 0 01.313 1.248l-3.32 3.319c.063.475.276.934.641 1.299.365.365.824.578 1.3.64l3.318-3.319a.75.75 0 011.248.313 5.25 5.25 0 01-5.472 6.756c-1.018-.086-1.87.1-2.309.634L7.344 21.3A3.298 3.298 0 112.7 16.657l8.684-7.151c.533-.44.72-1.291.634-2.309A5.342 5.342 0 0112 6.75zM4.117 19.125a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008z" clip-rule="evenodd" />
+        </svg>,
       },
       {
         id: 7,
         url: "/logchanges",
         title: "Mudanças de turno agendadas",
         // @ts-expect-error TS2322
-        icon:<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-        <path fill-rule="evenodd" d="M10.5 3.798v5.02a3 3 0 01-.879 2.121l-2.377 2.377a9.845 9.845 0 015.091 1.013 8.315 8.315 0 005.713.636l.285-.071-3.954-3.955a3 3 0 01-.879-2.121v-5.02a23.614 23.614 0 00-3 0zm4.5.138a.75.75 0 00.093-1.495A24.837 24.837 0 0012 2.25a25.048 25.048 0 00-3.093.191A.75.75 0 009 3.936v4.882a1.5 1.5 0 01-.44 1.06l-6.293 6.294c-1.62 1.621-.903 4.475 1.471 4.88 2.686.46 5.447.698 8.262.698 2.816 0 5.576-.239 8.262-.697 2.373-.406 3.092-3.26 1.47-4.881L15.44 9.879A1.5 1.5 0 0115 8.818V3.936z" clip-rule="evenodd" />
-      </svg>
-      ,
+        icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+          <path fill-rule="evenodd" d="M10.5 3.798v5.02a3 3 0 01-.879 2.121l-2.377 2.377a9.845 9.845 0 015.091 1.013 8.315 8.315 0 005.713.636l.285-.071-3.954-3.955a3 3 0 01-.879-2.121v-5.02a23.614 23.614 0 00-3 0zm4.5.138a.75.75 0 00.093-1.495A24.837 24.837 0 0012 2.25a25.048 25.048 0 00-3.093.191A.75.75 0 009 3.936v4.882a1.5 1.5 0 01-.44 1.06l-6.293 6.294c-1.62 1.621-.903 4.475 1.471 4.88 2.686.46 5.447.698 8.262.698 2.816 0 5.576-.239 8.262-.697 2.373-.406 3.092-3.26 1.47-4.881L15.44 9.879A1.5 1.5 0 0115 8.818V3.936z" clip-rule="evenodd" />
+        </svg>
+        ,
       },
     ],
   };
-
+  const userLevel = localStorage.getItem('userLevel');
+  const idRanges = {
+    admin: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+    rh: [0, 1, 2, 3, 4, 7, 6, 8],
+    portaria: [0, 5, 6],
+    basico: [0]
+    // Adicione outros níveis conforme necessário
+  };
+  const filteredProcessGroups = Object.fromEntries(
+    Object.entries(processGroups).map(([group, navlinks]) => [
+      group,
+      navlinks.filter(nav => {
+        // Verifique se o ID está dentro do intervalo permitido para o userLevel
+        return userLevel && idRanges[userLevel].includes(nav.id);
+      }),
+    ])
+  );
   return (
-    <ul className="hidden sm:block flex-row bg-navbar w-60 py-10 mt-12">
-      {Object.keys(processGroups).map((group) => (
-        <>
-          <h3 className="font-medium px-7 text-[#708096] text-lg">{group}</h3>
-          {/*
-           // @ts-expect-error TS7053 */}
-          {processGroups[group].map((nav) => (
-            <li
-              key={nav.id}
-              className={`text-[#b4bcc8] px-7  w-full h-16 flex items-center text-sm  hover:bg-headerColor ${link === nav.url ? "bg-successBtn" : ""}`}
-            >
-              <a href={`${nav.url}`} className="flex flex-row justify-between items-center w-full h-full">
-                {nav.title}
-                <span >
-                  {nav.icon}
-                </span>
-              </a>
-            </li>
+    <>
+      {token && (
+        <ul className={`flex-row bg-navbar w-60 py-10 mt-12`}>
+          {Object.keys(filteredProcessGroups).map((group) => (
+            <>
+              <h3 className="font-medium px-7 text-[#708096] text-lg">{group}</h3>
+              {filteredProcessGroups[group].map((nav) => (
+                <li
+                  key={nav.id}
+                  className={`text-[#b4bcc8] px-7 w-full h-16 flex items-center text-sm hover:bg-headerColor ${link === nav.url ? "bg-successBtn" : ""}`}
+                >
+                  <a href={`${nav.url}`} className="flex flex-row justify-between items-center w-full h-full">
+                    {nav.title}
+                    <span>
+                      {nav.icon}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </>
           ))}
-        </>
-      ))}
-    </ul>
+        </ul>
+      )}
+    </>
   );
 };
 

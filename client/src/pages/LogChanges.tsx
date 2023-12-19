@@ -43,17 +43,21 @@ function LogChanges() {
   
         try {
           await axios.get(`http://10.0.1.204:3307/api/v1/changeLog?delete=${target}`);
-          setHiddenRows((prevHiddenRows) => [...prevHiddenRows, target]);
+          
         } catch (error) {
           // Trate os erros conforme necessário
           console.error("Erro ao deletar:", error);
         }
+        
       } else {
         swal("Ação cancelada");
       }
     });
+      await pageRealoder()
   };
-  
+  const pageRealoder = async () => {
+    window.location.reload();
+  }
   // @ts-expect-error TS6133
   const [show, setShow] = useState(true);
 

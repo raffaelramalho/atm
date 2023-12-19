@@ -21,7 +21,7 @@ function Ferias() {
   const [avisoType, setAvisoType] = useState('');
 
   useEffect(() => {
-    
+
     const token = localStorage.getItem('token');
     console.log(token)
     if (token) setToken(true);
@@ -124,7 +124,7 @@ function Ferias() {
 
   return (
 
-    <div className='flex-col p-5 w-full sm:flex-row sm:p-10 overflow-y-visible mt-10 h-screen'>
+    <div className='flex-col p-1 w-full sm:flex-row sm:p-10 overflow-y-visible mt-10 h-screen sm:p-5'>
       <h3 className='text-3xl my-2 font-medium'>Bloqueio de férias em massa na catraca:</h3>
       {token1 ? (
         <div className='bg-background p-10'>
@@ -132,37 +132,39 @@ function Ferias() {
             <h5 className=''>Utilize apenas as teclas (Shift + Enter) para separar as informações nas linhas, não é necessário "," nem "." ao final de cada nome. <a href="https://absorbing-quartz-1d9.notion.site/Documenta-o-ATM-bc267ad520654c6db8337bb28164e8b8" className='font-medium text-blue-600 dark:text-blue-500 hover:underline' target="_blank" rel="noopener noreferrer">Ajuda</a></h5>
           </div>
           <form className='flex flex-col ' onClick={handleSubmit}>
-            <div className='flex flex-row h-full'>
-              <div className='w-2/4'>
-                <textarea
-                  rows={10}
-                  name='nameList'
-                  value={form.nameList.join('\n')}
-                  onChange={handleChange}
-                  placeholder='Lista de Matriculas'
-                  className='flex-row border-spacing-0 w-full p-5 border border-navbar border-opacity-50'
-                  disabled={false}
-                  readOnly={false}
-                />
-              </div>
-              <div className='flex flex-col justify-between w-2/4 px-5 pb-1.5'>
-                <div>
-                  <p className='font-medium'>Data final da liberação:</p>
-                  <input type="date" name='dataFim' className='border border-solid' onChange={handleChange} />
+            <div className='flex flex-row h-full justify-center'>
+              <div className='flex flex-col sm:flex-row'>
+                <div className='sm:w-2/4 w-4/4'>
+                  <textarea
+                    rows={10}
+                    name='nameList'
+                    value={form.nameList.join('\n')}
+                    onChange={handleChange}
+                    placeholder='Lista de Matriculas'
+                    className='flex-row border-spacing-0 w-full p-5 border border-navbar border-opacity-50'
+                    disabled={false}
+                    readOnly={false}
+                  />
                 </div>
-                <div>
-                  <p className='text-3xl font-bold text-successBtn'>ATENÇÃO!</p>
-                  <p>Esse formulário deve ser preenchido somente no último dia antes da folga do colaborador.</p>
-                </div>
-                <div className='flex-col justify-between text-navbar text-[#FFFF]'>
-                  <div className='my-5'>
-                    <button type='submit' className='flex justify-center items-center bg-successBtn hover:bg-[#123]' onClick={handleUpdate}>
-                      {loading ? "Atualizando..." : (<p className='flex justify-center items-center h-full font-medium'>
-                        Lançar Bloqueio <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-                        </svg>
-                      </p>)}
-                    </button>
+                <div className='flex flex-row justify-between sm:w-2/4 px-5  sm:flex-col w-full'>
+                  <div>
+                    <p className='font-medium'>Data final da liberação:</p>
+                    <input type="date" name='dataFim' className='border border-solid' onChange={handleChange} />
+                  </div>
+                  <div className='sm:block hidden'>
+                    <p className='text-xl font-bold text-successBtn sm:text-3xl'>ATENÇÃO!</p>
+                    <p>Esse formulário deve ser preenchido somente no último dia antes da folga do colaborador.</p>
+                  </div>
+                  <div className='flex-col justify-between text-navbar text-[#FFFF] sm:m-0 ml-10' >
+                    <div className='my-5'>
+                      <button type='submit' className='flex justify-center items-center bg-successBtn hover:bg-[#123] sm:px-0 px-5' onClick={handleUpdate}>
+                        {loading ? "Atualizando..." : (<p className='flex justify-center items-center h-full font-medium'>
+                          Lançar Bloqueio <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                          </svg>
+                        </p>)}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

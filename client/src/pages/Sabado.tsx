@@ -8,6 +8,7 @@ import swal from 'sweetalert2';
 import './modal.css'
 
 function Sabado() {
+  //@ts-ignore
   const [turnos, setTurnos] = useState([]);
   // @ts-expect-error TS6133
   const [informations, setInformations] = useState([]);
@@ -80,9 +81,9 @@ const handleUpdate = async () => {
         const response = await axios.post(`http://10.0.1.204:3307/api/v1/sabado`,filledForms );
         const data = response.data;
 
-        // Abra o modal com as informações aqui
         
         setResultados(data);
+        console.log(data)
         setable(false);
         setInformations(data.invalidos);
         openModal(data);
@@ -122,7 +123,7 @@ const openModal = async (data) => {
     confirmButtonText: 'Fechar',
   });
 };
-
+//@ts-ignore
 const addForm = () => {
   if (formCount.length < 4) {
     setFormCount([...formCount, index]);

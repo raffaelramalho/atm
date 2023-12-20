@@ -10,7 +10,6 @@ import Ferias from "./pages/Ferias"
 import './App.css'
 import Excecao from "./pages/Excecao";
 import LogException from "./pages/LogException";
-import Dashboard from "./pages/Dashboard";
 import LogChanges from "./pages/LogChanges";
 import Sabado from "./pages/Sabado";
 import RequireAuth from './components/ProtectedRoute'
@@ -24,7 +23,6 @@ function App({}) {
     <BrowserRouter>
     <Navbar/>
     <div className="app-body ">
-      
       <Sidebar/>
       <Routes>
           <Route path="login/" element={<Login />} />
@@ -37,12 +35,9 @@ function App({}) {
                       <Route path="excecao/" element={<Excecao />} />
                       <Route path="logexcecao/" element={<LogException />} />
                       <Route path="*" element={<Error />} />
-                      <Route path="dashboard/" element={<Dashboard/>}/>
                       <Route path="logchanges/" element={<LogChanges/>}/>
                       <Route path="sabado/" element={<Sabado/>}/>
-          </Route>
-          
-          
+          </Route> 
       </Routes>
     </div>
       

@@ -3,11 +3,14 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "start_url": "https://delp5015:8000/login",
+  "homepage": "https://delp5015:8000/login",
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc && vite build",
+    "build-css": "npx tailwindcss -i ./src/index.css -o ./dist/output.css",
+    "build": "npx tailwindcss -i ./src/index.css -o ./dist/output.css && tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview --host"
   },
   "proxy": "http://localhost:3307",
   "dependencies": {
@@ -46,6 +49,7 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@hint/configuration-web-recommended": "^8.2.23",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@types/react-table": "^7.7.18",
@@ -56,6 +60,7 @@
     "eslint": "^8.53.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.4",
+    "hint": "^7.1.10",
     "postcss": "^8.4.32",
     "tailwind-scrollbar": "^3.0.5",
     "tailwindcss": "^3.3.5",

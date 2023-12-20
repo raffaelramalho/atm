@@ -73,7 +73,7 @@ async function  logInsert(dbconnection, nameC, regC,nameL, regL, message) {
     const formatted_date = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
     const query = `insert into excecao(nomeLiberado,matriculaLiberado,nomeRequerente,matriculaRequerente,dataLiberacao,duracao,observacao) values (?,?,?,?,?,?,?)`;
     try {
-      const results = await dbconnection.execute(query, [nameC, regC,nameL, regL,formatted_date, 30, message]);
+      const results = await dbconnection.execute(query, [nameC, regC,nameL, regL,formatted_date, 5, message]);
       
     } catch (error) {
       throw error;

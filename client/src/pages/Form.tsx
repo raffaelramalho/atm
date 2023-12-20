@@ -55,6 +55,7 @@ function Form() {
     setFormValues(prevState => ({
       ...prevState,
       [id]: {
+        //@ts-ignore
         ...prevState[id],
         [e.target.name]: value
       }
@@ -121,7 +122,7 @@ const openModal = (data) => {
   const modalContent = `
   ${notExist.length == 0 && notUpdated.length <= 1  ?  `<p>Todos os colaboradores foram alterados com sucesso!</p> <br>` : ''}
   ${notExist.length > 0 || notUpdated.length > 1  ?  `<p>Colaboradores não alterados pelos motivos:</p> <br>` : ''}
-  ${notExist.length > 0 ? `<p><strong>Inexistente:</strong></p><p>${notExist.join(', ').replace(/,+\s*$/, "")}</p>` : ''}
+  ${notExist.length > 0 ? `<p><strong>Inexistente:</strong></p><p>${notExist.join(', ').replace(/,+\s*$/, "")}</p><br>` : ''}
   ${notUpdated.length > 0 ? `<p><strong>Não Atualizado:</strong></p><p>${notUpdated.join(', ').replace(/,+\s*$/, "")}</p>` : ''}
 
 `;
@@ -155,12 +156,12 @@ const removeForm = (id) => {
 };
 // 
   return (
-    <div className='flex-col p-5 w-full sm:flex-row p-1 sm:p-5 mt-10 h-screen'>
+    <div className='flex-col  w-full sm:flex-row p-1 sm:p-5 mt-10 h-screen'>
       <h3 className='text-xl sm:text-3xl my-2 ml-5 font-medium'>Alterar turnos em massa:
             </h3>
       <div className='flex flex-col mb-5 bg-background p-1 rounded-lg shadow-sm'>
         <div className='flex justify-between w-full'>
-            <p className='p-3 sm:text-base text-xs '>As mastriculas devem ser colocadas de maneira idêntica as do histograma</p>
+            <p className='p-3 sm:text-base text-xs '>As mastriculas devem ser colocadas de maneira idêntica as do histograma, sem necessidade de "," ou "."</p>
             <button onClick={addForm} disabled={formCount.length >= 4} className='w-1/12 sm:w-1/12 p-0 sm:p-0 bg-successBtn hover:bg-headerColor my-1 mr-3 rounded-lg'>+</button>
         </div>
         

@@ -6,8 +6,10 @@ const sabadoInsert =
     asyncWrapper(async (req, res) => {
         const request = req.body;
         const inexistente = []
-        const rawArray =request[0]['nameList'][0].split(',')
+        const rawArray =request[0]['nameList']
+        console.log(rawArray)
         const filteredArray = [...new Set(rawArray)]
+        console.log(filteredArray)
         for( let matricula in filteredArray){
           try {
            const [resultSelect] = await dbconnection.execute(`Select id from users where registration = ? and deleted = 0 and inativo = 0`,[filteredArray[matricula]])

@@ -66,8 +66,10 @@ function Ferias() {
   const handleSubmit = (e) => {
     e.preventDefault();
   };
+  //@ts-ignore
   const formatDate = async(dateString) => {
     const date = new Date(dateString);
+    //@ts-ignore
     const formattedDate = format(date, 'dd/MM/yyyy', { timeZone: 'UTC' });
     return formattedDate;
   };

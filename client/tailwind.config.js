@@ -5,7 +5,11 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
 ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        'solda-background': "url('./public/soldadin.jpg')",
+      },
+    },
     colors:{
       'navbar': '#364150',
       'headerColor': '#578ebe',

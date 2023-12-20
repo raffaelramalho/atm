@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 
 
@@ -12,6 +12,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [warningText, setWarningText] = useState(false)
   const [hasToken, setHasToken] = useState(false);
+  //@ts-ignore
   const location = useLocation();
   let navigate = useNavigate();
 
@@ -55,6 +56,7 @@ const Login = () => {
         const token = data.token.token
         localStorage.setItem('token', token);
         const decodedToken = jwtDecode(token);
+        //@ts-ignore
         localStorage.setItem('userLevel',  decodedToken.role);
         navigate(`/home?token=${token}`,{state: { userId: username}})
         window.location.reload();
@@ -72,8 +74,8 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen w-screen items-center justify-center">
-      <form className="bg-background w-3/6 h-3/6 border border-navbar border-opacity-50 p-10 flex flex-col items-center justify-around sm:w-/6 items-center">
+    <div className="flex flex-col h-screen w-screen items-center justify-center bg-[url('./soldadin.jpg')] bg-no-repeat bg-cover">
+      <form className="bg-background w-4/6 h-96 border border-navbar border-opacity-50 p-10 flex flex-col items-center justify-around sm:w-3/12  ">
         <h1 className='font-medium text-3xl'>DELP ID Secure</h1>
         <div className='w-full'>
           <label htmlFor="username">Usuário:</label>
@@ -99,8 +101,7 @@ const Login = () => {
         <button type="button" onClick={handleLogin} className='bg-successBtn hover:bg-[#2e3464]'>
           {loading ? " carregando" : "Login"}
         </button>
-        <Link to={'/EsqueciSenha'} className='my-2'>Esqueci minha senha</Link>
-        <p className='h-6'>{warningText ? "Usuário ou senha incorretos" : ""}</p>
+        <p className='h-3'>{warningText ? "Usuário ou senha incorretos" : ""}</p>
       </form>
 
     </div>

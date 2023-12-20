@@ -5,10 +5,12 @@ import Organizer from '../components/hoc/Hoc'
 import TabelaHistorico from '../components/ListaPaginada'
 import * as XLSX from 'xlsx';
 import { SiMicrosoftexcel } from "react-icons/si";
-import { FaArrowDownWideShort, FaArrowUpShortWide } from "react-icons/fa6";
+
 function HomePage() {
   const [log, setLog] = useState([]);
+  //@ts-ignore
   const [expandedEntry, setExpandedEntry] = useState(null);
+  //@ts-ignore
   const [isClicked, setIsClicked] = useState(false);
   const [sortBy, setSortBy] = useState('dataLiberacao');
   const [inputSearch, setInputSearch] = useState('');
@@ -33,7 +35,7 @@ function HomePage() {
       await getLogs()
     }
   };
-
+//@ts-ignore
   const exportToExcel = (fileName) => {
     const ws = XLSX.utils.json_to_sheet(log);
     console.log(ws)
@@ -53,7 +55,7 @@ function HomePage() {
         .then((res) => {
           // @ts-expect-error TS7006
           const formattedLog = res.data[0].map(entry => {
-            let date = new Date(entry.dataLiberacao);
+            let date = new Date(entry.dataLiberacao);           
             let formattedDate = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
             return { ...entry, dataLiberacao: formattedDate };
           });
@@ -90,7 +92,7 @@ function HomePage() {
           <div className='font-medium flex items-center'>
             <p className=' hidden sm:visible'>Ordenar:</p>
             <select
-              className='ml-2 px-2 py-1 border border-navbar border-opacity-50 rounded-md'
+              className='ml-2 px-2 py-1 border border-navbar border-opacity-50 rounded-md hidden'
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
             >

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 
 const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: string, itemsPerPage: number }) => {
     const [paginaAtual, setPaginaAtual] = useState(1);
@@ -6,6 +6,7 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: st
     const [logPaginado, setLogPaginado] = useState([]);
     useEffect(() => {
         setTotalPages(Math.ceil(log.length / itemsPerPage));
+        //@ts-ignore
         setLogPaginado(log.slice((paginaAtual - 1) * itemsPerPage, paginaAtual * itemsPerPage));
     }, [log, itemsPerPage, paginaAtual]);
 
@@ -23,6 +24,7 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: st
     useEffect(() => {
         const sortedLog = [...log].sort((a, b) => {
             if (sortBy === 'dataMaisRecente') {
+                //@ts-ignore
                 return new Date(b.dataLiberacao) - new Date(a.dataLiberacao);
             } else {
                 if (a[sortBy] < b[sortBy]) return -1;
@@ -32,6 +34,7 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: st
         });
 
         setTotalPages(Math.ceil(sortedLog.length / itemsPerPage));
+        //@ts-ignore
         setLogPaginado(sortedLog.slice((paginaAtual - 1) * itemsPerPage, paginaAtual * itemsPerPage));
     }, [log, itemsPerPage, paginaAtual, sortBy]);
 
@@ -57,24 +60,31 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: st
                             // Lógica de ordenação existente
                             return a[sortBy] - b[sortBy];
                         }
+                        
                     }).map((entry, index) => (
                         <tr
                             key={index}
                             className={`${index % 2 === 0 ? 'bg-gray-200' : 'bg-background'} px-8  w-full justify-between transition duration-300 border-b-[0.1px] border-solid border-y-navbar  ease-in-out rounded-md hover:bg-[#DFF4FA] items-start last:border-none last:rounded-lg`}
                         >
                             <td className='pl-5 h-12  text-xs sm:text-base border-r border-y-navbar'>
+                            {/* @ts-ignore */}
                                 {entry.nomeLiberado}
                             </td>
                             <td className='text-center text-xs border-r border-y-navbar'>
+                                {/* @ts-ignore */}
                                 {entry.matriculaLiberado}
                             </td>
                             <td className='h-12  text-xs sm:text-base border-r border-y-navbar text-center'>
+                                {/* @ts-ignore */}
                                 {entry.dataLiberacao && <p>{entry.dataLiberacao.split(' ')[0]}</p>}
                             </td>
                             <td className='text-xs sm:text-base border-r border-y-navbar text-center'>
+                                {/* @ts-ignore */}
                                 {entry.dataLiberacao && <p>{entry.dataLiberacao.split(' ')[1].slice(0, 5)}</p>}
                             </td>
+                            {/* @ts-ignore */}
                             <td className='pl-5 h-12  text-xs sm:text-base border-r border-y-navbar'>{entry.nomeRequerente}</td>
+                            {/* @ts-ignore */}
                             <td className='pl-5 h-12  text-xs sm:text-base'>{entry.observacao}</td>
                         </tr>
                     ))}

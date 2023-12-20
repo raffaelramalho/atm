@@ -10,7 +10,7 @@ function HomePage() {
         </p>
         <div className='flex w-full justify-center text-[#fff] font-medium'>
           <a href="http://suporte.delp.com.br/glpi/" className='bg-successBtn w-28 mx-2 rounded-md h-10 flex justify-center items-center hover:bg-navbar'>GLPI</a>
-          <a href="https://delp5015:30443/#/login" className='bg-successBtn w-28 mx-2 rounded-md h-10 flex justify-center items-center hover:bg-navbar'>ID Secure</a>
+          <a href="http://delp5015:30443/#/login" className='bg-successBtn w-28 mx-2 rounded-md h-10 flex justify-center items-center hover:bg-navbar'>ID Secure</a>
           <a href="#" className='bg-successBtn w-28 mx-2 rounded-md h-10 flex justify-center items-center hover:bg-navbar'>Documentação</a>
         </div>
       </div>

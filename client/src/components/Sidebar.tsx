@@ -108,7 +108,7 @@ const Component: React.FC = () => {
     Object.entries(processGroups).map(([group, navlinks]) => [
       group,
       navlinks.filter(nav => {
-        // Verifique se o ID está dentro do intervalo permitido para o userLevel
+        //@ts-ignore
         return userLevel && idRanges[userLevel].includes(nav.id);
       }),
     ])

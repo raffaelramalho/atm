@@ -19,6 +19,7 @@ function Excecao() {
   const [able, setable] = useState(true);
   // @ts-expect-error TS6133
   const [aviso, setAviso] = useState(false)
+  {/* @ts-ignore */}
   const [avisoType, setAvisoType] = useState('');
   const [inputTextarea, setInputTextarea] = useState('');
   const [inputCol, setInputCol] = useState('');
@@ -203,7 +204,7 @@ function Excecao() {
 
 
   return (
-    <div className='flex-col p-5 w-full sm:flex-row sm:p-10  overflow-y-visible h-screen mt-10 justify-center ' >
+    <div className='flex-col p-5 w-full sm:flex-row sm:p-10  overflow-y-visible h-screen  justify-center ' >
       <h3 className='text-3xl my-2 font-medium'>Liberação para passagem na catraca:</h3>
       {token1 ? (
         <div className='bg-background p-10 flex flex-col w-12/12 m-auto mt-5 sm:w-5/6'>
@@ -291,6 +292,7 @@ function Excecao() {
                   <div className='flex flex-col absolute bg-background  border-x border-solid border-b max-h-96 '>
                     <div className='overflow-y-auto'>
                     {autocomplete == 'liberador' ? (
+                      //@ts-ignore 
                       suggestions.filter(suggestion => suggestion.isLeader === 1)
                       .map((suggestion) => (
                         // @ts-expect-error TS2339
@@ -312,14 +314,15 @@ function Excecao() {
                     </div>
                 </div>
                 <div className='sm:w-2/6 w-full'>
-                  <p className='text-xs sm:text-base'>Liberador:</p>
+                  <p className='text-xs sm:text-base'>Matrcula:</p>
                   <input type="number"
                     value={inputLibReg}
                     onChange={handleInputChangeReg}
                     name='liberadorReg'
-                    className='border border-navbar border-opacity-50 border-solid bg-background max-h-96 ' />
+                    className='border border-[#020202] border-opacity-50 border-solid bg-background max-h-96 ' />
                     <div className='overflow-y-auto absolute max-h-96 border-x border-solid border-b'>
                     {autocomplete == 'liberadorReg' ? (
+                      //@ts-ignore 
                       suggestionsReg.filter(suggestion => suggestion.isLeader === 1)
                       .map((suggestion) => (
                         // @ts-expect-error TS2552
@@ -365,11 +368,7 @@ function Excecao() {
                   ) :'Liberar' }
                 </button>
               </div>
-              <div className='flex justify-center h-14 items-center'>
-                <p>{avisoType === 'branco' ? "O formulário não pode estar em branco." : ""}</p>
-                <p>{avisoType === 'igual' ? "O Colaborador e Liberador não podem ser iguais." : ""}</p>
-                <p>{avisoType === 'sucesso' ? "" : ""}</p>
-              </div>
+              
             </div>
           </form>
         </div>

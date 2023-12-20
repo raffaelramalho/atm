@@ -7,7 +7,7 @@ const dataProcess = asyncWrapper(async (req, res) => {
   const forms = req.body;
   let naoExiste = [];
   let naoAtualizado = [];
-
+  console.log(forms)
   for (let key in forms) {
     const matriculas = forms[key].nameList;
     const turno = forms[key].newTurn;
@@ -28,7 +28,6 @@ const dataProcess = asyncWrapper(async (req, res) => {
           naoExiste.push(matricula);
         } else {
           naoAtualizado.push(await updateUsers(dbconnection, matricula, turno, rows[0]['id']));
-          console.log(naoAtualizado)
         }
       } catch (error) {
         console.log(error);

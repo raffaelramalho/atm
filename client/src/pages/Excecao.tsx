@@ -314,7 +314,7 @@ function Excecao() {
                     </div>
                 </div>
                 <div className='sm:w-2/6 w-full'>
-                  <p className='text-xs sm:text-base'>Matrcula:</p>
+                  <p className='text-xs sm:text-base'>Matrícula:</p>
                   <input type="number"
                     value={inputLibReg}
                     onChange={handleInputChangeReg}
@@ -323,8 +323,7 @@ function Excecao() {
                     <div className='overflow-y-auto absolute max-h-96 border-x border-solid border-b'>
                     {autocomplete == 'liberadorReg' ? (
                       //@ts-ignore 
-                      suggestionsReg.filter(suggestion => suggestion.isLeader === 1)
-                      .map((suggestion) => (
+                      suggestionsReg.map((suggestion) => (
                         // @ts-expect-error TS2552
                         <a key={suggestion.registration}
                           className='flex items-center h-10  px-5 bg-background text-navbar hover:bg-section cursor-pointer '

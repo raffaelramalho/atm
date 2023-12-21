@@ -40,12 +40,12 @@ function Sabado() {
 
   // @ts-expect-error TS7006
   const handleChange = (e, id) => {
-    setEmpty(false)
+    setEmpty(false);
     const value = e.target.name === 'nameList' ? e.target.value.split('\n') : e.target.value;
     setFormValues(prevState => ({
       ...prevState,
       [id]: {
-        // @ts-expect-error TS7053
+        //@ts-ignore
         ...prevState[id],
         [e.target.name]: value
       }
@@ -139,7 +139,7 @@ const removeForm = (id) => {
 };
 // 
   return (
-    <div className='flex-col p-5 w-full sm:flex-row p-1 sm:p-5 mt-10 h-screen'>
+    <div className='flex-col p-5 w-full sm:flex-row  sm:p-5 mt-10 h-screen'>
       <div className='flex justify-between mb-5'>
         <h3 className='text-xl sm:text-3xl my-2 font-medium'>Liberação de colaboradores para sábado:</h3>
       </div>
@@ -154,7 +154,7 @@ const removeForm = (id) => {
                     rows={10}
                     name='nameList'
                     // @ts-expect-error TS7053
-                    value={formValues[id]?.nameList || ''}
+                    value={(formValues[id]?.nameList || []).join('\n') || ''}
                     onChange={(e) => handleChange(e, id)}
                     placeholder='Lista de matriculas'
                     className='flex-row border-spacing-0 w-full p-5 border border-navbar border-opacity-50  mb-5'

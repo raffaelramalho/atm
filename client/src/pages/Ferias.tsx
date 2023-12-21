@@ -194,7 +194,7 @@ function Ferias() {
         </div>
       )}
       {loading ? (
-        <div className='loader'>
+        <div className='w-full flex justify-center'>
           <img src="../public/Spinner.svg" alt="" />
         </div>
       ) : (

@@ -21,7 +21,7 @@ npm run dev
 ```
 Acesse a aplicação no navegador:
 ```
-http://localhost:3000
+http://localhost:8000
 ```
 ## Funcionalidades
 Atualização em Massa de Turnos: Os usuários podem fornecer uma lista de nomes e um novo turno para atualizar em massa.
@@ -30,11 +30,10 @@ Liberação temporária: uma exceção pode ser criada, permitindo uma pessoa en
 Log de criação de liberações e log ver a fila de alterações pendentes.
 
 ## Estrutura do Projeto
-src/components: Componentes React reutilizáveis.\
-src/pages: Páginas da aplicação.\
-src/services: Configurações e lógica relacionadas aos serviços da aplicação.\
-src/styles: Estilos globais e específicos da aplicação.\
-src/App.js: Ponto de entrada principal da aplicação.\
+client/src/components: Componentes React reutilizáveis.\
+client/src/pages: Páginas da aplicação.\
+server/...: Configurações e lógica relacionadas aos serviços da aplicação.\
+
 
 ## Tecnologias Utilizadas
 React: Biblioteca JavaScript para construção de interfaces de usuário.\

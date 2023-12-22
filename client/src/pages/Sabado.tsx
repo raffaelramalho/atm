@@ -6,6 +6,7 @@ import axios from 'axios';
 import Organizer from '../components/hoc/Hoc';
 import swal from 'sweetalert2';
 import './modal.css'
+import config from '../config'
 
 function Sabado() {
   //@ts-ignore
@@ -78,7 +79,7 @@ const handleUpdate = async () => {
       });
 
       if (confirmUpdate) {
-        const response = await axios.post(`http://10.0.1.204:3307/api/v1/sabado`,filledForms );
+        const response = await axios.post(`${config.backendUrl}/api/v1/sabado`,filledForms );
         const data = response.data;
 
         
@@ -88,6 +89,7 @@ const handleUpdate = async () => {
         setInformations(data.invalidos);
         openModal(data);
         setShowModal(true);
+        setFormValues('')
       } else {
         // Ação cancelada pelo usuário
         swal.fire('Ação Cancelada', 'A atualização foi cancelada pelo usuário.', 'info');
@@ -139,7 +141,9 @@ const removeForm = (id) => {
 };
 // 
   return (
-    <div className='flex-col p-5 w-full sm:flex-row  sm:p-5 mt-10 h-screen'>
+    <div className='flex-col p-5 w-full sm:flex-row  sm:p-5 h-screen'>
+      <div className='h-full overflow-y-auto'> 
+
       <div className='flex justify-between mb-5'>
         <h3 className='text-xl sm:text-3xl my-2 font-medium'>Liberação de colaboradores para sábado:</h3>
       </div>
@@ -163,14 +167,14 @@ const removeForm = (id) => {
                   />
                 </div>
                 <div className='flex flex-col justify-center items-center'>
-                  <span className='text-headerColor font-bold text-4xl mb-5'>Atenção</span>
+                  <span className='text-delpRed font-bold text-4xl mb-5'>Atenção</span>
                   <p className='sm:text-base text-xs'>Esse formulário adiciona automaticamente uma liberação para os colaboradores dia de sábado e exclui esse acesso ao fim do dia (23:59). Portanto não deve ser usado antes de sexta-feira que o colaborador irá atuar.</p>
                 </div>
               </form>
             ))}
           </div>
-          <div className=' w-full p-1 mt-3 sm:p-5 sm:mt-5 justify-center flex'>
-            <button type='submit' className='flex justify-center items-center h-10 bg-successBtn hover:bg-[#123] w-2/5 rounded' onClick={handleUpdate}>
+          <div className=' w-full p-1  sm:p-5  justify-center flex'>
+            <button type='submit' className='flex justify-center items-center h-10 bg-delpRed hover:bg-delpRedHover w-2/5 rounded' onClick={handleUpdate}>
               {loading ? (
                 <p className='flex flex-row'>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 mx-1 animate-spin">
@@ -192,6 +196,7 @@ const removeForm = (id) => {
           <p>Você não tem permissão para acessar isso D:</p>
         </div>
       )}
+      </div>
 
     </div>
   );

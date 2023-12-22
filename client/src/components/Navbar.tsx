@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-
+import Logo from "../assets/delp-new-logo.png"
 
 export default function Navbar() {
   // @ts-expect-error TS6133
@@ -17,14 +17,13 @@ export default function Navbar() {
 
     const token = localStorage.getItem('token');
     const level = localStorage.getItem('userLevel')
-    console.log(token)
-    console.log(level)
+
     if (token) setToken(true);
   }, []);
   return (
     <div className='flex h-20 items-center px-5 bg-background justify-between  sm:px-10 shadow-xl fixed w-full'>
       <a href="/">
-        <img src="delp-nobg.png" alt="delp-logo" className="h-10 sm:h-24" />
+        <img src={Logo} alt="delp-logo" className="h-10 sm:h-14" />
       </a>
       <span className="pr-10">
         {token && <span>

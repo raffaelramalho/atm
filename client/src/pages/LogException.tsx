@@ -5,6 +5,8 @@ import Organizer from '../components/hoc/Hoc'
 import TabelaHistorico from '../components/ListaPaginada'
 import * as XLSX from 'xlsx';
 import { SiMicrosoftexcel } from "react-icons/si";
+import config from '../config'
+
 
 function HomePage() {
   const [log, setLog] = useState([]);
@@ -22,7 +24,7 @@ function HomePage() {
     setInputSearch(value)
 
     if (value.length > 0) {
-      const results = await axios.get(`http://10.0.1.204:3307/api/v1/searchGetter?username=${value}`)
+      const results = await axios.get(`${config.backendUrl}/api/v1/searchGetter?username=${value}`)
       // @ts-expect-error TS7006
       const formattedLog = results.data[0].map(entry => {
         let date = new Date(entry.dataLiberacao);
@@ -38,7 +40,6 @@ function HomePage() {
 //@ts-ignore
   const exportToExcel = (fileName) => {
     const ws = XLSX.utils.json_to_sheet(log);
-    console.log(ws)
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, `${fileName}.xlsx`);
@@ -51,7 +52,7 @@ function HomePage() {
 
   const getLogs = async () => {
     useEffect(() => {
-      axios.get("http://10.0.1.204:3307/api/v1/getLog/")
+      axios.get(`${config.backendUrl}/api/v1/getLog/`)
         .then((res) => {
           // @ts-expect-error TS7006
           const formattedLog = res.data[0].map(entry => {
@@ -106,7 +107,7 @@ function HomePage() {
             </select>
           </div>
           <div>
-            <button className='flex bg-headerColor hover:bg-navbar rounded-xl items-center font-medium'
+            <button className='flex bg-delpRed hover:bg-delpRedHover rounded-xl items-center font-medium'
               onClick={() => exportToExcel(`historico_${new Date().toISOString()}`)}
             >Exportar <SiMicrosoftexcel className='ml-1' />
             </button>

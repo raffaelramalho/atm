@@ -54,7 +54,7 @@ async function userExist(dbconnection, userNameList) {
             const notUpdated = []
             for (let i = 0; i < userId.length; i++){
                 const query = `UPDATE users
-                SET dateLimit = ? 
+                SET dateStartLimit = ? 
                 WHERE id = ? and registration = ? AND deleted = 0;`;
                 const [result] = await dbconnection.execute(query, [`${dataFim} 23:59:59`, userId[i], userName[i]]);
             }

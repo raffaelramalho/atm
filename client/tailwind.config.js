@@ -16,6 +16,8 @@ export default {
       'successBtn':'#32c5d2',
       'section':'#eef1f5',
       'background': '#FFFFFF',
+      'delpRed':'#dc1011',
+      'delpRedHover':'#BD2223'
     }
   },
   plugins: [

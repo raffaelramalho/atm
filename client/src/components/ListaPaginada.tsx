@@ -91,13 +91,13 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: st
                 </tbody>
             </table>
             <div className='flex justify-center mt-4 w-full'>
-                <button onClick={handlePaginaAnterior} disabled={paginaAtual === 1} className='px-3 py-2 bg-headerColor text-navbar hover:bg-[#2f4e7e] rounded-md ml-2 justify-center flex items-center w-12'>
+                <button onClick={handlePaginaAnterior} disabled={paginaAtual === 1} className='px-3 py-2  text-navbar bg-delpRed hover:bg-delpRedHover rounded-md ml-2 justify-center flex items-center w-12'>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-background">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                     </svg>
                 </button>
                 <span className='text-navbar mx-5 flex justify-center h-full items-center font-medium'>{`Página ${paginaAtual} de ${totalPages}`}</span>
-                <button onClick={handleProximaPagina} disabled={paginaAtual === totalPages} className='px-3 py-2 bg-headerColor text-navbar hover:bg-[#2f4e7e] rounded-md ml-2 justify-center flex items-center w-12'>
+                <button onClick={handleProximaPagina} disabled={paginaAtual === totalPages} className='px-3 py-2  text-navbar bg-delpRed hover:bg-delpRedHover rounded-md ml-2 justify-center flex items-center w-12'>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-background">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                     </svg>

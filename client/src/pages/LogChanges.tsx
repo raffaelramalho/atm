@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react';
 import Organizer from '../components/hoc/Hoc'
 import swal from 'sweetalert';
 
+import config from '../config'
+
 function LogChanges() {
   const [log, setLog] = useState([]);
-  {/* @ts-ignore */}
   const [hiddenRows, setHiddenRows] = useState([]);
-  {/* @ts-ignore */}
   const [token1, setToken] = useState(false)
   const [loading, setLoading] = useState(false)
   useEffect(() => {
@@ -19,7 +19,7 @@ function LogChanges() {
   const getLogs = async () => {
     useEffect(() => {
       setLoading(true)
-      axios.get("http://10.0.1.204:3307/api/v1/changeLog?log=1")
+      axios.get(`${config.backendUrl}/api/v1/changeLog?log=1`)
         .then((res) => {
           const formattedLog = res.data[0]
           setLog(formattedLog[0]);
@@ -45,7 +45,7 @@ function LogChanges() {
         });
 
         try {
-          await axios.get(`http://10.0.1.204:3307/api/v1/changeLog?delete=${target}`);
+          await axios.get(`${config.backendUrl}/api/v1/changeLog?delete=${target}`);
 
         } catch (error) {
           // Trate os erros conforme necessário

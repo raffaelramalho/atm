@@ -7,6 +7,7 @@ import swal from 'sweetalert';
 import Organizer from '../components/hoc/Hoc';
 import "./ferias.css"
 import { format } from 'date-fns';
+import config from '../config'
 
 function Ferias() {
 
@@ -94,7 +95,7 @@ function Ferias() {
               const { dataFim } = form;
               const nameListArray = [...new Set(form.nameList.toString().split(',').map((name) => name.trim()))];
               try {
-                const response = await fetch('http://10.0.1.204:3307/api/v1/processar-ferias', {
+                const response = await fetch(`${config.backendUrl}/api/v1/processar-ferias`, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ nameList: nameListArray, dataFim: dataFim }),
@@ -162,12 +163,12 @@ function Ferias() {
                     <input type="date" name='dataFim' className='border border-solid' onChange={handleChange} />
                   </div>
                   <div className='sm:block hidden'>
-                    <p className='text-xl font-bold text-successBtn sm:text-3xl'>ATENÇÃO!</p>
+                    <p className='text-xl font-bold text-delpRed sm:text-3xl'>ATENÇÃO!</p>
                     <p>Esse formulário deve ser preenchido somente no último dia antes da folga do colaborador.</p>
                   </div>
                   <div className='flex-col justify-between text-navbar text-[#FFFF] sm:m-0 ml-10' >
                     <div className='my-5'>
-                      <button type='submit' className='flex justify-center items-center bg-successBtn hover:bg-[#123] sm:px-0 px-5' onClick={handleUpdate}>
+                      <button type='submit' className='flex justify-center items-center bg-delpRed hover:bg-delpRedHover sm:px-0 px-5' onClick={handleUpdate}>
                         {loading ? "Atualizando..." : (<p className='flex justify-center items-center h-full font-medium'>
                           Lançar Bloqueio <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />

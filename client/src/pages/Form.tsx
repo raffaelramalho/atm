@@ -6,10 +6,10 @@ import axios from 'axios';
 import Organizer from '../components/hoc/Hoc';
 import swal from 'sweetalert2';
 import './modal.css'
+import config from '../config'
 
 
 function Form() {
-  
   const [turnos, setTurnos] = useState([]);
   // @ts-expect-error TS6133
   const [informations, setInformations] = useState([]);
@@ -24,7 +24,6 @@ function Form() {
   // @ts-expect-error TS6133
   const [aviso, setAviso] = useState(false)
 
-
   useEffect(() => {
     
     const token = localStorage.getItem('token');
@@ -32,7 +31,7 @@ function Form() {
     
   }, []);
   useEffect(() => {
-    fetch("http://10.0.1.204:3307/api/v1/getTurn/")
+    fetch(`${config.backendUrl}/api/v1/getTurn/`)
       .then((res) => res.json())
       .then((turnos) => setTurnos(turnos));
   }, []);
@@ -67,7 +66,6 @@ function Form() {
   for (let id in formValues) {
     // @ts-expect-error TS7053
     if (!formValues[id] || formValues[id].nameList === ' ' || formValues[id].newTurn === 'default') {
-      console.log()
       return false;
     }
   }
@@ -92,7 +90,7 @@ const handleUpdate = async () => {
       });
 
       if (confirmUpdate) {
-        const response = await axios.post('http://10.0.1.204:3307/api/v1/processar-dados', filledForms);
+        const response = await axios.post(`${config.backendUrl}/api/v1/processar-dados`, filledForms);
         const data = response.data;
         openModal(data);
         setResultados(data);
@@ -126,7 +124,6 @@ const openModal = (data) => {
   ${notUpdated.length > 0 ? `<p><strong>Não Atualizado:</strong></p><p>${notUpdated.join(', ').replace(/,+\s*$/, "")}</p>` : ''}
 
 `;
-
   swal.fire({
     title: 'Atenção!',
     html: modalContent,
@@ -156,15 +153,15 @@ const removeForm = (id) => {
 };
 // 
   return (
-    <div className='flex-col  w-full sm:flex-row p-1 sm:p-5 mt-10 h-screen'>
-      <h3 className='text-xl sm:text-3xl my-2 ml-5 font-medium'>Alterar turnos em massa:
-            </h3>
+    <div className='flex-col  w-full sm:flex-row p-1 sm:p-5  h-screen'>
+       
+      <div className='h-full overflow-y-auto '> 
+      <h3 className='text-xl sm:text-3xl my-2 ml-5 font-medium'>Alterar turnos em massa:</h3>
       <div className='flex flex-col mb-5 bg-background p-1 rounded-lg shadow-sm'>
         <div className='flex justify-between w-full'>
             <p className='p-3 sm:text-base text-xs '>As mastriculas devem ser colocadas de maneira idêntica as do histograma, sem necessidade de "," ou "."</p>
-            <button onClick={addForm} disabled={formCount.length >= 4} className='w-1/12 sm:w-1/12 p-0 sm:p-0 bg-successBtn hover:bg-headerColor my-1 mr-3 rounded-lg'>+</button>
+            <button onClick={addForm} disabled={formCount.length >= 4} className='w-1/12 sm:w-1/12 p-0 sm:p-0 bg-delpRed hover:bg-delpRedHover my-1 mr-3 rounded-lg'>+</button>
         </div>
-        
       </div>
       {token1 ? (
         <div className='flex flex-col w-full items-center sm:flex-col sm:flex '>
@@ -197,8 +194,8 @@ const removeForm = (id) => {
               </form>
             ))}
           </div>
-          <div className=' w-full p-1 mt-3 sm:p-5 sm:mt-5 justify-center flex'>
-            <button type='submit' className='flex justify-center items-center h-10 bg-successBtn hover:bg-[#123] w-2/5 rounded' onClick={handleUpdate}>
+          <div className=' w-full p-1 sm:p-5 justify-center flex'>
+            <button type='submit' className='flex justify-center items-center h-10 bg-delpRed hover:bg-delpRedHover w-2/5 rounded' onClick={handleUpdate}>
               {loading ? (
                 <p className='flex flex-row'>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 mx-1 animate-spin">
@@ -221,6 +218,7 @@ const removeForm = (id) => {
         </div>
       )}
 
+      </div>
     </div>
   );
 }

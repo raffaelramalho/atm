@@ -8,6 +8,7 @@ const sabadoInsert =
         const inexistente = []
         const rawArray = request[0]['nameList']
         const filteredArray = [...new Set(rawArray)]
+        console.log(filteredArray)
         for( let matricula in filteredArray){
           try {
            const [resultSelect] = await dbconnection.execute(`Select id from users where registration = ? and deleted = 0 and inativo = 0`,[filteredArray[matricula]])

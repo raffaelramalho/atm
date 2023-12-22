@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import UsersList from '../components/UsersList';
 import axios from 'axios';
 import swal from 'sweetalert';
-
+import config from '../config'
 import Organizer from '../components/hoc/Hoc';
 
 function Excecao() {
@@ -56,7 +56,7 @@ function Excecao() {
       setForm({ ...form, nameC: value })
     } 
     if (value.length > 0) {
-      const results = await axios.get(`http://10.0.1.204:3307/api/v1/search?username=${value}`);
+      const results = await axios.get(`${config.backendUrl}/api/v1/search?username=${value}`);
       setSuggestions(results.data[0]);
     } else {
       setSuggestions([]);
@@ -78,7 +78,7 @@ function Excecao() {
       setForm({ ...form, regC: value })
     }
     if (value.length > 0) {
-      const results = await axios.get(`http://10.0.1.204:3307/api/v1/search?registration=${value}`);
+      const results = await axios.get(`${config.backendUrl}/api/v1/search?registration=${value}`);
       setSuggestionsReg(results.data[0]);
     } else {
       setSuggestionsReg([]);
@@ -164,7 +164,7 @@ function Excecao() {
             icon: "success",
           });
           try {
-            const response = await axios.post(`http://10.0.1.204:3307/api/v1/exception`, formData);
+            const response = await axios.post(`${config.backendUrl}/api/v1/exception`, formData);
     
             if (response.status === 200) {
               
@@ -205,6 +205,7 @@ function Excecao() {
 
   return (
     <div className='flex-col p-5 w-full sm:flex-row sm:p-10  overflow-y-visible h-screen  justify-center ' >
+      <div className='h-full overflow-y-auto'>
       <h3 className='text-3xl my-2 font-medium'>Liberação para passagem na catraca:</h3>
       {token1 ? (
         <div className='bg-background p-10 flex flex-col w-12/12 m-auto mt-5 sm:w-5/6'>
@@ -216,7 +217,7 @@ function Excecao() {
               <div className='flex flex-col w-full my-1 sm:my-5 sm:flex-row'>
                 <div className='flex flex-row justify-between w-full'>
                 <div className='sm:w-3/6 sm:pr-5 w-full mr-2'>
-                  <p className='text-xs sm:text-base'>Colaborador a ser liberado:</p>
+                  <p className='text-xs sm:text-base'>Colaborador:</p>
                   <input type="text"
                     value={inputCol}
                     onChange={handleInputChange}
@@ -361,7 +362,7 @@ function Excecao() {
                 </textarea>
               </div>
               <div className='flex flex-row w-full justify-center'>
-                <button className='bg-successBtn hover:bg-[#123] font-medium w-3/5' onClick={handleUpdate}>
+                <button className='bg-delpRed hover:bg-delpRedHover font-medium w-3/5' onClick={handleUpdate}>
                   { loading ? ( 
                     <img src="../public/Spinner.svg" alt="" className='h-10 m-auto'/>
                   ) :'Liberar' }
@@ -390,6 +391,7 @@ function Excecao() {
           </div>
         ) : null
       )}
+      </div>
     </div>
   );
 }

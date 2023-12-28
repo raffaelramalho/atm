@@ -37,7 +37,6 @@ const dataProcess = asyncWrapper(async (req, res) => {
     await Promise.all(promises);
   }
   const formattedNaoAtualizado = naoAtualizado.filter((element) => element !== '' && element !== undefined && element !== null);
-  console.log(naoAtualizado,formattedNaoAtualizado)
   res.json({ Inexistente: naoExiste, NaoAtualizado: formattedNaoAtualizado });
 });
 
@@ -81,11 +80,11 @@ async function updateUsers(dbconnection, matricula, turno, id) {
 
 
 async function logInsert(dbconnection, matricula, oldTurn, newTurn, id, nome) {
-  const query = 'insert into DeleteQueue(comando,horarioExecucao,registration,oldTurn,newTurn,nome) values (?,?,?,?,?,?)';
+  const query = 'insert into DeleteQueue(comando,horarioExecucao,registration,oldTurn,newTurn,status,nome) values (?,?,?,?,?,?,?)';
   const proxDomingo = await getNextSunday();
   const queryCommand = `delete from usergroups where idUser = ${id} and idGroup = ${oldTurn}`;
     try {
-      const [result] = await dbconnection.execute(query, [queryCommand, proxDomingo, matricula, oldTurn, newTurn, `${nome}`]);
+      const [result] = await dbconnection.execute(query, [queryCommand, proxDomingo, matricula, oldTurn, newTurn,'domingo', `${nome}`]);
       console.log('Inserido com sucesso');
     } catch (error) {
       console.log(error);

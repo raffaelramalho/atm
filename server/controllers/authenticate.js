@@ -17,7 +17,6 @@ const generateTokenSession = async (formLogin, formPassword, userRole) => {
   try {
     let role = '';
 
-    // Determine o valor de 'role' com base em 'userRole'
     if (userRole === 1) {
       role = 'portaria';
     } else if (userRole === 2) {
@@ -25,7 +24,6 @@ const generateTokenSession = async (formLogin, formPassword, userRole) => {
     } else if (userRole === 3) {
       role = 'admin';
     } else {
-      // Valor padrão se 'userRole' não estiver dentro dos valores esperados
       role = 'basico';
     }
     const payload = {

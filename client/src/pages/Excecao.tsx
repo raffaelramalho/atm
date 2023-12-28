@@ -206,15 +206,15 @@ function Excecao() {
   return (
     <div className='flex-col p-5 w-full sm:flex-row sm:p-10  overflow-y-visible h-screen  justify-center ' >
       <div className='h-full overflow-y-auto'>
-      <h3 className='text-3xl my-2 font-medium'>Liberação para passagem na catraca:</h3>
+        <div className='mb-5'>
+            <h3 className='text-3xl my-2 font-medium'>Liberação para passagem na catraca:</h3>
+            <h5 className=''>Preencha todos os campos para poder liberar o colaborar por um período de <span>5 MINUTOS</span>  <a href="https://absorbing-quartz-1d9.notion.site/Documenta-o-ATM-bc267ad520654c6db8337bb28164e8b8" className='font-medium text-blue-600 dark:text-blue-500 hover:underline' target="_blank" rel="noopener noreferrer">Ajuda</a></h5>
+          </div> 
       {token1 ? (
         <div className='bg-background p-10 flex flex-col w-12/12 m-auto mt-5 sm:w-5/6'>
-          <div className='mb-5'>
-            <h5 className=''>Preencha todos os campos para poder liberar o colaborar por um período de <span>5 MINUTOS</span>  <a href="https://absorbing-quartz-1d9.notion.site/Documenta-o-ATM-bc267ad520654c6db8337bb28164e8b8" className='font-medium text-blue-600 dark:text-blue-500 hover:underline' target="_blank" rel="noopener noreferrer">Ajuda</a></h5>
-          </div>
           <form className='flex flex-col ' onClick={handleSubmit}>
             <div>
-              <div className='flex flex-col w-full my-1 sm:my-5 sm:flex-row'>
+              <div className='flex flex-col w-full  sm:flex-row'>
                 <div className='flex flex-row justify-between w-full'>
                 <div className='sm:w-3/6 sm:pr-5 w-full mr-2'>
                   <p className='text-xs sm:text-base'>Colaborador:</p>
@@ -224,7 +224,7 @@ function Excecao() {
                     className='border border-navbar border-opacity-50 border-solid bg-background '
                     name='liberado'
                   />
-                  <div className='flex flex-col  bg-background  border-x border-solid border-b absolute max-h-96'>
+                  <div className='flex flex-col  bg-background  border-x border-solid absolute max-h-96'>
                     <div className='overflow-y-auto'>
                     {autocomplete == 'liberado' ? (
                       suggestions.map((suggestion) => (
@@ -255,7 +255,7 @@ function Excecao() {
                     onChange={handleInputChangeReg}
                     name='liberadoReg'
                     className='border border-navbar border-opacity-50 border-solid bg-background' />
-                    <div className='flex flex-col  bg-background  border-x border-solid border-b  overflow-y-scroll max-h-96 absolute'>
+                    <div className='flex flex-col  bg-background  border-x border-solid  overflow-y-scroll max-h-96 absolute'>
                     <div className='h-full w-full'>
                     {autocomplete == 'liberadoReg' ? (
                       suggestionsReg.map((suggestion) => (
@@ -290,7 +290,7 @@ function Excecao() {
                     onChange={handleInputChange}
                     className='border border-navbar border-opacity-50 border-solid bg-background'
                     name='liberador' />
-                  <div className='flex flex-col absolute bg-background  border-x border-solid border-b max-h-96 '>
+                  <div className='flex flex-col absolute bg-background  border-x border-solid max-h-96 '>
                     <div className='overflow-y-auto'>
                     {autocomplete == 'liberador' ? (
                       //@ts-ignore 
@@ -321,7 +321,7 @@ function Excecao() {
                     onChange={handleInputChangeReg}
                     name='liberadorReg'
                     className='border border-[#020202] border-opacity-50 border-solid bg-background max-h-96 ' />
-                    <div className='overflow-y-auto absolute max-h-96 border-x border-solid border-b'>
+                    <div className='overflow-y-auto absolute max-h-96 border-x border-solid '>
                     {autocomplete == 'liberadorReg' ? (
                       //@ts-ignore 
                       suggestionsReg.map((suggestion) => (

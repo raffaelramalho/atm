@@ -23,8 +23,6 @@ const sabadoInsert =
             }catch(error){
               console.log(error)
             }
-           
-
           } else {
             inexistente.push(filteredArray[matricula])
           }
@@ -35,8 +33,6 @@ const sabadoInsert =
         let responseList = filteredArray.filter(item => !inexistente.includes(item));
         return res.status(202).send({responseList,inexistente})
     })
-
-
 module.exports = {
   sabadoInsert
 }

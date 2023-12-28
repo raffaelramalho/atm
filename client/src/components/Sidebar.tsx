@@ -117,11 +117,11 @@ const Component: React.FC = () => {
         <ul className={`flex-row bg-[#222222] w-60 py-10 mt-12`}>
           {Object.keys(filteredProcessGroups).map((group) => (
             <>
-              <h3 className="font-medium px-7 text-[#708096] text-lg">{group}</h3>
+              <h3 className={`font-medium px-7 text-[#708096] text-lg `}>{group}</h3>
               {filteredProcessGroups[group].map((nav) => (
                 <li
                   key={nav.id}
-                  className={`text-[#b4bcc8] px-7 w-full h-16 flex items-center text-sm hover:bg-[#444444] ${link === nav.url ? "bg-successBtn" : ""}`}
+                  className={`text-[#b4bcc8] px-7 w-full h-16 flex items-center text-sm hover:bg-[#444444] ${nav.url === active ? 'border-delpRed border-l-8' : ''}`}
                 >
                   <a href={`${nav.url}`} className="flex flex-row justify-between items-center w-full h-full">
                     {nav.title}

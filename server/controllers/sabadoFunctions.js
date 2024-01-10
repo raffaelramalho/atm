@@ -11,15 +11,17 @@ const sabadoInsert =
         console.log(filteredArray)
         for( let matricula in filteredArray){
           try {
-           const [resultSelect] = await dbconnection.execute(`Select id from users where registration = ? and deleted = 0 and inativo = 0`,[filteredArray[matricula]])
+           const [resultSelect] = await dbconnection.execute(`Select id,name from users where registration = ? and deleted = 0 and inativo = 0`,[filteredArray[matricula]])
           if( resultSelect.length > 0 ){
-      
+            
             const [resultTurnId] = await dbconnection.execute(`select id from groups where name='Sábado Exceção'`)
             const id = resultTurnId[0]['id']
+            const nameResult = resultSelect[0]['name']
+            const registration = filteredArray[matricula]
             try {
               const [resultInsert] = await dbconnection.execute(`insert into usergroups(idUser,idGroup, isVisitor) values (?,?,0)`,[resultSelect[0].id, id])
-              const deleteCommand = `delete from usersgroups where idUser =${resultSelect[0].id} and idGroup = ${id}`
-              const [deleteQueueInsert] = await dbconnection.execute(`insert into DeleteQueue(comando,status,oldTurn) values(?,'sabado',?)`,[deleteCommand,id])
+              const deleteCommand = `delete from usergroups where idUser =${resultSelect[0].id} and idGroup = ${id}`
+              const [deleteQueueInsert] = await dbconnection.execute(`insert into DeleteQueue(comando,status,nome,registration,newTurn) values(?,'sabado',?,?,?)`,[deleteCommand,nameResult,registration,id])
             }catch(error){
               console.log(error)
             }

@@ -6,11 +6,20 @@ import swal from 'sweetalert';
 
 import config from '../config'
 
+const ITEMS_PER_PAGE = 10;
+
 function LogChanges() {
   const [log, setLog] = useState([]);
   const [hiddenRows, setHiddenRows] = useState([]);
   const [token1, setToken] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [selectedOption, setSelectedOption] = useState('turno');
+  const [currentPage, setCurrentPage] = useState(1);
+  const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
+  const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+  
+
+  
   useEffect(() => {
 
     const token = localStorage.getItem('token');
@@ -46,7 +55,6 @@ function LogChanges() {
 
         try {
           await axios.get(`${config.backendUrl}/api/v1/changeLog?delete=${target}`);
-
         } catch (error) {
           // Trate os erros conforme necessário
           console.error("Erro ao deletar:", error);
@@ -56,70 +64,93 @@ function LogChanges() {
         swal("Ação cancelada");
       }
     });
-
+    window.location.reload();
   };
   // @ts-expect-error TS6133
   const [show, setShow] = useState(true);
+  const filteredLog = log.filter((entry) => {
+    if (selectedOption === 'turno') {
+      
+      // Mostrar apenas mensagens onde name !== "Sábado Exceção"
+      return entry.name !== 'Sábado Exceção';
+    } else if (selectedOption === 'sabado') {
+      // Mostrar apenas mensagens onde name === "Sábado Exceção"
+      return entry.name === 'Sábado Exceção';
+    }
+    return true;
+  });
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedOption]);
+
+  const currentItems = filteredLog.slice(indexOfFirstItem, indexOfLastItem);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="flex flex-row h-screen justify-center w-full sm:p-5 ">
-      <div className='h-full w-full'>
-        <h3 className='text-3xl my-2'>Relação de mudanças de turno</h3>
+      <div className="h-full w-full">
+        <h3 className="text-3xl my-2">Relação de mudanças de turno</h3>
         <div className={`flex flex-row bg-background px-8 py-3 shadow-md mb-5 w-full justify-between transition duration-500  ease-in-out rounded-md h-26 font-medium`}>
           <div className='flex flex-row items-center'>
-            Colaborador</div>
-          <div>Turno Novo</div>
-          <div className='flex flex-row items-center'>
-            Opções
+            <div className='mr-5'>
+              <p>Visão:</p>
+            </div>
+            <div>
+              <select onChange={(e) => setSelectedOption(e.target.value)}>
+                <option value="turno">Troca de turno</option>
+                <option value="sabado">Sábado Hora Extra</option>
+              </select>
+            </div>
           </div>
         </div>
-        <div className={`flex flex-col mb-5 w-full  rounded-md overflow-y-auto h-3/4`}>
-          {log.length > 0 ? (
-            log.map((entry, index) => (
-              <div
-              // @ts-ignore
-                className={`flex flex-row w-full h-20 items-center justify-between px-5 transition ${index % 2 === 0 ? 'bg-background hover:bg-[#426983] hover:text-[#fff]' : 'bg-[#dfdfdf] hover:bg-[#a1a1a1]'} first:rounded-md last:rounded-b-sm ${hiddenRows.includes(entry.registration) ? 'hidden' : ''}`}
-              >
-                <div className='w-2/6 h-14 flex items-center'>
-                  {/*
-                   // @ts-expect-error TS2339 */}
-                  <div className=' w-full'>{entry.nome} {entry.registration}</div>
-                </div>
-                {/*
-                 // @ts-expect-error TS2339 */}
-                <div className='w-2/6'>{entry.name}</div>
-                <div className='flex flex-row justify-center items-center'>
-                  <button
-                    className='bg-[#dd2626] hover:bg-[#501616]  p-1.5'
-                    //@ts-ignore
-                    onClick={handleChangeClick}
-                    // @ts-expect-error TS2339
-                    name={entry.registration}
-                    //@ts-ignore
-                    id={entry.registration}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                    </svg>
-
-                  </button>
-                </div>
-              </div>
-            ))
+        <div className={`w-full `}>
+          {currentItems.length > 0 ? (
+            <table className={`min-w-full bg-white border border-gray-300 rounded-md overflow-hidden`}>
+              <thead>
+                <tr>
+                  <th className={`py-2 px-4 border-b border-gray-300 bg-gray-200`}>Colaborador</th>
+                  <th className={`py-2 px-4 border-b border-gray-300 bg-gray-200`}>Turno Novo</th>
+                  <th className={`py-2 px-4 border-b border-gray-300 bg-gray-200`}>Opções</th>
+                </tr>
+              </thead>
+              <tbody>
+              {currentItems.map((entry, index) => (
+                  <tr
+                    key={index}
+                    className={`transition ${index % 2 === 0 ? 'bg-background hover:bg-[#426983] hover:text-[#fff]' : 'bg-[#dfdfdf] hover:bg-[#a1a1a1]'} `}
+                  >
+                    <td className='py-2 px-4 '>{entry.nome} {entry.registration}</td>
+                    <td className='py-2 px-4 text-center'>{entry.name}</td>
+                    <td className='flex flex-row justify-center items-center py-2 px-4'>
+                      <button
+                        className='bg-[#dd2626] hover:bg-[#501616]  p-1 w-20 flex justify-center'
+                        onClick={(e) => handleChangeClick(e, entry.registration)}
+                        name={entry.registration}
+                        id={entry.registration}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           ) : (
-            <>
-              {loading ? (
-                <div className='w-full flex justify-center'>
-                  <img src="../public/Spinner.svg" alt="" />
-                </div>
-              ):(
-              <div className={`flex flex-row w-full h-20 items-center justify-between px-5 transition ${'bg-background hover:bg-[#f1f1f1]'
-                } : 'bg-[#dfdfdf] hover:bg-[#a1a1a1]'} first:rounded-md last:rounded-b-sm`}>
-                <p>Nenhuma troca de turno agendada :D</p>
-              </div>
-              )}
-            </>
+            <p className="text-center text-gray-500 mt-4">Não há nenhum registro.</p>
           )}
-
+          <div className="flex justify-center mt-4">
+            {Array.from({ length: Math.ceil(filteredLog.length / ITEMS_PER_PAGE) }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => paginate(i + 1)}
+                className={`mx-1 px-3 py-1 rounded-md ${currentPage === i + 1 ? 'bg-delpRed hover:bg-[#832020]' : 'bg-navbar hover:bg-navbar'} w-10`}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>

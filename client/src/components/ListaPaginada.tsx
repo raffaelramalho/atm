@@ -1,4 +1,5 @@
 import  { useEffect, useState } from 'react';
+import { format } from 'date-fns';
 
 const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: string, itemsPerPage: number }) => {
     const [paginaAtual, setPaginaAtual] = useState(1);
@@ -54,12 +55,29 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: st
                 <tbody >
                     {logPaginado.sort((a, b) => {
                         if (sortBy === 'dataMaisRecente') {
-                            // @ts-expect-error TS2362
-                            return new Date(b.dataLiberacao) - new Date(a.dataLiberacao);
-                        } else {
-                            // Lógica de ordenação existente
-                            return a[sortBy] - b[sortBy];
-                        }
+                            const dateA = new Date(a.dataLiberacao);
+                            const dateB = new Date(b.dataLiberacao);
+                      
+                            // Ordenar primeiro pelo mês
+                            if (dateA.getMonth() !== dateB.getMonth()) {
+                              return dateB.getMonth() - dateA.getMonth();
+                            }
+                      
+                            // Se o mês for o mesmo, ordenar pela hora
+                            return   dateA - dateB;
+                            
+                          } else {
+                            const dateA = new Date(a.dataLiberacao);
+                            const dateB = new Date(b.dataLiberacao);
+                      
+                            // Ordenar primeiro pelo mês
+                            if (dateA.getMonth() !== dateB.getMonth()) {
+                              return   dateA.getMonth() - dateB.getMonth();
+                            }
+                      
+                            // Se o mês for o mesmo, ordenar pela hora
+                            return dateB - dateA;
+                          }
                         
                     }).map((entry, index) => (
                         <tr
@@ -70,13 +88,18 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: st
                             {/* @ts-ignore */}
                                 {entry.nomeLiberado}
                             </td>
-                            <td className='text-center text-xs border-r border-y-navbar'>
+                            <td className='text-center text-xs  sm:text-base border-r border-y-navbar'>
                                 {/* @ts-ignore */}
                                 {entry.matriculaLiberado}
                             </td>
                             <td className='h-12  text-xs sm:text-base border-r border-y-navbar text-center'>
                                 {/* @ts-ignore */}
-                                {entry.dataLiberacao && <p>{entry.dataLiberacao.split(' ')[0]}</p>}
+                                {entry.dataLiberacao && (
+                                <p>
+                                    {format(new Date(entry.dataLiberacao.replace(/-/g, '/')), 'dd/MM/yy')}
+                                </p>
+                                )}
+
                             </td>
                             <td className='text-xs sm:text-base border-r border-y-navbar text-center'>
                                 {/* @ts-ignore */}

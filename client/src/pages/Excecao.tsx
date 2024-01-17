@@ -5,21 +5,17 @@ import axios from 'axios';
 import swal from 'sweetalert';
 import config from '../config'
 import Organizer from '../components/hoc/Hoc';
+import "./Excecao.css"
 
 function Excecao() {
 
-  // @ts-expect-error TS6133
   const [informations, setInformations] = useState([]);
   const [token1, setToken] = useState(false);
-  // @ts-expect-error TS6133
   const [resultados, setResultados] = useState({ response: '' });
   const [form, setForm] = useState({ nameC: '', nameL: '', regC: '', regL: '', obs: '' });
   const [loading, setLoading] = useState(false);
-  // @ts-expect-error TS6133
   const [able, setable] = useState(true);
-  // @ts-expect-error TS6133
   const [aviso, setAviso] = useState(false)
-  {/* @ts-ignore */}
   const [avisoType, setAvisoType] = useState('');
   const [inputTextarea, setInputTextarea] = useState('');
   const [inputCol, setInputCol] = useState('');
@@ -28,11 +24,10 @@ function Excecao() {
   const [suggestionsReg, setSuggestionsReg] = useState([]);
   const [inputLib, setInputLib] = useState('');
   const [inputLibReg, setInputLibReg] = useState('');
-  // @ts-expect-error TS6133
   const [search, setSearch] = useState('')
   const [autocomplete, setAutoComplete] = useState('')
-
-  
+  const [selectedSuggestion, setSelectedSuggestion] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
     
@@ -91,6 +86,7 @@ function Excecao() {
     const name = event.target.name
     const selectedValue = event.target.textContent
     const id = event.target.id;
+    console.log(name,id,selectedValue)
     if (name === 'liberado') {
       setSearch(selectedValue)
       setInputCol(selectedValue)
@@ -112,7 +108,9 @@ function Excecao() {
       setInputColReg(selectedValue)
       setForm({ ...form, nameC:id , regL: selectedValue })
     }
-    setSuggestions([])
+    setTimeout(() => {
+      setSuggestions([]);
+    }, 100);
   }
 
 
@@ -138,10 +136,21 @@ function Excecao() {
   };
   // @ts-expect-error TS7006
   const handleChange = (e) => {
-    const text = e.target.value
-    setInputTextarea(text)
-    setForm({ ...form, obs: text })
+    const text = e.target.value;
+    setInputTextarea(text);
+    setForm({ ...form, obs: text });
   };
+  
+
+  const [opcoesObservacao, setOpcoesObservacao] = useState([
+    "Chegou Atrasado",
+    "Razões médicas",
+    "A pedido da gerência",
+    "Troca de turno",
+    "Outros",
+  ]);
+
+  
   const handleUpdate = async () => {
     if (validateForm()) {
       setLoading(true);
@@ -202,17 +211,91 @@ function Excecao() {
     }
   };
 
+const handleKeyPress = (event) => {
+    console.log(event.key)
+    console.log(selectedIndex)
+    switch (event.key) {
+      case 'ArrowDown':
+        event.preventDefault();
+        setSelectedIndex((prevIndex) => Math.min(prevIndex + 1, suggestions.length - 1));
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        setSelectedIndex((prevIndex) => Math.max(prevIndex - 1, -1));
+        break;
 
+      case 'Enter':
+        event.preventDefault();
+        if (selectedIndex !== -1) {
+          handleSearchSelect({
+            target: {
+              name: autocomplete, 
+              id: suggestions[selectedIndex].registration,
+              textContent: suggestions[selectedIndex].name,
+            },
+          });
+        }
+        break;
+      default:
+        setSelectedSuggestion(null);
+        setSelectedIndex(-1);
+    }
+  };
+  const handleKeyPressReg = (event) => {
+    console.log(event.key)
+    console.log(selectedIndex)
+    switch (event.key) {
+      case 'ArrowDown':
+        event.preventDefault();
+        setSelectedIndex((prevIndex) => Math.min(prevIndex + 1, suggestionsReg.length - 1));
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        setSelectedIndex((prevIndex) => Math.max(prevIndex - 1, -1));
+        break;
+
+      case 'Enter':
+        event.preventDefault();
+        if (selectedIndex !== -1) {
+          handleSearchSelect({
+            
+            target: {
+              name: autocomplete, 
+              id: suggestionsReg[selectedIndex].name,
+              textContent: suggestionsReg[selectedIndex].registration,
+            },
+          });
+        }
+        break;
+      default:
+        setSelectedSuggestion(null);
+        setSelectedIndex(-1);
+    }
+  };
+  
+  const handleInputBlur = () => {
+    setTimeout(() => {
+      setSuggestions([]);
+    }, 100);
+  };
+  const handleOutsideClick = (event) => {
+    if (!event.target.closest('.suggestions-container')) {
+      setTimeout(() => {
+        setSuggestions([]);
+      }, 100);
+    }
+  };
+  
   return (
-    <div className='flex-col p-5 w-full sm:flex-row sm:p-10  overflow-y-visible h-screen  justify-center ' >
+    <div className='flex-col p-5 w-full sm:flex-row sm:p-10  overflow-y-visible h-screen  justify-center ' onClick={handleOutsideClick}>
       <div className='h-full overflow-y-auto'>
         <div className='mb-5'>
             <h3 className='text-3xl my-2 font-medium'>Liberação para passagem na catraca:</h3>
             <h5 className=''>Preencha todos os campos para poder liberar o colaborar por um período de <span>5 MINUTOS</span>  <a href="https://absorbing-quartz-1d9.notion.site/Documenta-o-ATM-bc267ad520654c6db8337bb28164e8b8" className='font-medium text-blue-600 dark:text-blue-500 hover:underline' target="_blank" rel="noopener noreferrer">Ajuda</a></h5>
           </div> 
       {token1 ? (
-        <div className='bg-background p-10 flex flex-col w-12/12 m-auto mt-5 sm:w-5/6'>
-          <form className='flex flex-col ' onClick={handleSubmit}>
+        <div className='bg-background p-10 flex flex-col w-12/12 m-auto mt-5 sm:w-5/6'>          
+          <form className='flex flex-col ' onClick={handleSubmit} onKeyPress={handleKeyPress}>
             <div>
               <div className='flex flex-col w-full  sm:flex-row'>
                 <div className='flex flex-row justify-between w-full'>
@@ -221,24 +304,22 @@ function Excecao() {
                   <input type="text"
                     value={inputCol}
                     onChange={handleInputChange}
+                    onKeyDown={handleKeyPress}
                     className='border border-navbar border-opacity-50 border-solid bg-background '
                     name='liberado'
+                    onBlur={handleInputBlur}
+      
                   />
-                  <div className='flex flex-col  bg-background  border-x border-solid absolute max-h-96'>
-                    <div className='overflow-y-auto'>
-                    {autocomplete == 'liberado' ? (
-                      suggestions.map((suggestion) => (
-                        // @ts-expect-error TS2339
-                        <a key={suggestion.registration}
-                          className='flex items-center h-10 w-full px-5 bg-background text-navbar hover:bg-section cursor-pointer'
+                  <div className={`flex flex-col  bg-background absolute border-x border-solid  max-h-96 `}>
+                    <div className='overflow-y-auto suspended-list  max-w '>
+                    {autocomplete === 'liberado' && suggestions.length > 0 ? (
+                      suggestions.map((suggestion,index) => (           
+                        <a key={index}
+                        className={`flex items-center h-10 box-border w-full px-5 bg-background text-navbar hover:bg-section cursor-pointer ${index === selectedIndex ? 'bg-section' : ''} `}
                           onClick={handleSearchSelect}
-                          // @ts-expect-error TS2322
                           name='liberado'
-                          // @ts-expect-error TS2339
                           id={suggestion.registration}
                         >
-                          {/*
-                           // @ts-expect-error TS2339 */}
                           {suggestion.name}
                         </a>
                       ))
@@ -253,23 +334,19 @@ function Excecao() {
                   <input type="number"
                     value={inputColReg}
                     onChange={handleInputChangeReg}
+                    onKeyDown={handleKeyPressReg}
+                    onBlur={handleInputBlur}
                     name='liberadoReg'
                     className='border border-navbar border-opacity-50 border-solid bg-background' />
-                    <div className='flex flex-col  bg-background  border-x border-solid  overflow-y-scroll max-h-96 absolute'>
-                    <div className='h-full w-full'>
+                     <div className={`flex flex-col  bg-background absolute border-x border-solid  max-h-96 `}>
+                    <div className=' suspended-list overflow-y-scroll '>
                     {autocomplete == 'liberadoReg' ? (
-                      suggestionsReg.map((suggestion) => (
-                        // @ts-expect-error TS2339
-                        <a key={suggestion.registration}
-                          className='flex items-center h-10 w-full px-5 bg-background text-navbar hover:bg-section cursor-pointer'
+                      suggestionsReg.map((suggestion,index) => (
+                        <a key={index}
+                        className={`flex items-center h-10 box-border w-full px-5 bg-background text-navbar hover:bg-section cursor-pointer ${index === selectedIndex ? 'bg-section' : ''} `}
                           onClick={handleSearchSelect}
-                          // @ts-expect-error TS2322
                           name='liberadoReg'
-                          // @ts-expect-error TS2339
-                          id={suggestion.name}
-                        >
-                          {/*
-                           // @ts-expect-error TS2339 */}
+                          id={suggestion.name}>
                           {suggestion.registration}
                         </a>
                       ))
@@ -287,26 +364,21 @@ function Excecao() {
                   <p className='text-xs sm:text-base'>Liberador:</p>
                   <input type="text"
                     value={inputLib}
+                    onKeyDown={handleKeyPress}
                     onChange={handleInputChange}
                     className='border border-navbar border-opacity-50 border-solid bg-background'
-                    name='liberador' />
-                  <div className='flex flex-col absolute bg-background  border-x border-solid max-h-96 '>
-                    <div className='overflow-y-auto'>
+                    name='liberador'
+                    onBlur={handleInputBlur} />
+                                    <div className={`flex flex-col  bg-background absolute border-x border-solid  max-h-96 `}>
+                    <div className='overflow-y-auto suspended-list'>
                     {autocomplete == 'liberador' ? (
-                      //@ts-ignore 
-                      suggestions.filter(suggestion => suggestion.isLeader === 1)
-                      .map((suggestion) => (
-                        // @ts-expect-error TS2339
-                        <a key={suggestion.registration}
-                          className='flex items-center h-10 w-full px-5 bg-background text-navbar hover:bg-section cursor-pointer'
+                      suggestions.map((suggestion,index) => (
+                        <a key={index}
+                        className={`flex items-center h-10 w-full px-5 bg-background text-navbar hover:bg-section cursor-pointer ${index === selectedIndex ? 'bg-section' : ''}`}
                           onClick={handleSearchSelect}
-                          // @ts-expect-error TS2322
                           name='liberador'
-                          // @ts-expect-error TS2339
                           id={suggestion.registration}
                         >
-                          {/*
-                           // @ts-expect-error TS2339 */}
                           {suggestion.name}
                         </a>
                       ))
@@ -319,23 +391,21 @@ function Excecao() {
                   <input type="number"
                     value={inputLibReg}
                     onChange={handleInputChangeReg}
+                    onKeyDown={handleKeyPressReg}
                     name='liberadorReg'
+                    onBlur={handleInputBlur}
                     className='border border-[#020202] border-opacity-50 border-solid bg-background max-h-96 ' />
-                    <div className='overflow-y-auto absolute max-h-96 border-x border-solid '>
+
+                    <div className={`flex flex-col  bg-background absolute border-x border-solid  max-h-96 `}>
+                    <div className='overflow-y-auto suspended-list'>
                     {autocomplete == 'liberadorReg' ? (
-                      //@ts-ignore 
-                      suggestionsReg.map((suggestion) => (
-                        // @ts-expect-error TS2552
-                        <a key={suggestion.registration}
-                          className='flex items-center h-10  px-5 bg-background text-navbar hover:bg-section cursor-pointer '
-                          onClick={handleSearchSelect}
-                          // @ts-expect-error TS2322
-                          name='liberadorReg'
-                          // @ts-expect-error TS2552
-                          id={suggestion.name}
-                        >
-                          {/*
-                           // @ts-expect-error TS2339 */}
+                      suggestionsReg.map((suggestion,index) => (                
+                        <a  key={index}
+                            className={`flex items-center h-10 w-full px-5 bg-background text-navbar hover:bg-section cursor-pointer ${index === selectedIndex ? 'bg-section' : ''}`}
+                            onClick={handleSearchSelect}                         
+                            name='liberadorReg'                          
+                            id={suggestion.name}
+                        >                   
                           {suggestion.registration}
                         </a>
                       ))
@@ -343,23 +413,28 @@ function Excecao() {
                       ""
                     )}
                     </div>
+                    </div>
                 </div>
                 </div>
               </div>
               <div className='mb-1 sm:mb-5 mt-5'>
                 <p className='text-xs sm:text-base'>Observação:</p>
-                <textarea
+                <select
                   name="observacao"
                   id=""
                   value={inputTextarea}
-                  // @ts-expect-error TS2322
-                  cols="30"
-                  // @ts-expect-error TS2322
-                  rows="10"
-                  className='border border-navbar border-opacity-50 border-solid w-full p-3'
                   onChange={handleChange}
+                  className='border border-navbar border-opacity-50 border-solid w-full p-3'
                 >
-                </textarea>
+                  <option value="" disabled selected>
+                    Selecione uma opção
+                  </option>
+                  {opcoesObservacao.map((opcao, index) => (
+                    <option key={index} value={opcao}>
+                      {opcao}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className='flex flex-row w-full justify-center'>
                 <button className='bg-delpRed hover:bg-delpRedHover font-medium w-3/5' onClick={handleUpdate}>

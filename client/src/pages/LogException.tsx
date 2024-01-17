@@ -6,7 +6,7 @@ import TabelaHistorico from '../components/ListaPaginada'
 import * as XLSX from 'xlsx';
 import { SiMicrosoftexcel } from "react-icons/si";
 import config from '../config'
-
+import { format } from 'date-fns';
 
 function HomePage() {
   const [log, setLog] = useState([]);
@@ -23,15 +23,17 @@ function HomePage() {
     const value = event.target.value;
     setInputSearch(value)
 
-    if (value.length > 0) {
-      const results = await axios.get(`${config.backendUrl}/api/v1/searchGetter?username=${value}`)
+    if (value.trim().length > 0  ) {
+      const results = await axios.get(`${config.backendUrl}/api/v1/searchGetter?username=${value.trim()}`)
       // @ts-expect-error TS7006
       const formattedLog = results.data[0].map(entry => {
         let date = new Date(entry.dataLiberacao);
-        let formattedDate = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
+        let formattedDate = format(date, 'yyyy-MM-dd HH:mm:ss');
         return { ...entry, dataLiberacao: formattedDate };
       });
       setLog(formattedLog);
+    } else if(value == ""){
+      window.location.reload();
     } else {
       setLog([]);
       await getLogs()
@@ -54,20 +56,21 @@ function HomePage() {
     useEffect(() => {
       axios.get(`${config.backendUrl}/api/v1/getLog/`)
         .then((res) => {
-          // @ts-expect-error TS7006
           const formattedLog = res.data[0].map(entry => {
-            let date = new Date(entry.dataLiberacao);           
-            let formattedDate = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
+            let date = new Date(entry.dataLiberacao);
+            let formattedDate = format(date, 'yyyy-MM-dd HH:mm:ss');
             return { ...entry, dataLiberacao: formattedDate };
           });
-
+  
           setLog(formattedLog);
-
+  
         })
         .catch((error) => console.error(`Erro: ${error}`));
     }, []);
   }
   getLogs()
+
+
   return (
     <div className="flex flex-row h-screen justify-center w-full sm:p-5 ">
       <div className='h-full w-full'>
@@ -93,7 +96,7 @@ function HomePage() {
           <div className='font-medium flex items-center'>
             <p className=' hidden sm:visible'>Ordenar:</p>
             <select
-              className='ml-2 px-2 py-1 border border-navbar border-opacity-50 rounded-md hidden'
+              className='ml-2 px-2 py-1 border border-navbar border-opacity-50 rounded-md'
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
             >
@@ -103,7 +106,6 @@ function HomePage() {
               <option value='dataLiberacao'>
                 Data ↥
               </option>
-              <option value='nomeLiberado'>Nome</option>
             </select>
           </div>
           <div>

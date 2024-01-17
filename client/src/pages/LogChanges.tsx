@@ -31,6 +31,7 @@ function LogChanges() {
       axios.get(`${config.backendUrl}/api/v1/changeLog?log=1`)
         .then((res) => {
           const formattedLog = res.data[0]
+          console.log(formattedLog)
           setLog(formattedLog[0]);
           setLoading(false)
         })
@@ -55,6 +56,8 @@ function LogChanges() {
 
         try {
           await axios.get(`${config.backendUrl}/api/v1/changeLog?delete=${target}`);
+          const updatedLog = log.filter((entry) => entry.registration !== target);
+          setLog(updatedLog);
         } catch (error) {
           // Trate os erros conforme necessário
           console.error("Erro ao deletar:", error);
@@ -64,16 +67,18 @@ function LogChanges() {
         swal("Ação cancelada");
       }
     });
-    window.location.reload();
+    
   };
   // @ts-expect-error TS6133
   const [show, setShow] = useState(true);
   const filteredLog = log.filter((entry) => {
     if (selectedOption === 'turno') {
-      
+    
       // Mostrar apenas mensagens onde name !== "Sábado Exceção"
       return entry.name !== 'Sábado Exceção';
+      
     } else if (selectedOption === 'sabado') {
+      
       // Mostrar apenas mensagens onde name === "Sábado Exceção"
       return entry.name === 'Sábado Exceção';
     }
@@ -115,6 +120,7 @@ function LogChanges() {
               </thead>
               <tbody>
               {currentItems.map((entry, index) => (
+                
                   <tr
                     key={index}
                     className={`transition ${index % 2 === 0 ? 'bg-background hover:bg-[#426983] hover:text-[#fff]' : 'bg-[#dfdfdf] hover:bg-[#a1a1a1]'} `}

@@ -5,7 +5,7 @@ import axios from 'axios';
 import swal from 'sweetalert';
 import config from '../config'
 import Organizer from '../components/hoc/Hoc';
-import "./Excecao.css"
+
 
 function Excecao() {
 
@@ -419,22 +419,15 @@ const handleKeyPress = (event) => {
               </div>
               <div className='mb-1 sm:mb-5 mt-5'>
                 <p className='text-xs sm:text-base'>Observação:</p>
-                <select
+          
+                <textarea
                   name="observacao"
                   id=""
                   value={inputTextarea}
                   onChange={handleChange}
                   className='border border-navbar border-opacity-50 border-solid w-full p-3'
-                >
-                  <option value="" disabled selected>
-                    Selecione uma opção
-                  </option>
-                  {opcoesObservacao.map((opcao, index) => (
-                    <option key={index} value={opcao}>
-                      {opcao}
-                    </option>
-                  ))}
-                </select>
+                  rows="4"  
+                ></textarea>
               </div>
               <div className='flex flex-row w-full justify-center'>
                 <button className='bg-delpRed hover:bg-delpRedHover font-medium w-3/5' onClick={handleUpdate}>

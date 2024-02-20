@@ -73,7 +73,7 @@ function LogChanges() {
   const [show, setShow] = useState(true);
   const filteredLog = log.filter((entry) => {
     if (selectedOption === 'turno') {
-    
+      
       // Mostrar apenas mensagens onde name !== "Sábado Exceção"
       return entry.name !== 'Sábado Exceção';
       

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 import Logo from "../assets/delpinhoTI.png"
-import useAuth  from '../hooks/useAuth'
 import config from '../config'
 import '../index.css';
 import './trinagle.css';
@@ -13,7 +12,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [warningText, setWarningText] = useState(false)
   const [hasToken, setHasToken] = useState(false);
-  const [tokenExpired, setTokenExpired] = useState(false);
   //@ts-ignore
   const location = useLocation();
   let navigate = useNavigate();
@@ -35,10 +33,9 @@ const Login = () => {
 
   const handleLogin = async () => {
     setLoading(true);
-
-
+    localStorage.setItem('token', 'admin');
+    localStorage.setItem('userLevel',  'admin');
     try {
-
 
       var response = await fetch(`${config.backendUrl}/api/v1/loginValidate`, {
         method: 'POST',
@@ -76,7 +73,9 @@ const Login = () => {
       setLoading(false);
 
     }
+    setLoading(false);
   };
+
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       handleLogin();

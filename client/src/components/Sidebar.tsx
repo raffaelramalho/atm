@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 const Component: React.FC = () => {
 
   const location = useLocation();
-  // @ts-expect-error TS6133
+
   const [active, setActive] = useState<string>("");
-  // @ts-expect-error TS6133
+
   const [link, setLink] = useState<string>("");
   const [token, setToken] = useState(false);
   useEffect(() => {
@@ -46,7 +46,7 @@ const Component: React.FC = () => {
       {
         id: 8,
         url: "/sabado",
-        title: "Liberação Sábado",
+        title: "Liberar Sábado",
         icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
           <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
         </svg>
@@ -55,7 +55,7 @@ const Component: React.FC = () => {
       {
         id: 4,
         url: "/ferias",
-        title: "Bloqueio de Férias",
+        title: "Férias",
         // @ts-expect-error TS2322
         icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
           <path d="M15.75 8.25a.75.75 0 01.75.75c0 1.12-.492 2.126-1.27 2.812a.75.75 0 11-.992-1.124A2.243 2.243 0 0015 9a.75.75 0 01.75-.75z" />
@@ -85,20 +85,30 @@ const Component: React.FC = () => {
       {
         id: 7,
         url: "/logchanges",
-        title: "Mudanças de turno agendadas",
+        title: "Mudanças  agendadas",
         // @ts-expect-error TS2322
         icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
           <path fill-rule="evenodd" d="M10.5 3.798v5.02a3 3 0 01-.879 2.121l-2.377 2.377a9.845 9.845 0 015.091 1.013 8.315 8.315 0 005.713.636l.285-.071-3.954-3.955a3 3 0 01-.879-2.121v-5.02a23.614 23.614 0 00-3 0zm4.5.138a.75.75 0 00.093-1.495A24.837 24.837 0 0012 2.25a25.048 25.048 0 00-3.093.191A.75.75 0 009 3.936v4.882a1.5 1.5 0 01-.44 1.06l-6.293 6.294c-1.62 1.621-.903 4.475 1.471 4.88 2.686.46 5.447.698 8.262.698 2.816 0 5.576-.239 8.262-.697 2.373-.406 3.092-3.26 1.47-4.881L15.44 9.879A1.5 1.5 0 0115 8.818V3.936z" clip-rule="evenodd" />
         </svg>
         ,
       },
+      {
+        id: 9,
+        url: "/liberaGeral",
+        title: "Liberar Geral",
+        icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+          </svg>
+      
+        ,
+      },
     ],
   };
   const userLevel = localStorage.getItem('userLevel');
   const idRanges = {
-    admin: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+    admin: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
     rh: [0, 1, 2, 3, 4, 7, 6, 8],
-    portaria: [0, 5, 6],
+    portaria: [0, 5, 6,9],
     basico: [0]
     // Adicione outros níveis conforme necessário
   };

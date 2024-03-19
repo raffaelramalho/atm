@@ -13,7 +13,7 @@ import LogException from "./pages/LogException";
 import LogChanges from "./pages/LogChanges";
 import Sabado from "./pages/Sabado";
 import RequireAuth from './components/ProtectedRoute'
-
+import LiberaGeral from "./pages/LiberaGeral";
 
 
 function App({}) {
@@ -37,6 +37,7 @@ function App({}) {
                       <Route path="*" element={<Error />} />
                       <Route path="logchanges/" element={<LogChanges/>}/>
                       <Route path="sabado/" element={<Sabado/>}/>
+                      <Route path="liberaGeral/" element={<LiberaGeral/>}/>
           </Route> 
       </Routes>
     </div>

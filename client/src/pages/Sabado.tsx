@@ -8,6 +8,7 @@ import swal from 'sweetalert2';
 import './modal.css'
 import config from '../config'
 
+
 function Sabado() {
   //@ts-ignore
   const [turnos, setTurnos] = useState([]);
@@ -54,11 +55,16 @@ function Sabado() {
   };
 
   const validateForm = () => {
-    if (!formValues) {
-      return false;
+    for (let id in formValues) {
+      const formValue = formValues[id];
+      // Verifica se algum campo está preenchido
+      if (formValue.nameList &&  formValue.newTurn !== 'default') {
+        return true;
+      }
     }
-  return true;
-};
+    return false; 
+  };
+  
 
 const handleUpdate = async () => {
   setLoading(true);
@@ -66,9 +72,8 @@ const handleUpdate = async () => {
   if (validateForm() && !empty) {
     try {
       // @ts-expect-error TS18046
-      const filledForms = Object.values(formValues).filter(form => form.nameList);
+      const filledForms = Object.values(formValues).filter(form => form.nameList && form.newTurn !== 'default');
 
-      // Use SweetAlert2 para confirmar a atualização
       const { value: confirmUpdate } = await swal.fire({
         title: 'Confirmação',
         text: 'Deseja mesmo atualizar os turnos das matrículas selecionadas?',
@@ -79,17 +84,14 @@ const handleUpdate = async () => {
       });
 
       if (confirmUpdate) {
-        const response = await axios.post(`${config.backendUrl}/api/v1/sabado`,filledForms );
+        const response = await axios.post(`${config.backendUrl}/api/v1/processar-dados`, filledForms);
         const data = response.data;
-
-        
+        openModal(data);
         setResultados(data);
-        console.log(data)
         setable(false);
         setInformations(data.invalidos);
-        openModal(data);
         setShowModal(true);
-        setFormValues('')
+        setFormValues({ nameList: [] });
       } else {
         // Ação cancelada pelo usuário
         swal.fire('Ação Cancelada', 'A atualização foi cancelada pelo usuário.', 'info');
@@ -97,12 +99,14 @@ const handleUpdate = async () => {
     } catch (error) {
       // @ts-expect-error TS18046
       swal.fire('Erro', error.message, 'error');
+      console.error(error);
     }
   } else {
     swal.fire('Formulário Inválido', 'Por favor, preencha corretamente todos os campos do formulário.', 'error');
   }
 
   setLoading(false);
+
 };
 // @ts-expect-error TS7006
 const openModal = async (data) => {
@@ -127,7 +131,7 @@ const openModal = async (data) => {
 };
 //@ts-ignore
 const addForm = () => {
-  if (formCount.length < 4) {
+  if (formCount.length < 2) {
     setFormCount([...formCount, index]);
     setIndex(index + 1);
   } else {
@@ -145,14 +149,20 @@ const removeForm = (id) => {
       <div className='h-full overflow-y-auto'> 
 
       <div className='flex justify-between mb-5'>
-        <h3 className='text-xl sm:text-3xl my-2 font-medium'>Liberação de colaboradores para sábado:</h3>
+        <h3 className='text-xl sm:text-3xl my-2 font-medium'>Liberação para sábado:</h3>
+        <button onClick={addForm} disabled={formCount.length >= 2} className='w-1/12 sm:w-1/12 p-0 h-[50px] sm:p-0 bg-delpRed hover:bg-delpRedHover my-1 mr-3 rounded-lg font-bold'>+</button>
+      </div>
+      <div>
       </div>
       {token1 ? (
         <div className='flex flex-col w-full items-center sm:flex-col sm:flex '>
           <div className='w-full overflow-y-auto overflow-x-hidden h-[600px] flex flex-col items-center justify-center sm:flex-row sm:flex sm:h-full'>     
             {formCount.map((id) => (
-              <form key={id} className='bg-background p-2  rounded w-full  sm:p-5 sm:m-3 sm:w-6/6 h-4/4'>
-                <p>As matriculas devem ser inseridas separadas por ",". Ao serem copiadas de uma lista ou planilhas elas já vêm separadas de forma correta.</p>
+              <form key={id} className='bg-background p-2  rounded w-2/4  sm:p-5 sm:m-3 sm:w-6/6 h-4/4'>
+                <div className='w-full flex justify-between mb-3 items-center'>
+                  <p className='font-semibold'> Grupo {id + 1}</p>
+                  <button type="button" onClick={() => removeForm(id)} className='flex w-10 h-10 bg-none hover:bg-[#fff] text-[#000] justify-center rounded-full'>X</button>
+                </div>
                 <div className='flex mt-5'>
                   <textarea
                     rows={10}
@@ -166,14 +176,15 @@ const removeForm = (id) => {
                     readOnly={false}
                   />
                 </div>
-                <div className='flex flex-col justify-center items-center'>
-                  <span className='text-delpRed font-bold text-4xl mb-5'>Atenção</span>
-                  <p className='sm:text-base text-xs'>Esse formulário adiciona automaticamente uma liberação para os colaboradores dia de sábado e exclui esse acesso ao fim do dia (23:59). Portanto não deve ser usado antes de sexta-feira que o colaborador irá atuar.</p>
-                </div>
+                <select name='newTurn' className='h-14 border border-navbar border-opacity-50 px-5 w-full' onChange={(e) => handleChange(e, id)}>
+                  <option value='default'>Selecione um turno</option>
+                  <option value='sabadoHE1'> Sábado Hora Extra 1° Turno</option>
+                  <option value='sabadoHE2'> Sábado Hora Extra 2° Turno</option>
+                </select>
               </form>
             ))}
           </div>
-          <div className=' w-full p-1  sm:p-5  justify-center flex'>
+          <div className=' w-full p-1  sm:p-1  justify-center flex'>
             <button type='submit' className='flex justify-center items-center h-10 bg-delpRed hover:bg-delpRedHover w-2/5 rounded' onClick={handleUpdate}>
               {loading ? (
                 <p className='flex flex-row'>

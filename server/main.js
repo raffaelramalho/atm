@@ -18,6 +18,7 @@ const logController = require('./routes/historicoController')
 const logSearcher = require('./routes/historicoSearchController')
 const changeLog = require('./routes/changeController')
 const sabado = require('./routes/sabadoInsertController')
+const liberdade = require('./routes/liberaGeralController')
 
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true })); 
@@ -35,7 +36,7 @@ app.use(`${rota}exception`, excecaoInsert)
 app.use(`${rota}dashboard`, logSearcher)
 app.use(`${rota}changeLog`,changeLog)
 app.use(`${rota}sabado`,sabado)
-app.get(`${rota}teste/`, (req, res) => { res.json({ "message": "Hello world!" }); })
+app.use(`${rota}liberaGeral`,liberdade)
 
 const start = async () => {
     try {

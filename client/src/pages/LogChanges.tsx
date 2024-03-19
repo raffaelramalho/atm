@@ -73,17 +73,15 @@ function LogChanges() {
   const [show, setShow] = useState(true);
   const filteredLog = log.filter((entry) => {
     if (selectedOption === 'turno') {
-      
-      // Mostrar apenas mensagens onde name !== "Sábado Exceção"
-      return entry.name !== 'Sábado Exceção';
-      
+      // Mostrar apenas mensagens onde name !== "SHE1_ IDSECUREPLUS _NAO_DELETAR" e name !== "SHE2_ IDSECUREPLUS _NAO_DELETAR"
+      return entry.name !== 'SHE1_ IDSECUREPLUS _NAO_DELETAR' && entry.name !== 'SHE2_ IDSECUREPLUS _NAO_DELETAR' && entry.name !== 'Sábado Exceção';
     } else if (selectedOption === 'sabado') {
-      
-      // Mostrar apenas mensagens onde name === "Sábado Exceção"
-      return entry.name === 'Sábado Exceção';
+      // Mostrar apenas mensagens onde name === "SHE1_ IDSECUREPLUS _NAO_DELETAR" ou name === "SHE2_ IDSECUREPLUS _NAO_DELETAR"
+      return entry.name === 'SHE1_ IDSECUREPLUS _NAO_DELETAR' || entry.name === 'SHE2_ IDSECUREPLUS _NAO_DELETAR';
     }
     return true;
   });
+  
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedOption]);
@@ -146,16 +144,27 @@ function LogChanges() {
           ) : (
             <p className="text-center text-gray-500 mt-4">Não há nenhum registro.</p>
           )}
-          <div className="flex justify-center mt-4">
-            {Array.from({ length: Math.ceil(filteredLog.length / ITEMS_PER_PAGE) }, (_, i) => (
+          <div>
+            <div className="flex justify-center items-center align-middle mt-5">
+              {/* Botão "Anterior" */}
               <button
-                key={i}
-                onClick={() => paginate(i + 1)}
-                className={`mx-1 px-3 py-1 rounded-md ${currentPage === i + 1 ? 'bg-delpRed hover:bg-[#832020]' : 'bg-navbar hover:bg-navbar'} w-10`}
+                onClick={() => setCurrentPage(currentPage === 1 ? 1 : currentPage - 1)}
+                disabled={currentPage === 1}
+                className="mx-1 px-3 py-1 rounded-md bg-delpRed hover:bg-[#832020] w-20"
               >
-                {i + 1}
+                Anterior
               </button>
-            ))}
+              {/* Botão "Próxima" */}
+              {/* Texto "Página x de x+1" */}
+            <p className="mr-5 ml-5 text-center">Página {currentPage} de {Math.ceil(filteredLog.length / ITEMS_PER_PAGE)}</p>
+              <button
+                onClick={() => setCurrentPage(currentPage === Math.ceil(filteredLog.length / ITEMS_PER_PAGE) ? currentPage : currentPage + 1)}
+                disabled={currentPage === Math.ceil(filteredLog.length / ITEMS_PER_PAGE)}
+                className="mx-1 px-3 py-1 rounded-md bg-delpRed hover:bg-[#832020] w-20"
+              >
+                Próxima
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -23,7 +23,7 @@ const exception =
 
 async function userExist(dbconnection, nameC, nameL,regC,regL,idc) {
           const query = `SELECT id FROM Users WHERE name = ? and registration = ? and deleted = 0 limit 1`;
-          const query1 = `SELECT id FROM Users WHERE name = ? and registration = ? and deleted = 0 and isLeader = 1 limit 1`;
+          const query1 = `SELECT id FROM Users WHERE name = ? and registration = ? and deleted = 0 limit 1`;
           try {
             const results = await dbconnection.execute(query, [nameC,regC]);
             const results1 = await dbconnection.execute(query1, [nameL,regL]);  
@@ -41,7 +41,9 @@ async function userExist(dbconnection, nameC, nameL,regC,regL,idc) {
         }
         
 async function userInsert(dbconnection, nameC, regC) {
-          const groupExc = 1126
+          //ABAIXO É O NOME DO CAMPO PARA FAZER A EXCEÇÃO NO CONTROL ID
+          const [resultTurnId] = await dbconnection.execute(`select id from groups where name='Exceção - ID SECURE PLUS - NÃO DELETAR'`) 
+          const groupExc = resultTurnId[0]['id']
           const query = `SELECT id FROM Users WHERE name = ? and registration = ? and deleted = 0 limit 1`;
           try {
             const results = await dbconnection.execute(query, [nameC,regC]);

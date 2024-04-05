@@ -1,15 +1,56 @@
-import  { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 
-const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: string, itemsPerPage: number }) => {
+const TabelaHistorico = ({ log, sortBy, itemsPerPage, mesBy }: { log: any[], sortBy: string, mesBy: string, itemsPerPage: number }) => {
     const [paginaAtual, setPaginaAtual] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [logPaginado, setLogPaginado] = useState([]);
+    const [mesSelecionado, setMesSelecionado] = useState('');
+
     useEffect(() => {
         setTotalPages(Math.ceil(log.length / itemsPerPage));
-        //@ts-ignore
         setLogPaginado(log.slice((paginaAtual - 1) * itemsPerPage, paginaAtual * itemsPerPage));
     }, [log, itemsPerPage, paginaAtual]);
+
+    useEffect(() => {
+        // Filtrar os registros por mês selecionado
+        const filteredLog = log.filter(entry => {
+            const entryDate = new Date(entry.dataLiberacao);
+            const entryMonth = entryDate.getMonth();
+            // Converter nome do mês para número (janeiro = 0, fevereiro = 1, ...)
+            const monthMap: { [key: string]: number } = {
+                Janeiro: 0, Fevereiro: 1, Marco: 2, Abril: 3, Maio: 4, Junho: 5,
+                Julho: 6, Agosto: 7, Setembro: 8, Outubro: 9, Novembro: 10, Dezembro: 11
+            };
+            const selectedMonth = monthMap[mesBy];
+
+            return entryMonth === selectedMonth;
+        });
+
+        setTotalPages(Math.ceil(filteredLog.length / itemsPerPage));
+        // Atualizar os registros filtrados com base no filtro por mês
+        setLogFiltrado(filteredLog);
+    }, [log, itemsPerPage, paginaAtual, mesBy]);
+
+    useEffect(() => {
+        setPaginaAtual(1); // Voltar para a primeira página ao mudar o filtro de mês
+    }, [mesBy]);
+
+    useEffect(() => {
+        if (mesSelecionado === '') {
+            // Se nenhum mês estiver selecionado, exiba todos os registros
+            setLogPaginado(log.slice((paginaAtual - 1) * itemsPerPage, paginaAtual * itemsPerPage));
+        } else {
+            // Filtrar por mês selecionado
+            const filteredLog = log.filter(entry => {
+                const date = new Date(entry.dataLiberacao);
+                return date.getMonth() === parseInt(mesSelecionado, 10);
+            });
+
+            setTotalPages(Math.ceil(filteredLog.length / itemsPerPage));
+            setLogPaginado(filteredLog.slice((paginaAtual - 1) * itemsPerPage, paginaAtual * itemsPerPage));
+        }
+    }, [log, itemsPerPage, paginaAtual, mesSelecionado]);
 
     const handlePaginaAnterior = () => {
         if (paginaAtual > 1) {
@@ -22,25 +63,11 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: st
             setPaginaAtual(paginaAtual + 1);
         }
     };
-    useEffect(() => {
-        const sortedLog = [...log].sort((a, b) => {
-            if (sortBy === 'dataMaisRecente') {
-                //@ts-ignore
-                return new Date(b.dataLiberacao) - new Date(a.dataLiberacao);
-            } else {
-                if (a[sortBy] < b[sortBy]) return -1;
-                if (a[sortBy] > b[sortBy]) return 1;
-                return 0;
-            }
-        });
 
-        setTotalPages(Math.ceil(sortedLog.length / itemsPerPage));
-        //@ts-ignore
-        setLogPaginado(sortedLog.slice((paginaAtual - 1) * itemsPerPage, paginaAtual * itemsPerPage));
-    }, [log, itemsPerPage, paginaAtual, sortBy]);
 
     return (
         <>
+
             <table className="table-auto w-full border border-t-8 border-t-[#555]">
                 <thead className='pt-3'>
                     <tr className='sticky top-0 bg-[#555]  text-[#fff] h-12 rounded border border-navbar border-solid'>
@@ -52,62 +79,27 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: st
                         <th className='font-medium w-1/6  sm:text-base text-xs'>Observação</th>
                     </tr>
                 </thead>
-                <tbody >
-                    {logPaginado.sort((a, b) => {
-                        if (sortBy === 'dataMaisRecente') {
-                            const dateA = new Date(a.dataLiberacao);
-                            const dateB = new Date(b.dataLiberacao);
-                      
-                            // Ordenar primeiro pelo mês
-                            if (dateA.getMonth() !== dateB.getMonth()) {
-                              return dateB.getMonth() - dateA.getMonth();
-                            }
-                      
-                            // Se o mês for o mesmo, ordenar pela hora
-                            return   dateA - dateB;
-                            
-                          } else {
-                            const dateA = new Date(a.dataLiberacao);
-                            const dateB = new Date(b.dataLiberacao);
-                      
-                            // Ordenar primeiro pelo mês
-                            if (dateA.getMonth() !== dateB.getMonth()) {
-                              return   dateA.getMonth() - dateB.getMonth();
-                            }
-                      
-                            // Se o mês for o mesmo, ordenar pela hora
-                            return dateB - dateA;
-                          }
-                        
-                    }).map((entry, index) => (
+                <tbody>
+                    {logPaginado.map((entry, index) => (
                         <tr
                             key={index}
                             className={`${index % 2 === 0 ? 'bg-gray-200' : 'bg-background'} px-8  w-full justify-between transition duration-300 border-b-[0.1px] border-solid border-y-navbar  ease-in-out rounded-md hover:bg-[#DFF4FA] items-start last:border-none last:rounded-lg`}
                         >
                             <td className='pl-5 h-12  text-xs sm:text-base border-r border-y-navbar'>
-                            {/* @ts-ignore */}
                                 {entry.nomeLiberado}
                             </td>
                             <td className='text-center text-xs  sm:text-base border-r border-y-navbar'>
-                                {/* @ts-ignore */}
                                 {entry.matriculaLiberado}
                             </td>
                             <td className='h-12  text-xs sm:text-base border-r border-y-navbar text-center'>
-                                {/* @ts-ignore */}
-                                {entry.dataLiberacao && (
                                 <p>
                                     {format(new Date(entry.dataLiberacao.replace(/-/g, '/')), 'dd/MM/yy')}
                                 </p>
-                                )}
-
                             </td>
                             <td className='text-xs sm:text-base border-r border-y-navbar text-center'>
-                                {/* @ts-ignore */}
-                                {entry.dataLiberacao && <p>{entry.dataLiberacao.split(' ')[1].slice(0, 5)}</p>}
+                                <p>{entry.dataLiberacao.split(' ')[1].slice(0, 5)}</p>
                             </td>
-                            {/* @ts-ignore */}
                             <td className='pl-5 h-12  text-xs sm:text-base border-r border-y-navbar'>{entry.nomeRequerente}</td>
-                            {/* @ts-ignore */}
                             <td className='pl-5 h-12  text-xs sm:text-base'>{entry.observacao}</td>
                         </tr>
                     ))}
@@ -132,3 +124,7 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage }: { log: any[], sortBy: st
 };
 
 export default TabelaHistorico;
+function setLogFiltrado(filteredLog: any[]) {
+    throw new Error('Function not implemented.');
+}
+

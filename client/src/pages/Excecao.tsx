@@ -28,14 +28,14 @@ function Excecao() {
   const [autocomplete, setAutoComplete] = useState('')
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
-
+  console.log(suggestions)
   useEffect(() => {
     
     const token = localStorage.getItem('token');
     if (token) setToken(true);
   }, []);
 
-  // @ts-expect-error TS7006
+  // Função para Lidar com a mudança dos campos de Input para Nomes
   const handleInputChange = async (event) => {
     setSuggestions([])
     const inputType = event.target.name
@@ -58,7 +58,7 @@ function Excecao() {
     }
   };
 
-  // @ts-expect-error TS7006
+  // Função para Lidar com a mudança dos campos de Input para matricula
   const handleInputChangeReg = async (event) => {
     setSuggestions([])
     const inputType = event.target.name
@@ -80,7 +80,10 @@ function Excecao() {
     }
   }
 
-  // @ts-expect-error TS7006
+  /*
+    Função para lidar com o preenchimento automatico
+    Essa função preenche os states de acordo com o nome do campo
+  */
   const handleSearchSelect = async (event) => {
     setAutoComplete('');
     const name = event.target.name
@@ -150,7 +153,9 @@ function Excecao() {
     "Outros",
   ]);
 
+  /*
   
+  */
   const handleUpdate = async () => {
     if (validateForm()) {
       setLoading(true);

@@ -150,7 +150,7 @@ const removeForm = (id) => {
 
       <div className='flex justify-between mb-5'>
         <h3 className='text-xl sm:text-3xl my-2 font-medium'>Liberação para sábado:</h3>
-        <button onClick={addForm} disabled={formCount.length >= 2} className='w-1/12 sm:w-1/12 p-0 h-[50px] sm:p-0 bg-delpRed hover:bg-delpRedHover my-1 mr-3 rounded-lg font-bold'>+</button>
+        <button onClick={addForm} disabled={formCount.length >= 4} className='w-1/12 sm:w-1/12 p-0 h-[50px] sm:p-0 bg-delpRed hover:bg-delpRedHover my-1 mr-3 rounded-lg font-bold'>+</button>
       </div>
       <div>
       </div>

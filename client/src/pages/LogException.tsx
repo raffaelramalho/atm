@@ -15,6 +15,7 @@ function HomePage() {
   //@ts-ignore
   const [isClicked, setIsClicked] = useState(false);
   const [sortBy, setSortBy] = useState('dataLiberacao');
+  const [mesBy, setMesBy] = useState('Janeiro');
   const [inputSearch, setInputSearch] = useState('');
 
   // @ts-expect-error TS7006
@@ -108,6 +109,51 @@ function HomePage() {
               </option>
             </select>
           </div>
+          <div className='font-medium flex items-center'>
+            <p className=' hidden sm:visible'>Mês:</p>
+            <select
+              className='ml-2 px-2 py-1 border border-navbar border-opacity-50 rounded-md'
+              value={mesBy}
+              onChange={(e) => setMesBy(e.target.value)}
+            >
+              <option value='Janeiro'>
+                Janeiro
+              </option>
+              <option value='Fevereiro'>
+                Fevereiro
+              </option>
+              <option value='Marco'>
+                Março
+              </option>
+              <option value='Abril'>
+                Abril
+              </option>
+              <option value='Maio'>
+                Maio
+              </option>
+              <option value='Junho'>
+                Junho
+              </option>
+              <option value='Julho'>
+                Julho
+              </option>
+              <option value='Agosto'>
+                Agosto
+              </option>
+              <option value='Setembro'>
+                Setembro
+              </option>
+              <option value='Outubro'>
+                Outubro
+              </option>
+              <option value='Novembro'>
+                Novembro
+              </option>
+              <option value='Dezembro'>
+                Dezembro
+              </option>
+            </select>
+          </div>
           <div>
             <button className='flex bg-delpRed hover:bg-delpRedHover rounded-xl items-center font-medium'
               onClick={() => exportToExcel(`historico_${new Date().toISOString()}`)}
@@ -120,6 +166,7 @@ function HomePage() {
             <TabelaHistorico
               log={log}
               sortBy={sortBy}
+              mesBy={mesBy}
               itemsPerPage={10}
             />
           ) : (

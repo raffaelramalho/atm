@@ -23,7 +23,7 @@ const exception =
 
 async function userExist(dbconnection, nameC, nameL,regC,regL,idc) {
           const query = `SELECT id FROM Users WHERE name = ? and registration = ? and deleted = 0 limit 1`;
-          const query1 = `SELECT id FROM Users WHERE name = ? and registration = ? and deleted = 0 limit 1`;
+          const query1 = `SELECT id FROM Users WHERE name = ? and registration = ? and deleted = 0 and comments = 'Autoriza Entrada' limit 1`;
           try {
             const results = await dbconnection.execute(query, [nameC,regC]);
             const results1 = await dbconnection.execute(query1, [nameL,regL]);  

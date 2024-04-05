@@ -7,7 +7,7 @@ const search =
         const request = req.query;
         if ('registration' in request) {
             const { registration } = req.query;
-            const query = `SELECT name,registration FROM users where registration like ? and deleted = 0 limit 100`
+            const query = `SELECT name,registration,comments FROM users where registration like ? and deleted = 0 limit 100`
             const [result] = await dbconnection.execute(query, [`%${registration}%`])
             return res.json([result]);
           } else if('konami' in request){
@@ -23,7 +23,7 @@ const search =
             
           }else {
             const { username } = req.query;
-            const query = `SELECT name,registration FROM users where name like ? and deleted = 0 and registration !='' limit 100`
+            const query = `SELECT name,registration,comments FROM users where name like ? and deleted = 0 and registration !='' limit 100`
             const [result] = await dbconnection.execute(query, [`%${username}%`])
             return res.json([result]);
           }

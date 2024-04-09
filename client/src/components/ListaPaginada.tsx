@@ -1,40 +1,50 @@
 import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 
-const TabelaHistorico = ({ log, sortBy, itemsPerPage, mesBy }: { log: any[], sortBy: string, mesBy: string, itemsPerPage: number }) => {
+const TabelaHistorico = ({ log, itemsPerPage }: { log: any[], itemsPerPage: number }) => {
     const [paginaAtual, setPaginaAtual] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [logPaginado, setLogPaginado] = useState([]);
     const [mesSelecionado, setMesSelecionado] = useState('');
+    const [ordenacaoSelecionada, setOrdenacaoSelecionada] = useState('');
 
     useEffect(() => {
         setTotalPages(Math.ceil(log.length / itemsPerPage));
         setLogPaginado(log.slice((paginaAtual - 1) * itemsPerPage, paginaAtual * itemsPerPage));
     }, [log, itemsPerPage, paginaAtual]);
+    const handleOrdenacao = (valor) => {
+        setOrdenacaoSelecionada(valor);
+        setMesSelecionado(''); // Limpar o filtro de mês quando a ordenação muda
+    };
+    useEffect(() => {
+        let sortedLog = [...log];
+    
+        if (ordenacaoSelecionada === 'Data Atual') {
+            sortedLog = sortedLog.sort((a, b) => new Date(b.dataLiberacao) - new Date(a.dataLiberacao));
+        } else if (ordenacaoSelecionada === 'Data Antiga') {
+            sortedLog = sortedLog.sort((a, b) => new Date(a.dataLiberacao) - new Date(b.dataLiberacao));
+        } else if (ordenacaoSelecionada === 'Alfabética') {
+            sortedLog = sortedLog.sort((a, b) => a.nomeLiberado.localeCompare(b.nomeLiberado));
+        }
+    
+        setTotalPages(Math.ceil(sortedLog.length / itemsPerPage));
+        setLogPaginado(sortedLog.slice((paginaAtual - 1) * itemsPerPage, paginaAtual * itemsPerPage));
+    }, [log, itemsPerPage, paginaAtual, ordenacaoSelecionada]);
 
     useEffect(() => {
-        // Filtrar os registros por mês selecionado
-        const filteredLog = log.filter(entry => {
-            const entryDate = new Date(entry.dataLiberacao);
-            const entryMonth = entryDate.getMonth();
-            // Converter nome do mês para número (janeiro = 0, fevereiro = 1, ...)
-            const monthMap: { [key: string]: number } = {
-                Janeiro: 0, Fevereiro: 1, Marco: 2, Abril: 3, Maio: 4, Junho: 5,
-                Julho: 6, Agosto: 7, Setembro: 8, Outubro: 9, Novembro: 10, Dezembro: 11
-            };
-            const selectedMonth = monthMap[mesBy];
-
-            return entryMonth === selectedMonth;
+        const sortedLog = [...log].sort((a, b) => {
+            if (sortBy === 'dataMaisRecente') {
+                return new Date(b.dataLiberacao) - new Date(a.dataLiberacao);
+            } else {
+                if (a[sortBy] < b[sortBy]) return -1;
+                if (a[sortBy] > b[sortBy]) return 1;
+                return 0;
+            }
         });
 
-        setTotalPages(Math.ceil(filteredLog.length / itemsPerPage));
-        // Atualizar os registros filtrados com base no filtro por mês
-        setLogFiltrado(filteredLog);
-    }, [log, itemsPerPage, paginaAtual, mesBy]);
-
-    useEffect(() => {
-        setPaginaAtual(1); // Voltar para a primeira página ao mudar o filtro de mês
-    }, [mesBy]);
+        setTotalPages(Math.ceil(sortedLog.length / itemsPerPage));
+        setLogPaginado(sortedLog.slice((paginaAtual - 1) * itemsPerPage, paginaAtual * itemsPerPage));
+    }, [log, itemsPerPage, paginaAtual, sortBy]);
 
     useEffect(() => {
         if (mesSelecionado === '') {
@@ -64,9 +74,53 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage, mesBy }: { log: any[], sor
         }
     };
 
-
+    const meses = [
+        { nome: 'Janeiro', valor: '0' },
+        { nome: 'Fevereiro', valor: '1' },
+        { nome: 'Março', valor: '2' },
+        { nome: 'Abril', valor: '3' },
+        { nome: 'Maio', valor: '4' },
+        { nome: 'Junho', valor: '5' },
+        { nome: 'Julho', valor: '6' },
+        { nome: 'Agosto', valor: '7' },
+        { nome: 'Setembro', valor: '8' },
+        { nome: 'Outubro', valor: '9' },
+        { nome: 'Novembro', valor: '10' },
+        { nome: 'Dezembro', valor: '11' }
+    ];
+    const opcoes = [
+        { nome: 'Data Atual', valor: '12' },
+        { nome: 'Data Antiga', valor: '13' },
+    ];
     return (
         <>
+            <div className='font-medium flex items-center mb-5 '>
+                <p className=' hidden sm:visible'>Mês:</p>
+                <select
+                    className='ml-2 px-2 py-1 border border-navbar border-opacity-50 rounded-md'
+                    value={mesSelecionado}
+                    onChange={(e) => setMesSelecionado(e.target.value)}
+                >
+                    <option value=''>Todos</option>
+                    {meses.map(mes => (
+                        <option key={mes.valor} value={mes.valor}>
+                            {mes.nome}
+                        </option>
+                    ))}
+                </select>
+                <select
+                    className='ml-2 px-2 py-1 border border-navbar border-opacity-50 rounded-md'
+                    value={ordenacaoSelecionada}
+                    onChange={(e) => handleOrdenacao(e.target.value)}
+                >
+                    <option value=''>Ordenar por...</option>
+                    {opcoes.map(opcao => (
+                        <option key={opcao.valor} value={opcao.nome}>
+                            {opcao.nome}
+                        </option>
+                    ))}
+                </select>
+            </div>
 
             <table className="table-auto w-full border border-t-8 border-t-[#555]">
                 <thead className='pt-3'>
@@ -124,7 +178,3 @@ const TabelaHistorico = ({ log, sortBy, itemsPerPage, mesBy }: { log: any[], sor
 };
 
 export default TabelaHistorico;
-function setLogFiltrado(filteredLog: any[]) {
-    throw new Error('Function not implemented.');
-}
-

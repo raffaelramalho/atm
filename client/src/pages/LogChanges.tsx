@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Organizer from '../components/hoc/Hoc'
 import swal from 'sweetalert';
-
 import config from '../config'
 
 const ITEMS_PER_PAGE = 10;

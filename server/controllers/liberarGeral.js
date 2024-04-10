@@ -58,7 +58,7 @@ async function insereLiberacaoGeral() {
         } catch (error) {
             console.error('Erro ao deletar a linha:', error);
         }
-    }, 30 * 60 * 1000); // 30 minutos em milissegundos
+    }, 15 * 60 * 1000); // 15 minutos em milissegundos
 }
 
 

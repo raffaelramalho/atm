@@ -1,3 +1,14 @@
+/*---------------------------------------------------------------*
+
+
+█▀▄ █▀▀ █░░ █▀█ █ █▄░█ █░█ █▀█  
+█▄▀ ██▄ █▄▄ █▀▀ █ █░▀█ █▀█ █▄█  
+
+Versão 2.1.3 (Espero que seja a final)
+Feito por Rafael "Okas" Ramalho Rosa
+Github: https://github.com/raffaelramalho 😎🎂
+/---------------------------------------------------------------*/
+
 import Form from "./pages/Form";
 import Login from "./pages/Login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -29,19 +40,18 @@ function App({}) {
           <Route path="/" element={<Login />} />
           <Route element={<RequireAuth/>}>
                       <Route path="home/" element={<Home />} />
-                      <Route path="form/" element={<Form />} />
+                      <Route path="form/" element={<Form />} /> /* Formulário de troca de turno*/
                       <Route path="EsqueciSenha/" element={<EsqueciSenha />} />
-                      <Route path="ferias/" element={<Ferias />} />
-                      <Route path="excecao/" element={<Excecao />} />
-                      <Route path="logexcecao/" element={<LogException />} />
+                      <Route path="ferias/" element={<Ferias />} /> /* Formulário de ferias*/
+                      <Route path="excecao/" element={<Excecao />} /> /* Formulário de liberação temporaria */
+                      <Route path="logexcecao/" element={<LogException />} />/* Histórico de Exceção */
                       <Route path="*" element={<Error />} />
-                      <Route path="logchanges/" element={<LogChanges/>}/>
-                      <Route path="sabado/" element={<Sabado/>}/>
-                      <Route path="liberaGeral/" element={<LiberaGeral/>}/>
+                      <Route path="logchanges/" element={<LogChanges/>}/> /* Histórico de trocas de turno */
+                      <Route path="sabado/" element={<Sabado/>}/> /* Formulário de liberação sabado*/
+                      <Route path="liberaGeral/" element={<LiberaGeral/>}/> /* Formulário de liberar em atraso de onibus*/
           </Route> 
       </Routes>
     </div>
-      
     </BrowserRouter>
   )
 }

@@ -58,7 +58,7 @@ async function userInsert(dbconnection, nameC, regC) {
         }   
      
     
-//Fazer função de gravar no banco
+
 async function  logInsert(dbconnection, nameC, regC,nameL, regL, message) {
     const current_datetime = new Date();
     let day = current_datetime.getDate();

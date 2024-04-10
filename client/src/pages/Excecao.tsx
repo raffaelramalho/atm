@@ -28,14 +28,14 @@ function Excecao() {
   const [autocomplete, setAutoComplete] = useState('')
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  console.log(suggestions)
+
   useEffect(() => {
     
     const token = localStorage.getItem('token');
     if (token) setToken(true);
   }, []);
 
-  // Função para Lidar com a mudança dos campos de Input para Nomes
+  // @ts-expect-error TS7006
   const handleInputChange = async (event) => {
     setSuggestions([])
     const inputType = event.target.name
@@ -58,7 +58,7 @@ function Excecao() {
     }
   };
 
-  // Função para Lidar com a mudança dos campos de Input para matricula
+  // @ts-expect-error TS7006
   const handleInputChangeReg = async (event) => {
     setSuggestions([])
     const inputType = event.target.name
@@ -75,21 +75,20 @@ function Excecao() {
     if (value.length > 0) {
       const results = await axios.get(`${config.backendUrl}/api/v1/search?registration=${value}`);
       setSuggestionsReg(results.data[0]);
+	console.log(results.data[0])
     } else {
       setSuggestionsReg([]);
     }
   }
 
-  /*
-    Função para lidar com o preenchimento automatico
-    Essa função preenche os states de acordo com o nome do campo
-  */
+  // @ts-expect-error TS7006
   const handleSearchSelect = async (event) => {
     setAutoComplete('');
     const name = event.target.name
     const selectedValue = event.target.textContent
     const id = event.target.id;
-    console.log(name,id,selectedValue)
+    const comment = event.target.comments
+    console.log(name,id,selectedValue,comment)
     if (name === 'liberado') {
       setSearch(selectedValue)
       setInputCol(selectedValue)
@@ -133,11 +132,11 @@ function Excecao() {
   };
 
 
-  // @ts-expect-error TS7006
+
   const handleSubmit = (e) => {
     e.preventDefault();
   };
-  // @ts-expect-error TS7006
+ 
   const handleChange = (e) => {
     const text = e.target.value;
     setInputTextarea(text);
@@ -145,17 +144,7 @@ function Excecao() {
   };
   
 
-  const [opcoesObservacao, setOpcoesObservacao] = useState([
-    "Chegou Atrasado",
-    "Razões médicas",
-    "A pedido da gerência",
-    "Troca de turno",
-    "Outros",
-  ]);
-
-  /*
   
-  */
   const handleUpdate = async () => {
     if (validateForm()) {
       setLoading(true);
@@ -237,6 +226,7 @@ const handleKeyPress = (event) => {
               name: autocomplete, 
               id: suggestions[selectedIndex].registration,
               textContent: suggestions[selectedIndex].name,
+              comments: suggestions[selectedIndex].comments,
             },
           });
         }
@@ -268,6 +258,7 @@ const handleKeyPress = (event) => {
               name: autocomplete, 
               id: suggestionsReg[selectedIndex].name,
               textContent: suggestionsReg[selectedIndex].registration,
+              comments: suggestions[selectedIndex].comments,
             },
           });
         }
@@ -375,20 +366,23 @@ const handleKeyPress = (event) => {
                     name='liberador'
                     onBlur={handleInputBlur} />
                                     <div className={`flex flex-col  bg-background absolute border-x border-solid  max-h-96 `}>
-                    <div className='overflow-y-auto suspended-list'>
-                    {autocomplete == 'liberador' ? (
-                      suggestions.map((suggestion,index) => (
-                        <a key={index}
-                        className={`flex items-center h-10 w-full px-5 bg-background text-navbar hover:bg-section cursor-pointer ${index === selectedIndex ? 'bg-section' : ''}`}
-                          onClick={handleSearchSelect}
-                          name='liberador'
-                          id={suggestion.registration}
-                        >
-                          {suggestion.name}
-                        </a>
-                      ))
-                    ) : null}
-                  </div>
+                          <div className='overflow-y-auto suspended-list'>
+                            {autocomplete === 'liberador' ? (
+                              suggestions.map((suggestion, index) => (
+                                suggestion.comments === 'Autoriza Entrada' && (
+                                  <a
+                                    key={index}
+                                    className={`flex items-center h-10 w-full px-5 bg-background text-navbar hover:bg-section cursor-pointer ${index === selectedIndex ? 'bg-section' : ''}`}
+                                    onClick={handleSearchSelect}
+                                    name='liberador'
+                                    id={suggestion.registration}
+                                  >
+                                    {suggestion.name}
+                                  </a>
+                                )
+                              ))
+                            ) : null}
+                          </div>
                     </div>
                 </div>
                 <div className='sm:w-2/6 w-full'>
@@ -404,7 +398,8 @@ const handleKeyPress = (event) => {
                     <div className={`flex flex-col  bg-background absolute border-x border-solid  max-h-96 `}>
                     <div className='overflow-y-auto suspended-list'>
                     {autocomplete == 'liberadorReg' ? (
-                      suggestionsReg.map((suggestion,index) => (                
+                      suggestionsReg.map((suggestion,index) => (  
+                        suggestion.comments === 'Autoriza Entrada' && (              
                         <a  key={index}
                             className={`flex items-center h-10 w-full px-5 bg-background text-navbar hover:bg-section cursor-pointer ${index === selectedIndex ? 'bg-section' : ''}`}
                             onClick={handleSearchSelect}                         
@@ -413,7 +408,7 @@ const handleKeyPress = (event) => {
                         >                   
                           {suggestion.registration}
                         </a>
-                      ))
+                      )))
                     ) : ( 
                       ""
                     )}
